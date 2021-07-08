@@ -35,7 +35,6 @@ function Form(props) {
             data[key].type = fields[key].mainType;
 
             let isValid = validate(fields[key].mainType, true, fields[key].value);
-            console.log(key, " is: ", isValid);
             if(!isValid){
                 fieldsTmp[key].error = true;
                 validationRes = false;
@@ -72,7 +71,11 @@ function Form(props) {
         const content = fields[fieldKey];
         let error;
         if (content.error){
-            error = `Invalid ${content.id}`;
+            if(content.id === 'password' && props.passwordError){
+                error = props.passwordError;
+            } else {
+                error = `Invalid ${content.id}`;
+            }
         }
         
         fieldsComponents.push(<FormField 

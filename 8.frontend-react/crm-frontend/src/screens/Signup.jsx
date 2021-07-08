@@ -7,7 +7,8 @@ import {
     // BrowserRouter as Router,
     Link,
     useParams,
-    withRouter
+    withRouter,
+    useHistory
   } from "react-router-dom";
 const authApi = new AuthApi();
 
@@ -16,7 +17,10 @@ const authApi = new AuthApi();
 function Signup(props) {
 
   const {token} = useParams();
+  // const history = useHistory();
+
   const submit = async (formData) => {
+
     console.log(formData);
     let res;
     if(props.type == 'newUser'){
@@ -24,11 +28,11 @@ function Signup(props) {
     } else {
       res = await authApi.signup(formData);
     }
-    console.log(res.valid);
+    
     if(res.valid){
-      console.log("signup is done!!",res.valid);
-      window.location.href = 'http://localhost:3000/home'
+      console.log("history", props.history);
       // props.history.push('/home');
+      window.location.href = 'http://localhost:3000/home';
     } else {
       return res;
     }
@@ -106,8 +110,9 @@ function Signup(props) {
                 errorMap = {signup.errorMap}
                 button={signup.buttonTitle}
                 buttonClass={signup.buttonClass}
+                passwordError = 'Password must include 1-9 a-z A-Z and at least 8 characters'
                 />
-                {props.type !== 'newUser' && <div><hr></hr><Link className='linkto' to="/login">I already have an account</Link></div>}
+                {props.type !== 'newUser' && <div><Link className='linkto' to="/login">I already have an account</Link></div>}
             </div>
         </div>
       </div>

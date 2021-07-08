@@ -1,15 +1,15 @@
-.table-container th, .table-container td{  
+.table th, .table td{  
     text-align: left;
     padding: 15px;
 }
 
-.table-container {
+.table {
     border-collapse: separate;
     width: 100%;
     border-spacing: 0 15px;
   } 
 
-  .table-container tr {
+  .table tr {
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -17,14 +17,14 @@
     margin-bottom: 20px;
   }
 
-  .table-container tr:hover {
+  .table tr:hover {
     background-color: #f5f5f5;
   }
 
 
-  .table-container th {
+  .table th {
     background-color: #d4e6f7;
-    color: wh;
+    /* color: wh; */
   }
 
 
@@ -38,3 +38,16 @@
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     background-color: #ffffff;
   }
+
+  /* .sticky th{
+    position: sticky;
+    top: 0px;
+  } */
+
+  /* .table-container { */
+    /* max-height: 70vh; */
+    /* overflow-y: scroll; */
+  /* } */
+
+
+ 

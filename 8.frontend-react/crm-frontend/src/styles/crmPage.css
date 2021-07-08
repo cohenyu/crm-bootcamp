@@ -1,12 +1,26 @@
 .crm-page {
     width: 70%;
     margin: auto;
+    margin-bottom: 30px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     padding: 10px 30px;
+    min-width: 700px;
 }
 
 .status-icon {
     color: #63b67f;
+}
+
+.trash-icon {
+    margin-right: 10px;
+    color: rgba(255, 0, 0, 0.527);    
+    cursor:'pointer'; 
+}
+
+
+.edit-icon{
+    color: #577399;
+    cursor:'pointer'; 
 }
 
 .link-table {

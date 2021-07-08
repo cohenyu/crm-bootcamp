@@ -4,7 +4,7 @@ import AuthApi from '../helpers/authApi';
 // import '../styles/login.css';
 import '../styles/massageBox.css';
 import {
-    Link, useParams,
+    Link, useParams
   } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import Massage from '../components/Massage';
@@ -12,46 +12,40 @@ import Massage from '../components/Massage';
 const authApi = new AuthApi();
 
 function ResetPassword(props) {  
-
+      // const history = useHistory();
       const [isPasswordChanged, setPasswordChanged] = useState(false);
       const [isLoading, setIsLoading] = useState(true);
       const [isValidPage, setIsValidPage] = useState(false);
 
       const {mail} = useParams();
-      if(!mail){
-        this.props.history.push('/login');
-      }
 
       const checkPageRelevance =  async () => {
         const res = await authApi.checkTokenValidation({mailToken: mail});
-        console.log('res is:', res);
         return res.valid;
-        console.log("the jwt token is valid? :  ", res.valid);
       }
+
 
       useEffect(()=>{
         (async () => {
           const result = await checkPageRelevance();
-          console.log('the result is: ', result);
           if(result) {
-            console.log('set the state of valid page to true');
            setIsValidPage(true);
           } 
           setIsLoading(false);
         })();
-        
       }, [])
+
 
       const submit = async (data) => {
         // sending the mail token with the new password
         const res = await authApi.resetPassword({mailToken: mail, fields: data});
         if(res.valid){
-          console.log("password was changed");
           setPasswordChanged(true);
           return null;
         } 
         return res;
       }
+
 
       const reset = {
         submitFunc: submit,
@@ -110,6 +104,7 @@ function ResetPassword(props) {
                       errorMap = {reset.errorMap}
                       button={reset.buttonTitle}
                       buttonClass={reset.buttonClass}
+                      passwordError = 'Password must include 1-9 a-z A-Z and at least 8 characters'
                   /> 
                   }
               </div> : <Massage links={links} massage='This page is no longer available.'/>

@@ -5,20 +5,23 @@ import AuthApi from '../helpers/authApi';
 import '../styles/simpleForm.css';
 import {
     Link,
+    useHistory,
+    withRouter
   } from "react-router-dom";
 
 const authApi = new AuthApi();
 
 function Login(props) {  
 
+      
       const submit = async (data) => {
-
         const res = await authApi.signin(data);
         console.log(res.valid);
         if(res.valid){
-          console.log("login is done!!",res.valid);
-          window.location.href = 'http://localhost:3000/home'
+          console.log("history" , props.history);
+          window.location.href = 'http://localhost:3000/home';
           // props.history.push('/home');
+          
         } else {
           return res;
         }
@@ -71,7 +74,6 @@ function Login(props) {
                     button={login.buttonTitle}
                     buttonClass={login.buttonClass}
                 />
-                <hr></hr>
                 <div className='links'>
                 <Link className='linkto' to="/signup">I don't have an account</Link>
                 <Link className='linkto' to="/forgotPassword">Forgot password?</Link>

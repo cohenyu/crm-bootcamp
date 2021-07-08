@@ -1,25 +1,23 @@
-<?php 
+<?php
 
- 
-    require_once("./Models/Model_test.php");
 
-    class test 
+require_once("controller.php");
+
+class test extends controller
+{
+
+    public $model_cls = "test";
+
+    public function __construct()
     {
-        private $response;
-        private $errors = "";
-        private $model;
-
-        public function __construct()
-        {
-            $this->model = new Model_test();
-        }
-
-        public function test($key) {
-            $this->response = $this->model->getFakeData();
-            $this->response["my_key"] = $key;
-            return $this->response;
-        }
-        
+        parent::__construct();
     }
 
-?>
+    public function test($key)
+    {
+        $this->response = $this->model->getFakeData();
+        $this->response["my_key"] = $key;
+        $this->response["post"] = $_POST;
+        return $this->response;
+    }
+}

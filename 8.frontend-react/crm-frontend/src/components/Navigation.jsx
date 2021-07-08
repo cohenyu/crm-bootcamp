@@ -3,8 +3,6 @@ import '../styles/navigation.css'
 import {
     // BrowserRouter as Router,
     Link,
-    useParams,
-    withRouter
   } from "react-router-dom";
 
 function Navigation(props) {

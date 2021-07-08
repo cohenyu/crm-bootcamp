@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "ACAA,AAAA,WAAW,CAAA;EACP,gBAAgB,EAAE,IAAI;CACzB",
+    "sources": [
+        "styles.scss",
+        "newButton.scss"
+    ],
+    "names": [],
+    "file": "styles.css"
+}

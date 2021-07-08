@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Navigation from './Navigation';
 import Logo from './Logo';
 import '../styles/header.css'
@@ -8,7 +8,6 @@ const authApi = new AuthApi();
 
 function Header(props) {
 
-    const [isLogout, setIsLogout] = useState(false);
 
     const links = [
         {
@@ -25,11 +24,11 @@ function Header(props) {
         }
     ];
 
-    const logoutFunc = ()=>{
-        authApi.logout();
+    const logoutFunc = async ()=>{
+        await authApi.logout();
         // TODO - use the state instead of window
         window.location.href = 'http://localhost:3000/login';
-        setIsLogout(true);
+        
     }
 
     return (

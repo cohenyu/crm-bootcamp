@@ -38,20 +38,6 @@
 
 
 /* .secondary-button {
-    color: #bdd5ea;
-    font-weight: bold;
-    background-color: #577399;
-    border: solid 1px #bdd5ea ;
-    font-size: 18px;
-}
-
-.secondary-button:hover, .secondary-button:focus {
-    color: #577399;
-    background-color: #bdd5ea;
-    cursor: pointer;
-} */
-
-.secondary-button {
     color: #495867;
     background-color: #bdd5ea;
     border: none;
@@ -61,6 +47,20 @@
 .secondary-button:hover, .secondary-button:focus {
     color: #577399;
     background-color: #aacceb;
+    cursor: pointer;
+} */
+
+.secondary-button {
+    color: #495867;
+    background-color: white;
+    border: solid 1px #495867;
+    font-size: 18px;
+}
+
+.secondary-button:hover, .secondary-button:focus {
+    color: white;
+    background-color: #577399;
+    border: solid 1px white;
     cursor: pointer;
 }
 
