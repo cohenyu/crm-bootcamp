@@ -16,7 +16,16 @@ class projects extends controller
     public function addProject()
     {
         $result= $this->model->addProject($this->getPostJsonData());
-        $this->response = $result;
+        if($result == -1){
+            // $this->response->valid = false;
+            // $this->response->serverError = "serverError";
+            $this->response = false;
+        }
+        else {
+            // $this->response->valid = true;
+            // $this->response->projectId = $result;
+            $this->response = $result;
+        }
         return $this->response;
     }
 
@@ -39,19 +48,21 @@ class projects extends controller
     public function updateProject()
     {
         $params = $this->getPostJsonData();
+       
         $data = [
             'account' => $this->account_id,
             'user' => $this->user_id,
         ];
         $result= $this->model->updateProject($data, $params);
-        if($result == -1){
-            $this->response->valid = false;
-            $this->response->serverError = "serverError";
-        }
-        else {
-            $this->response->valid = true;
-            $this->response->affectedRows = $result;
-        }
+        // if($result == -1){
+        //     $this->response->valid = false;
+        //     $this->response->serverError = "serverError";
+        // }
+        // else {
+        //     $this->response->valid = true;
+        //     $this->response->affectedRows = $result;
+        // }
+        $this->response = $result;
         return $this->response;
     }
 

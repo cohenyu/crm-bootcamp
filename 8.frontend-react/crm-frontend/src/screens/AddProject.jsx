@@ -2,20 +2,36 @@ import React from 'react';
 import PageTitle from '../components/pageTitle/PageTitle';
 import Header from '../components/header/Header';
 import Form from '../components/form/Form';
-import { Link } from 'react-router-dom';
+import { Link, Redirect, useHistory, BrowserRouter } from 'react-router-dom';
 import CrmApi from '../helpers/CrmApi';
-
+import statusMap from '../helpers/StatusMap'
+import PrevPage from '../components/prevPage/PrevPage';
 const crmApi = new CrmApi(); 
 
 function AddProject(props){
 
+    let history = useHistory();
     const submitAddProject = async (formFieldsData) => {
-
+      console.log("success", formFieldsData);
+      if(!formFieldsData.clientId.value){
+        delete formFieldsData.clientId;
+      }
+      delete formFieldsData.search;
+      const resultData = await crmApi.addProject({status: statusMap.open, fields: formFieldsData});
+      console.log(resultData);
+      if(resultData > 0){
+        // TODO send to project something else
+        history.push({
+          pathname: '/project',
+          state: {projectId: resultData, details: formFieldsData}
+        });
+        // redirect to project page
+      }
     };
 
 
     const mapFunc = (data) => {
-      return {main: data.client_name, second: [data.client_mail, data.client_phone], details: {body: {name: data.client_name, mail: data.client_mail, phone: data.client_phone}, clientId: data.client_id}};
+      return {main: data.client_name, second: [data.client_mail, data.client_phone], details: {name: data.client_name, mail: data.client_mail, phone: data.client_phone, clientId: data.client_id}};
     }
 
     const addProjectForm = {
@@ -42,11 +58,12 @@ function AddProject(props){
               id: "description",
               type: 'textarea',
               error: false,
-              mainType: 'name',
+              mainType: 'text',
             },
             deadline: {
               text: '2021-07-12',
               value: new Date().toISOString().substr(0, 10),
+              min: new Date().toISOString().substr(0, 10),
               label: "Deadline",
               id: "date",
               type: 'date',
@@ -58,7 +75,8 @@ function AddProject(props){
               side: true,
               text : 'Search Client',
               fetchData:  async (input) => {return await crmApi.getAllClients(input)},
-              mapFunc: mapFunc
+              mapFunc: mapFunc,
+              mainType: 'hidden',
             },
             name: {
               side: true,
@@ -84,6 +102,15 @@ function AddProject(props){
               error: false,
               mainType: 'phone'
             },
+            clientId: {
+              hidden: true,
+              side: true,
+              text: '',
+              id: "client-id",
+              type: 'hidden',
+              error: false,
+              mainType: 'hidden'
+            },
           }
         }
 
@@ -91,7 +118,7 @@ function AddProject(props){
         <div>
             <Header/>
             <div className='crm-page'>
-            <Link className='linkto' to="/allProjects">{"< Back"}</Link>
+              <PrevPage/>
             <PageTitle className='page-title' title={''} description={''}/>
             <Form 
                     className='form-body'

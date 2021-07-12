@@ -4,7 +4,8 @@ var regexMap = {
     phone: /^[0-9]{3}[-]{0,1}[0-9]{3}[-]{0,1}[0-9]{4}$/,
     password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
     date: /^\d{4}([-])\d{2}\1\d{2}$/,
-    number: /^\d+$/
+    number: /^\d+$/,
+    text: /^[\s\S]+/
 }
 
 /**
@@ -29,6 +30,8 @@ const validate = (type, isRequired, value) => {
             return regexMap.number.test(value);
         case 'date':
             return regexMap.date.test(value);
+        case 'text':
+            return regexMap.text.test(value);
         case 'name':
         default:
             return regexMap.name.test(value);

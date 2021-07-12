@@ -33,5 +33,9 @@ class controller
         $this->user_id = 1;
     }
 
+    protected function validateAll($data){
+        return true;
+    }
+
     
 }

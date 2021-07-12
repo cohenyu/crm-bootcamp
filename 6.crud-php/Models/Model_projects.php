@@ -16,19 +16,22 @@ class Model_projects extends Model
 
     public function addProject($projectDetails)
     {
-        $this->clientModel->setAccountId($this->account_id);
-        $clientDetails = $projectDetails->client;
-        $clientId = intval($clientDetails->clientId ?? -1);
+        $fields = $projectDetails->fields;
+        $clientId = intval($fields->clientId->value ?? -1);
         if($clientId <= 0){
-           $clientId = $this->clientModel->addClient($clientDetails->name, $clientDetails->mail, $clientDetails->phone);
+            $this->clientModel->setAccountId($this->account_id);
+           $clientId = $this->clientModel->addClient($fields->name->value, $fields->mail->value, $fields->phone->value);
         } 
-
+        
+        if($clientId <= 0){
+            return false;
+        }
         $queryData = [
             'client_id' => $clientId,
             'account_id' => $this->account_id,
-            'item_type' => $projectDetails->type,
-            'description' => $projectDetails->description,
-            'deadline' => $projectDetails->deadline,
+            'item_type' => $fields->type->value,
+            'description' => $fields->description->value,
+            'deadline' => $fields->deadline->value,
             'project_status' => $projectDetails->status
         ];
         return $this->insertItem($queryData);

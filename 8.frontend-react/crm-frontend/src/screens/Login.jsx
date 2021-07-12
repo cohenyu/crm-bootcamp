@@ -4,9 +4,7 @@ import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
 import '../styles/simpleForm.css';
 import {
-    Link,
-    useHistory,
-    withRouter
+    Link
   } from "react-router-dom";
 
 const authApi = new AuthApi();

@@ -9,11 +9,9 @@ import AuthApi from './helpers/authApi';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Clients from './screens/Clients';
 import AddProject from './screens/AddProject';
-import Loader from "react-loader-spinner";
 import './styles/styles.scss';
 import './components/loading/Loading'
 import AllProjects from './screens/AllProjects';
-import Header from './components/header/Header';
 import {
   BrowserRouter as Router,
   Switch,
@@ -21,6 +19,8 @@ import {
   Redirect,
 } from "react-router-dom";
 import Loading from './components/loading/Loading';
+import ProjectPage from './screens/ProjectPage';
+import ClientPage from './screens/ClientPage';
 
 const authApi = new AuthApi();
 function App() {
@@ -126,6 +126,18 @@ function App() {
         {isLoading ? loader: 
             isConnect ?
                 <AddProject/> : <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/project">
+        {isLoading ? loader: 
+            isConnect ?
+                <ProjectPage/> : <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/client">
+        {isLoading ? loader: 
+            isConnect ?
+                <ClientPage/> : <Redirect to="/login" /> 
             }
         </Route>
       </Switch>}

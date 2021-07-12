@@ -9,6 +9,7 @@
     border-spacing: 0 15px;
     border-top: 0;
     margin-top: -15px;
+
   } 
 
   .table tr {
@@ -28,7 +29,6 @@
 
   .table th {
     background-color: #d4e6f7;
-    /* color: wh; */
   }
 
 
@@ -43,15 +43,22 @@
   //   background-color: #ffffff;
   // }
 
-  /* .sticky th{
+  .sticky th{
     position: sticky;
-    top: 0px;
-  } */
+    top: 51px;
+  }
 
-  /* .table-container { */
-    /* max-height: 70vh; */
-    /* overflow-y: scroll; */
-  /* } */
+  .table-container {
+    .empty-msg {
+      display: flex;
+      justify-content: space-around;
 
+      h3 {
+        color: rgb(184, 180, 180);
+        font-weight: normal;
+      }
+    }
+  }
+ 
 
  

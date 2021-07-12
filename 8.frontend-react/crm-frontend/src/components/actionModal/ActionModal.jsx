@@ -2,7 +2,7 @@
 import './actionModal.scss'
 import Modal from 'react-modal';
 import CrmButton from '../crmButton/CrmButton';
-import React, {useState, useMemo, useEffect, useRef} from 'react';
+import React from 'react';
 
 const ActionModal = (props) => {
   

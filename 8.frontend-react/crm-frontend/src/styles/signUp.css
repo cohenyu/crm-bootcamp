@@ -40,6 +40,7 @@ hr {
 .linkto {
     color: #495867;
     outline: none;
+    text-decoration: underline;
 }
 
 .linkto:hover {

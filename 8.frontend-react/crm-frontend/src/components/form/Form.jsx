@@ -13,14 +13,17 @@ function Form(props) {
     const [isLoading, setIsLoading] = useState(false);
     
     useEffect(() => {
-        setFields(props.fields);
+        let mounted = true;
+        if(mounted){
+            setFields(props.fields);
+        }
     }, [props.fields])
 
     const setValue = (key, value, isMultiple=false) => {
         const fieldsTemp = {...fields};
         if(isMultiple) {
-            for(let fieldName in value.body){
-                fieldsTemp[fieldName].value = value.body[fieldName];
+            for(let fieldName in value){
+                fieldsTemp[fieldName].value = value[fieldName];
             }
         } else {
             fieldsTemp[key].value = value;
@@ -40,6 +43,9 @@ function Form(props) {
             data[key].value = fields[key].value;
             data[key].type = fields[key].mainType;
 
+            if(fields[key].mainType === 'hidden'){
+                continue;
+            }
             let isValid = validate(fields[key].mainType, true, fields[key].value);
             if(!isValid){
                 fieldsTmp[key].error = true;
@@ -48,6 +54,7 @@ function Form(props) {
                 fieldsTmp[key].error = false;
             }
         }
+        console.log(validationRes);
         if(!validationRes){
             setFields(fieldsTmp);
             return;
@@ -85,13 +92,14 @@ function Form(props) {
         }
 
         let comp;
-        if(content.id == 'search'){
+        if(content.id === 'search'){
             comp =  <div key={'search'}>
                 <Search {...content} callback={(values)=> setValue(fieldKey, values, true)}/>
                 {props.afterSearch && <h3>{props.afterSearch}</h3>}
                 </div>
         } else {
             comp = <FormField 
+            min = {content.min}
             errorText={error} 
             text={content.text} 
             type={content.type} 
@@ -114,12 +122,13 @@ function Form(props) {
             <h2>{props.title}</h2>
             <h3>{props.text}</h3>
             <div className='fields'> 
-                <div className='left-side'>
+                <div>
                 {fieldsComponents}
                 </div>
-                <div>
+                {sideFieldsComponents.length > 0 && 
+                <div className='right-side'>
                 {sideFieldsComponents}
-                </div>
+                </div>}
             </div>
             <div>
             </div>

@@ -1,14 +1,11 @@
 import PageTitle from '../components/pageTitle/PageTitle';
 import CrmButton from '../components/crmButton/CrmButton';
-import React, {useState, useMemo, useEffect, useRef} from 'react';
-import ReactDom from 'react-dom';
-// import Form from '../components/Form';
+import React, {useState, useEffect, useRef} from 'react';
 import Form from '../components/form/Form';
 import '../styles/actionModal.css';
 import Modal from 'react-modal';
 import '../styles/crmPage.css'
 import '../styles/modal.scss';
-// import '../styles/modalWindow.css';
 import AuthApi from '../helpers/authApi';
 import Header from '../components/header/Header';
 import Table from '../components/table/Table';
@@ -89,7 +86,7 @@ function Team(props){
     console.log("item to delete", itemToDelete);
     let newData = dataRef.current.filter((item)=>{
       console.log(itemToDelete.user_id,"is equal?", item.user_id);
-      return itemToDelete.user_id != item.user_id;
+      return itemToDelete.user_id !== item.user_id;
     })
     closeDeleteUserWindow();
     setData(newData);
@@ -117,7 +114,7 @@ function Team(props){
       {
         Header: 'Status',
         accessor: 'status',
-        Cell: ({value})  => value == 'active' ? <FontAwesomeIcon className='status-icon' icon={faCheck} size='xs'/> : value
+        Cell: ({value})  => value === 'active' ? <FontAwesomeIcon className='status-icon' icon={faCheck} size='xs'/> : value
       },
       {
         Header: 'Action',
@@ -173,7 +170,7 @@ function Team(props){
         if(res.valid){
 
           let newData = dataRef.current.map((item)=>{
-            if(item.user_id == itemToEdit.user_id){
+            if(item.user_id === itemToEdit.user_id){
               item.user_name = formFieldsData.name.value;
               item.user_mail = formFieldsData.mail.value;
               item.user_phone = formFieldsData.phone.value;

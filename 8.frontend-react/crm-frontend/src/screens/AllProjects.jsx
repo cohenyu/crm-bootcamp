@@ -1,6 +1,6 @@
 import PageTitle from '../components/pageTitle/PageTitle';
 import CrmButton from '../components/crmButton/CrmButton';
-import React, {useState, useMemo, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Form from '../components/form/Form';
 import TabsTable from '../components/tabsTable/TabsTable';
 import '../styles/actionModal.css';
@@ -11,13 +11,15 @@ import CrmApi from '../helpers/CrmApi';
 import Header from '../components/header/Header';
 import Table from '../components/table/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash , faEdit, faDraftingCompass} from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
+import { Link, useHistory } from 'react-router-dom';
 import statusMap from '../helpers/StatusMap';
+import ScrollUp from '../components/scrollUp/ScrollUp';
 
 const crmApi = new CrmApi();
 
 function AllProjects(props){
+    let history = useHistory();
     const [itemToDelete, setItemToDelete] = useState({});
     const [modalProjectDetails, setModalProjectDetails] = useState({});
     const [projectDetails, setProjectDetails] = useState({});
@@ -36,7 +38,9 @@ function AllProjects(props){
 
     useEffect(()=>{
         (async () => {
+          console.log("mine? ", props.mine);
          const result = await crmApi.getAllProjects(props.mine);
+         console.log("the rresult is", result);
          setData(result);
          submitTab(props.mine ? statusMap.inProgress : statusMap.open);
         //  setFilteredData(result);
@@ -87,10 +91,6 @@ function AllProjects(props){
         }
       },
       {
-        Header: 'Status',
-        accessor: 'project_status',
-      },
-      {
         Header: 'Action',
         // accessor: 'delete',
         Cell: (value)=> (
@@ -121,7 +121,14 @@ function AllProjects(props){
     };
 
     const submitUpdateProject = async (dataToSent) => {
-        const res = await crmApi.updateProject({project_id: projectDetailsRef.current.project_id, set:{project_status:"in progress", estimated_time: dataToSent.hours.value}});
+        const res = await crmApi.updateProject({project_id: projectDetailsRef.current.project_id, set:{project_status: statusMap.inProgress, estimated_time: dataToSent.hours.value}});
+        console.log("here", res);
+        if(res > 0){
+          history.push({
+            pathname: '/project',
+            state: {projectId: projectDetailsRef.current.project_id}
+          });
+        }
         // TODO error
     };
 
@@ -140,8 +147,9 @@ function AllProjects(props){
         buttonClass: 'main-button',
         fields: {
           hours: {
+            min: 1,
             text: "Estimated Time (hours)",
-            id: "type",
+            id: "hours",
             type: 'number',
             error: false,
             mainType: 'number',
@@ -167,10 +175,21 @@ function AllProjects(props){
     const submitTab = (status) =>{
         setProjectStatus(status);
         const filtered = dataRef.current.filter((item)=>{
-            return item.project_status == status;
+            return item.project_status === status;
         })
         console.log(dataRef.current);
         setFilteredData(filtered);
+    }
+
+    const handleProjectClick = (row) => {
+      if(!mineRef.current && projectStatus == statusMap.open){
+        openProjectWindow(row);
+      } else {
+        history.push({
+          pathname: '/project',
+          state: {projectId: row.original.project_id}
+        });
+      }
     }
 
     return (
@@ -179,12 +198,12 @@ function AllProjects(props){
             <div className='crm-page'>
             <PageTitle className='page-title' title={props.mine ? 'My Projects' : 'All Projects'} description='Manage your projects.'/>
             <div className='table-actions-box'>
-            <TabsTable submit={submitTab} status={projectStatus} page={props.mine ? "myProjects" : "allProjects"} clickRow={!props.mine ? openProjectWindow : ()=>{}}/>
+            <TabsTable submit={submitTab} status={projectStatus} mode={props.mine ? "myProjects" : "allProjects"}/>
             {!props.mine && 
              <Link className='button-link' to='/addProject'><CrmButton content='Add Project' buttonClass='main-button' icon='plus' isLoading={false} callback={()=> {}}/></Link>
             }
             </div>
-            <Table columns={columns} data={filteredData}/>
+            <Table columns={columns} data={filteredData} clickRow={handleProjectClick}/>
             {/* <ActionModal title='Are you sure you want delete this item?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/> */}
             {/* <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove Project' onRequestClose={closeDeleteProjectWindow}  overlayClassName="Overlay" className='modal'>
                 <h2>Are you sure you want delete this item?</h2>
@@ -199,6 +218,7 @@ function AllProjects(props){
                     {...modalProjectDetails}
                 />
             </Modal>
+            <ScrollUp/>
             </div>
         </div>
     );

@@ -7,8 +7,6 @@ import {
     // BrowserRouter as Router,
     Link,
     useParams,
-    withRouter,
-    useHistory
   } from "react-router-dom";
 const authApi = new AuthApi();
 
@@ -23,7 +21,7 @@ function Signup(props) {
 
     console.log(formData);
     let res;
-    if(props.type == 'newUser'){
+    if(props.type === 'newUser'){
       res =  await authApi.editUser({fields: formData, token: token});
     } else {
       res = await authApi.signup(formData);
@@ -87,7 +85,7 @@ function Signup(props) {
         }
       }
 
-    if(props.type == 'newUser'){
+    if(props.type === 'newUser'){
       delete signup.fields.mail;
       delete signup.fields.business;
     }
