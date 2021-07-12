@@ -1,5 +1,5 @@
-import Form from '../components/Form';
-import Logo from '../components/Logo';
+import Form from '../components/form/Form';
+import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
 // import '../styles/massageBox.css';
 import '../styles/massageBox.css';
@@ -27,7 +27,7 @@ function ForgotPassword(props) {
 
 
       const forgot = {
-        submitFunc: submit,
+        submitHandle: submit,
         type: 'forgot',
         title: "Forgot Password",
         errorMap: {
@@ -62,8 +62,6 @@ function ForgotPassword(props) {
               : <div className='form-box'>
               <Form 
                   className='form-body'
-                  submitHandle={forgot.submitFunc} 
-                  errorMap={forgot.errorMap}
                  button= {forgot.buttonTitle}
                   {...forgot}
               />

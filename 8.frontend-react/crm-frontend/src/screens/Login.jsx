@@ -1,6 +1,6 @@
 import React from 'react';
-import Form from '../components/Form';
-import Logo from '../components/Logo';
+import Form from '../components/form/Form';
+import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
 import '../styles/simpleForm.css';
 import {
@@ -16,19 +16,16 @@ function Login(props) {
       
       const submit = async (data) => {
         const res = await authApi.signin(data);
-        console.log(res.valid);
+        console.log("response", res.valid);
         if(res.valid){
-          console.log("history" , props.history);
           window.location.href = 'http://localhost:3000/home';
-          // props.history.push('/home');
-          
         } else {
           return res;
         }
       }
 
       const login = {
-        submitFunc: submit,
+        submitHandle: submit,
         type: 'signin',
         title: "Welcome Back!",
         buttonTitle: "Log In",
@@ -68,7 +65,7 @@ function Login(props) {
                     className='form-body'
                     fields={login.fields} 
                     title={login.title}
-                    submitHandle={login.submitFunc} 
+                    submitHandle={login.submitHandle} 
                     type={login.type}
                     errorMap = {login.errorMap}
                     button={login.buttonTitle}

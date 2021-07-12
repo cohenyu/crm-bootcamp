@@ -18,12 +18,12 @@ class AuthManager {
      * @returns jwt token
      */
     async signup(fields){
-        let data = { valid: false, errors: [], serverError: '' }
         
-        data = validation.validateAll(fields);
+       let data = validation.validateAll(fields);
         if(!data.valid){
             return data;
         }
+        data = { valid: false, errors: [], serverError: ''};
 
         // Check if the user already signed up
         var sql = `SELECT * FROM users WHERE user_mail = '${fields.mail.value}';`;
@@ -68,30 +68,34 @@ class AuthManager {
      * @returns jwt token
      */
     async login(fields){
-        let data = { valid: false, errors: [], serverError: ''}
 
-        data = validation.validateAll(fields);
+
+        let data = validation.validateAll(fields);
         if(!data.valid){
             return data;
         }
+        data = { valid: false, errors: [], serverError: ''}
         
         var sql = `SELECT * FROM users WHERE user_mail = '${fields.mail.value}' AND user_password = '${this.encodePassword(fields.password.value)}' ;`;
         let result = await sqlHelper.select(sql).catch((err)=>{});
+        console.log('result: ', result);
         if(!result){
             data.serverError = "serverError";
             return data;
         };
 
         if(result.length == 0){
+            console.log("hello");
             data.serverError = 'IncorrectMailOrPassword';
             return data;
         }
-
+        console.log("user is good");
         let userResult = result[0];     
         const user = {userName: userResult.user_name,  userId: userResult.user_id, accountId: userResult.account_id};
         data.valid = true; 
         data.user_name = userResult.user_name;
         data.accessToken = sessionHelper.createSession(user);
+        console.log('returning ', data);
         return data;
     }
 
@@ -118,14 +122,16 @@ class AuthManager {
      * @returns valid if the password has changed
      */
     async resetPassword(fields, mailToken){
-        let data = {valid: false, errors: [], serverError: ''};
+        
 
         // Validate the password
-        data = validation.validateAll(fields);
+        let data = validation.validateAll(fields);
         if(!data.valid){
             return data;
         }
         
+        data = {valid: false, errors: [], serverError: ''};
+
         const tokenBody =  sessionHelper.verifyToken(mailToken);
         // Jwt token invalid
         if(!tokenBody){
@@ -153,14 +159,12 @@ class AuthManager {
      * @returns valid if email sent to the user or not valid in case of error
      */
     async forgotPassword(fields){
-        let data = {valid: false, errors: [], serverError: ''};
-
         // fields validations
-        data =  validation.validateAll(fields);
+        let data =  validation.validateAll(fields);
         if(!data.valid){
             return data;
         }
-        
+        data = {valid: false, errors: [], serverError: ''};
         const userMail = fields.mail.value;
         if(userMail){
             // Check if the mail is in the db

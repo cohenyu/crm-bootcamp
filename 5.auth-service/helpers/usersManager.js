@@ -121,14 +121,12 @@ class UsersManager {
      * @returns returns the new user details or in case of error return errors list.
      */
     async addUser(fields, token){
-        let data = {valid: false};
-
         // fields validations
-        data =  validation.validateAll(fields);
+        let data =  validation.validateAll(fields);
         if(!data.valid){
             return data;
         }
-        
+        data = {valid: false};
         const userMail = fields.mail.value;
         const tokenBody = sessionHelper.verifySession(token);
         if(userMail && tokenBody){
@@ -170,6 +168,8 @@ class UsersManager {
                     `You have received an invitation to join RGB! <br/> <a href=${`${process.env.URL}/newUser/${mailToken}`}>Click to sign up.</a>`);
                 data.user = {user_mail: userMail, user_id: result.insertId};
             } catch {
+                console.log(data);
+                console.log("imm here");
                 data.serverError = "serverError";
             }
 

@@ -1,0 +1,84 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat');
+
+.button-icon {
+    margin-right: 5px;
+}
+
+
+.submit-button{
+    // text-decoration: none !important;
+    display: flex;
+    padding: 5px 20px;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 30px;
+    outline: none;
+    align-items: baseline;
+}
+
+/* .submit-button:hover, .submit-button:focus{
+    color: white;
+    background-color: #fa4639;
+    cursor: pointer;
+    border: solid 1px #fe5f55 ;
+    font-size: 16px;
+} */
+
+.main-button {
+    color: #fe5f55;
+    background-color: white;
+    border: solid 1px #fe5f55 ;
+    font-size: 18px;
+}
+
+.main-button:hover {
+    color: white;
+    background-color: #fa4639;
+    cursor: pointer;
+}
+
+
+/* .secondary-button {
+    color: #495867;
+    background-color: #bdd5ea;
+    border: none;
+    font-size: 18px;
+}
+
+.secondary-button:hover, .secondary-button:focus {
+    color: #577399;
+    background-color: #aacceb;
+    cursor: pointer;
+} */
+
+.secondary-button {
+    color: #495867;
+    background-color: white;
+    border: solid 1px #495867;
+    font-size: 18px;
+}
+
+.secondary-button:hover, .secondary-button:focus {
+    color: white;
+    background-color: #577399;
+    border: solid 1px white;
+    cursor: pointer;
+}
+
+.spacial-button {
+    color: #bdd5ea;
+    font-weight: bold;
+    background-color: #577399;
+    border: solid 1px #bdd5ea ;
+    font-size: 18px;
+}
+
+.spacial-button:hover, .spacial-button:focus {
+    background-color: #bdd5ea;
+    color: #577399;
+    cursor: pointer;
+}
+
+.button-link {
+    text-decoration: none;
+}

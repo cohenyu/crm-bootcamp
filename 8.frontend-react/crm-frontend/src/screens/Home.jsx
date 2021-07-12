@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthApi from '../helpers/authApi';
-import Header from '../components/Header';
-import PageTitle from '../components/PageTitle';
+import Header from '../components/header/Header';
+import PageTitle from '../components/pageTitle/PageTitle';
 import '../styles/crmPage.css'
 import CrmApi from '../helpers/CrmApi';
 import '../styles/styles.scss'

@@ -12,9 +12,13 @@ class Model_users extends Model
 
     public function getAllUsers()
     {
-        $users = $this->getDB()
+        try {
+            $users = $this->getDB()
             ->query("SELECT * FROM  users")
             ->fetch_all(MYSQLI_ASSOC);
+        } catch (Exception $e) {
+            return null;
+        }
         return $users;
     }
 }

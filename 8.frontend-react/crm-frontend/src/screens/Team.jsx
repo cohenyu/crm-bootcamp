@@ -1,17 +1,20 @@
-import PageTitle from '../components/PageTitle';
-import CrmButton from '../components/CrmButton';
+import PageTitle from '../components/pageTitle/PageTitle';
+import CrmButton from '../components/crmButton/CrmButton';
 import React, {useState, useMemo, useEffect, useRef} from 'react';
 import ReactDom from 'react-dom';
-import Form from '../components/Form';
+// import Form from '../components/Form';
+import Form from '../components/form/Form';
 import '../styles/actionModal.css';
 import Modal from 'react-modal';
 import '../styles/crmPage.css'
-import '../styles/modalWindow.css';
+import '../styles/modal.scss';
+// import '../styles/modalWindow.css';
 import AuthApi from '../helpers/authApi';
-import Header from '../components/Header';
-import Table from '../components/Table';
+import Header from '../components/header/Header';
+import Table from '../components/table/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTrash , faEdit} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTrash , faEdit} from '@fortawesome/free-solid-svg-icons';
+import ActionModal from '../components/actionModal/ActionModal';
 
 
 const authApi = new AuthApi();
@@ -30,7 +33,7 @@ function Team(props){
 
     const submit = async (dataToSent) => {
         const res = await authApi.newUser(dataToSent);
-        console.log(res.valid);
+        console.log("result:", res);
         if(res.valid){
           const newData = [...data];
           const userDetails = res.user;
@@ -65,6 +68,15 @@ function Team(props){
          return tableParser(result);
       }
    };
+
+   useEffect(()=>{
+    (async () => {
+      console.log('execute get users');
+     const result = await getUsersList();
+     console.log(result);
+     setData(result);
+    })();
+  }, [])
    
    
    const onRemoveItem = (value) => {
@@ -82,15 +94,7 @@ function Team(props){
     closeDeleteUserWindow();
     setData(newData);
    }
-   
-   useEffect(()=>{
-     (async () => {
-       console.log('execute get users');
-      const result = await getUsersList();
-      console.log(result);
-      setData(result);
-     })();
-   }, [])
+  
     
   
    const columns = React.useMemo(
@@ -144,7 +148,7 @@ function Team(props){
   )
 
     const addUserForm = {
-        submitFunc: submit,
+      submitHandle: submit,
         type: 'addUser',
         title: "Add user",
         errorMap: {
@@ -186,7 +190,7 @@ function Team(props){
     };
 
     const editUserForm = {
-      submitFunc: submitEditUser,
+      submitHandle: submitEditUser,
       type: 'editUser',
       title: "Edit user details",
       errorMap: {
@@ -255,7 +259,7 @@ function Team(props){
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title='Team' description='Manage your team.'/>
-            <div className='add-user-box'>
+            <div className='table-actions-box just-one-item'>
             <CrmButton content='Add User' buttonClass='main-button' icon='plus' isLoading={isLoading} callback={()=> openAddUserWindow()}/>
             </div>
             <Table columns={columns} data={data}/>
@@ -268,21 +272,22 @@ function Team(props){
                     errorMap={addUserForm.errorMap}
                     button= {addUserForm.buttonTitle}
                     buttonClass={addUserForm.buttonClass}
-                    submitHandle={addUserForm.submitFunc} 
+                    submitHandle={addUserForm.submitHandle} 
                 />
             </Modal>
-            <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove User' onRequestClose={closeDeleteUserWindow}  overlayClassName="Overlay" className='modal'>
+            <ActionModal title='Are you sure you want delete this User?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/>
+            {/* <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove User' onRequestClose={closeDeleteUserWindow}  overlayClassName="Overlay" className='modal'>
                 <h2>Are you sure you want delete this item?</h2>
                 <div className='action-buttons-modal'>
                 <CrmButton content='Delete' buttonClass='main-button' isLoading={isLoading} callback={()=> removeItem()}/>
                 <CrmButton content='Cancel' buttonClass='secondary-button' isLoading={isLoading} callback={()=> closeDeleteUserWindow()}/>
                 </div>
-            </Modal>
-            <Modal isOpen={isEditModalOpen} ariaHideApp={false} contentLabel='Remove User' onRequestClose={closeEditUserWindow}  overlayClassName="Overlay" className='modal'>
+            </Modal> */}
+            <Modal isOpen={isEditModalOpen} ariaHideApp={false} contentLabel='Edit User' onRequestClose={closeEditUserWindow}  overlayClassName="Overlay" className='modal'>
             <Form 
                     className='form-body'
                     button= {editUserForm.buttonTitle}
-                    submitHandle={editUserForm.submitFunc} 
+                    submitHandle={editUserForm.submitHandle} 
                     {...editUserForm}
                 />
             </Modal>

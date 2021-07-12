@@ -27,9 +27,17 @@
     color: #577399;
 }
 
-.add-user-box {
+.table-actions-box {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.just-one-item {
+    justify-content: flex-end;
+    margin-bottom: 5px;
+}
+
+
 
 

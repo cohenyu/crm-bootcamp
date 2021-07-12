@@ -7,15 +7,20 @@ import Login from './screens/Login';
 import Team from './screens/Team';
 import AuthApi from './helpers/authApi';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Clients from './screens/Clients';
+import AddProject from './screens/AddProject';
 import Loader from "react-loader-spinner";
-import './styles/loading.css';
 import './styles/styles.scss';
+import './components/loading/Loading'
+import AllProjects from './screens/AllProjects';
+import Header from './components/header/Header';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
+import Loading from './components/loading/Loading';
 
 const authApi = new AuthApi();
 function App() {
@@ -39,15 +44,7 @@ function App() {
       checkConnection();
   }, [])
 
-  const loader = <div className='loader-container'> 
-                  <Loader
-                    type="ThreeDots"
-                    color="#fe5f55"
-                    height={100}
-                    width={100}
-                    // timeout={3000} //3 secs
-                  />
-                  </div>
+  const loader = <Loading color="#fe5f55" width={100} height={100}/>
   
 
   return (
@@ -66,12 +63,10 @@ function App() {
           }}
         />
         <Route 
-        // component={Signup}
-        // render={(props) => <Signup type='newAccount' {...props} /> }
            path="/signup">
             {
-            isLoading ? loader : 
-            isConnect ?
+            isLoading ? loader 
+            : isConnect ?
                 <Redirect to="/home" /> :
                 <Signup type='newAccount' /> 
             }
@@ -109,6 +104,30 @@ function App() {
                 <Team /> : <Redirect to="/login" /> 
             }
         </Route> 
+        <Route exact path="/allProjects">
+        {isLoading ? loader: 
+            isConnect ?
+                <AllProjects mine={false}/> : <Redirect to="/login" /> 
+            }
+        </Route> 
+        <Route exact path="/myProjects">
+        {isLoading ? loader: 
+            isConnect ?
+                <AllProjects mine={true} /> : <Redirect to="/login" /> 
+            }
+        </Route> 
+        <Route exact path="/clients">
+        {isLoading ? loader: 
+            isConnect ?
+                <Clients/> : <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/addProject">
+        {isLoading ? loader: 
+            isConnect ?
+                <AddProject/> : <Redirect to="/login" /> 
+            }
+        </Route>
       </Switch>}
     </div>
   </Router>

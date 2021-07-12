@@ -21,8 +21,9 @@ class MailgunHelper {
           mailGun.messages().send(data, function (err, body) {
             if (err) {
               reject('failed to send email');
-            } 
-            resolve({valid: true})
+            } else {
+              resolve({valid: true})
+            }
           });
         });
       }
