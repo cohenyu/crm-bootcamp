@@ -1,21 +1,35 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../components/header/Header';
 import PageTitle from '../components/pageTitle/PageTitle';
-import { Link, useHistory } from 'react-router-dom';
-import PrevPage from '../components/prevPage/PrevPage';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import CrmApi from '../helpers/CrmApi';
 
 function ProjectPage(props) {
 
-    let history = useHistory();
+    const {projectId} = useParams();
+    const [currentProject, setCurrentProject] = useState({});
+    const crmApi = new CrmApi();
+
+    useEffect(() => {
+        (async () => {
+            const result = await crmApi.getProject(projectId);
+            if(result){
+                console.log(result);
+            } else {
+                // send to home or projects
+            }
+        })();
+
+    }, [])
+    
     return (
         <div>
             <Header/>
             <div className='crm-page'>
                 <div>
-                    {history.location.state.projectId}
+                    {projectId}
                 </div>
                 {/* TODO get the project id from the url and send request for the details */}
-            <PrevPage/>
             <PageTitle className='page-title' title={'Project'} description={'Project description'}/>
             </div>
         </div>

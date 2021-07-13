@@ -9,7 +9,8 @@ function PrevPage(props) {
     return (
         <div>
             <div  className='linkto' onClick={history.goBack}>
-                {`< Back`}
+                {/* {`< Back to ${history.location.state.prev}`} */}
+                {`< Back to}`}
             </div>
         </div>
     );

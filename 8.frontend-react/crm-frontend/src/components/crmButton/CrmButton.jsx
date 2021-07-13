@@ -10,9 +10,10 @@ function CrmButton(props) {
         'check': faCheck
     }
 
+
     return (
-        <div className="button-container">
-            <button className={`submit-button ${props.buttonClass}`} onClick={props.isLoading ? ()=>{} : props.callback}>
+        <div className={"button-container" +  (props.containerClass ? ' ' + props.containerClass : '')}>
+            <button disabled={props.isDisabled} className={`submit-button ${props.buttonClass}`} onClick={props.isLoading ? ()=>{} : props.callback}>
                 {props.icon && <FontAwesomeIcon className='button-icon' icon={iconsMap[`${props.icon}`]} size='xs'/>}
                 {props.isLoading ? 'Loading...' : props.content}
             </button>

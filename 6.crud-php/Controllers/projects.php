@@ -32,6 +32,8 @@ class projects extends controller
     public function getAllProjects()
     {
         $params = $this->getPostJsonData();
+        // $requried_fields = ["desc", "name" .. ]
+        // $this->validate($requried_fields, $params);
         $data = [
             'account' => $this->account_id,
             'user' => $params->user ? $this->user_id : null,
@@ -64,6 +66,12 @@ class projects extends controller
         // }
         $this->response = $result;
         return $this->response;
+    }
+
+    public function getProject()
+    {
+        // TODO
+        return false;
     }
 
 }

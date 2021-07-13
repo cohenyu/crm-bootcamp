@@ -22,8 +22,34 @@ class CrmApi {
         }
     }
 
-    async getAllClients(searchInput=''){
-        const response = await axios.post(`${this.basicUrl}/clients/getAllClients/`, {input: searchInput, token: localStorage.getItem('jwtToken')});
+    async getAllClients(searchInput='', limit=-1){
+        console.log(limit);
+        const response = await axios.post(`${this.basicUrl}/clients/getAllClients/`, {input: searchInput,  limit: limit, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async getClient(clientId){
+        
+        const response = await axios.post(`${this.basicUrl}/clients/getClient/`, {clientId: clientId, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    
+    async getProject(projectId){
+        
+        const response = await axios.post(`${this.basicUrl}/projects/getProject/`, {projectId: projectId, token: localStorage.getItem('jwtToken')});
 
         if(response){
             return response.data;

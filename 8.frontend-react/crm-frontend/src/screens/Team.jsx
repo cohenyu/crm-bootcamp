@@ -28,6 +28,15 @@ function Team(props){
     dataRef.current = data;
 
 
+    useEffect(()=>{
+      (async () => {
+        console.log('execute get users');
+       const result = await getUsersList();
+       console.log(result);
+       setData(result);
+      })();
+    }, [])
+    
     const submit = async (dataToSent) => {
         const res = await authApi.newUser(dataToSent);
         console.log("result:", res);
@@ -65,15 +74,6 @@ function Team(props){
          return tableParser(result);
       }
    };
-
-   useEffect(()=>{
-    (async () => {
-      console.log('execute get users');
-     const result = await getUsersList();
-     console.log(result);
-     setData(result);
-    })();
-  }, [])
    
    
    const onRemoveItem = (value) => {

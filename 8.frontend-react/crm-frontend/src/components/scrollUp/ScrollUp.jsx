@@ -29,7 +29,7 @@ function ScrollUp(props) {
         <div>
             {isVisible && 
                 <div className='scroll-container' onClick={scrollToTop}>
-                    <FontAwesomeIcon icon={faArrowUp} size='m'/>
+                    <FontAwesomeIcon icon={faArrowUp} size='1x'/>
                 </div>
             }
         </div>

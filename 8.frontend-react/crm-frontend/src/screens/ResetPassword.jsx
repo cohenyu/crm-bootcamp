@@ -15,25 +15,24 @@ function ResetPassword(props) {
       const [isPasswordChanged, setPasswordChanged] = useState(false);
       const [isLoading, setIsLoading] = useState(true);
       const [isValidPage, setIsValidPage] = useState(false);
-
       const {mail} = useParams();
 
-      const checkPageRelevance =  async () => {
-        const res = await authApi.checkTokenValidation({mailToken: mail});
-        return res.valid;
-      }
-
-
+      
+      
       useEffect(()=>{
         (async () => {
           const result = await checkPageRelevance();
           if(result) {
-           setIsValidPage(true);
+            setIsValidPage(true);
           } 
           setIsLoading(false);
         })();
       }, [])
-
+      
+      const checkPageRelevance =  async () => {
+        const res = await authApi.checkTokenValidation({mailToken: mail});
+        return res.valid;
+      }
 
       const submit = async (data) => {
         // sending the mail token with the new password

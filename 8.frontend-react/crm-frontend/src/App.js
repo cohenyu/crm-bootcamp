@@ -128,13 +128,13 @@ function App() {
                 <AddProject/> : <Redirect to="/login" /> 
             }
         </Route>
-        <Route exact path="/project">
+        <Route exact path="/project/:projectId">
         {isLoading ? loader: 
             isConnect ?
                 <ProjectPage/> : <Redirect to="/login" /> 
             }
         </Route>
-        <Route exact path="/client">
+        <Route exact path="/client/:clientId">
         {isLoading ? loader: 
             isConnect ?
                 <ClientPage/> : <Redirect to="/login" /> 

@@ -54,10 +54,16 @@ class Model
 
         $join = '';
         if(!empty($queryData["join"])){
-            $join = $queryData["join"];
+            $join = join(' ', $queryData["join"]);
         }
-        // return "SELECT $columns FROM $this->table $join $where;";
-        return $this->select("SELECT $columns FROM $this->table $join $where;");   
+
+        $limit = '';
+        if(!empty($queryData["limit"])){
+            $limit = "LIMIT " . $queryData['limit'];
+        }
+
+        // return "SELECT $columns FROM $this->table $join $where $limit;";
+        return $this->select("SELECT $columns FROM $this->table $join $where $limit;");   
     }
 
     protected function updateItem($queryData)

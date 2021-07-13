@@ -15,7 +15,14 @@ function Clients(props){
     const dataRef = useRef(data);
     dataRef.current = data;
     let history = useHistory();
-
+    
+    useEffect(()=>{
+      console.log("in effect");
+      (async () => {
+       const result = await getClientsList();
+       setData(result);
+      })();
+    }, [])
 
         
     const getClientsList = async () => {
@@ -25,12 +32,7 @@ function Clients(props){
       }
     };
 
-    useEffect(()=>{
-      (async () => {
-       const result = await getClientsList();
-       setData(result);
-      })();
-    }, [])
+    console.log("after effect");
     
   
    const columns = React.useMemo(
@@ -43,7 +45,7 @@ function Clients(props){
       {
         Header: 'Mail',
         accessor: 'client_mail',
-        Cell: ({value})  => <a className='link-table' href={`tel:${value}`}>{value}</a>
+        Cell: ({value})  => <a className='link-table' href={`mailto:${value}`}>{value}</a>
       },
       {
         Header: 'Phone',
@@ -56,10 +58,11 @@ function Clients(props){
 
   const handleClickRow  = (row) => {
     console.log(row);
-    history.push({
-      pathname: '/client',
-      state: {client_id: row.original.client_id}
-    });
+    history.push(`/client/${row.original.client_id}`);
+    //   {
+    //   pathname: '/client',
+    //   state: {client_id: row.original.client_id, prev: 'all clients'}
+    // });
   }
     
 

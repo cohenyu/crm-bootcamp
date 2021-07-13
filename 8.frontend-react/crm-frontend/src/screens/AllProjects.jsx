@@ -15,6 +15,7 @@ import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import { Link, useHistory } from 'react-router-dom';
 import statusMap from '../helpers/StatusMap';
 import ScrollUp from '../components/scrollUp/ScrollUp';
+import Calendar from '../components/calendar/Calendar';
 
 const crmApi = new CrmApi();
 
@@ -27,6 +28,7 @@ function AllProjects(props){
     projectDetailsRef.current = projectDetails;
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+    const [isTableShow, setITableShow] = useState(true);
     const [data, setData] = useState([]);
     const [projectStatus, setProjectStatus] = useState(props.mine ? statusMap.inProgress : statusMap.open);
     const [filteredData, setFilteredData] = useState([]);
@@ -185,10 +187,7 @@ function AllProjects(props){
       if(!mineRef.current && projectStatus == statusMap.open){
         openProjectWindow(row);
       } else {
-        history.push({
-          pathname: '/project',
-          state: {projectId: row.original.project_id}
-        });
+        history.push(`/project/${row.original.project_id}`);
       }
     }
 
@@ -197,13 +196,15 @@ function AllProjects(props){
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title={props.mine ? 'My Projects' : 'All Projects'} description='Manage your projects.'/>
-            <div className='table-actions-box'>
-            <TabsTable submit={submitTab} status={projectStatus} mode={props.mine ? "myProjects" : "allProjects"}/>
+            <div className= {isTableShow ? 'table-actions-box':  'table-actions-box just-one-item'}>
+            {isTableShow && <TabsTable submit={submitTab} status={projectStatus} mode={props.mine ? "myProjects" : "allProjects"}/>}
             {!props.mine && 
              <Link className='button-link' to='/addProject'><CrmButton content='Add Project' buttonClass='main-button' icon='plus' isLoading={false} callback={()=> {}}/></Link>
             }
             </div>
-            <Table columns={columns} data={filteredData} clickRow={handleProjectClick}/>
+            { isTableShow ? 
+            <Table columns={columns} data={filteredData} clickRow={handleProjectClick}/> : <Calendar/>}
+            
             {/* <ActionModal title='Are you sure you want delete this item?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/> */}
             {/* <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove Project' onRequestClose={closeDeleteProjectWindow}  overlayClassName="Overlay" className='modal'>
                 <h2>Are you sure you want delete this item?</h2>

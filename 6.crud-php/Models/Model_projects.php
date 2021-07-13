@@ -22,7 +22,7 @@ class Model_projects extends Model
             $this->clientModel->setAccountId($this->account_id);
            $clientId = $this->clientModel->addClient($fields->name->value, $fields->mail->value, $fields->phone->value);
         } 
-        
+
         if($clientId <= 0){
             return false;
         }
@@ -42,12 +42,17 @@ class Model_projects extends Model
         $queryData = [
             "cols" => [
                 'projects.*',
-                'clients.client_name'
+                'clients.client_name',
+                'users.user_name'
             ],
             "where" => [
                 "projects.account_id" => $this->account_id,
             ],
-            "join" => 'INNER JOIN clients ON clients.client_id=projects.client_id'
+            "join" => [
+                'INNER JOIN clients ON clients.client_id = projects.client_id',
+                'LEFT JOIN users ON users.user_id = projects.assigned_user_id',
+            ]
+            
         ];
         if(!empty($data['user'])){
             $queryData["where"]["assigned_user_id"] = $data['user'];

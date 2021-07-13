@@ -24,6 +24,7 @@ function Form(props) {
         if(isMultiple) {
             for(let fieldName in value){
                 fieldsTemp[fieldName].value = value[fieldName];
+                fieldsTemp[fieldName].isDisabled = true;
             }
         } else {
             fieldsTemp[key].value = value;
@@ -33,7 +34,6 @@ function Form(props) {
     };
 
     const submit = async () => {
-        // set true
         let data = {};
         const fieldsTmp = {...fields};
         let validationRes = true;
@@ -92,13 +92,16 @@ function Form(props) {
         }
 
         let comp;
-        if(content.id === 'search'){
-            comp =  <div key={'search'}>
+        if(content.type === 'search'){
+            comp =  <div key={content.type}>
                 <Search {...content} callback={(values)=> setValue(fieldKey, values, true)}/>
                 {props.afterSearch && <h3>{props.afterSearch}</h3>}
                 </div>
+        } else if(content.type === 'button'){
+            comp =  <CrmButton key={content.id} isDisabled={content.isDisabled} content={content.text} buttonClass={ content.isDisabled ? 'disabled': content.buttonClass} containerClass= {'form-action'} callback={()=> {content.submit()}}/>
         } else {
             comp = <FormField 
+            isDisabled = {content.isDisabled || false}
             min = {content.min}
             errorText={error} 
             text={content.text} 
