@@ -35,8 +35,9 @@ class Model
         $columns = join(', ', array_keys($queryData));
         $values = join("', '", array_values($queryData));
         $values = "'" . $values . "'";
-        return $this->insert("INSERT INTO $this->table ($columns) VALUES ($values)");
-        // return "INSERT INTO $this->table ($columns) VALUES ($values)";
+        $query = "INSERT INTO $this->table ($columns) VALUES ($values)";
+        $query = str_replace("'NOW()'","NOW()", $query);
+        return $this->insert($query);
     }
 
     /**
@@ -61,9 +62,9 @@ class Model
         if(!empty($queryData["limit"])){
             $limit = "LIMIT " . $queryData['limit'];
         }
+        return $this->select("SELECT $columns FROM $this->table $join $where $limit;"); 
+        // return "SELECT $columns FROM $this->table $join $where $limit;";   
 
-        // return "SELECT $columns FROM $this->table $join $where $limit;";
-        return $this->select("SELECT $columns FROM $this->table $join $where $limit;");   
     }
 
     protected function updateItem($queryData)
@@ -73,8 +74,10 @@ class Model
         $set = $this->build($queryData, 'set');
 
 
-        return $this->update("UPDATE $this->table $set $where;");   
-        // return "UPDATE $this->table $set $where;";   
+        // return $this->update("UPDATE $this->table $set $where;");   
+        $query =  "UPDATE $this->table $set $where;"; 
+        $query = str_replace("'NOW()'","NOW()", $query);
+        return $this->update($query);   
     }
 
 

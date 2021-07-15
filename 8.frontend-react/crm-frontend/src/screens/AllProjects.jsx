@@ -30,21 +30,21 @@ function AllProjects(props){
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
     const [isTableShow, setITableShow] = useState(true);
     const [data, setData] = useState([]);
-    const [projectStatus, setProjectStatus] = useState(props.mine ? statusMap.inProgress : statusMap.open);
+    const [projectStatus, setProjectStatus] = useState(props.mine ? statusMap.inProgress.key : statusMap.open.key);
     const [filteredData, setFilteredData] = useState([]);
     const mineRef = useRef(props.mine);
     mineRef.current = props.mine;
     const dataRef = useRef(data);
     dataRef.current = data;
-
+    const [columnsData, setCols] = useState(getCols(statusMap.open.key));
 
     useEffect(()=>{
         (async () => {
           console.log("mine? ", props.mine);
          const result = await crmApi.getAllProjects(props.mine);
-         console.log("the rresult is", result);
+         console.log(result);
          setData(result);
-         submitTab(props.mine ? statusMap.inProgress : statusMap.open);
+         submitTab(props.mine ? statusMap.inProgress.key : statusMap.open.key);
         //  setFilteredData(result);
         })();
       }, [props.mine])
@@ -65,10 +65,17 @@ function AllProjects(props){
        setIsDeleteModalOpen(false);
    }
 
-    
-  
-   const columns = React.useMemo(
-    () => [
+
+  function getCols(status) {
+
+    const newCols = [
+      {
+          Header: 'Assigned User',
+          accessor: 'user_name',
+      }
+  ]
+
+    const basicCols = [
       {
         Header: 'Type',
         accessor: 'item_type',
@@ -92,27 +99,32 @@ function AllProjects(props){
             return parseDate(value);
         }
       },
-      {
-        Header: 'Action',
-        // accessor: 'delete',
-        Cell: (value)=> (
-          <div>
-            <span style={{cursor:'pointer'}}
-                onClick={(event) => {
-                    onRemoveItem(value.cell.row.original);
-                    event.stopPropagation();
-                  }}>
-                  <FontAwesomeIcon className='trash-icon' icon={faTrash} size='sm'/>
-          </span> 
-          </div>
-          
-        )
-      },
+    ];
 
-    ],
-    []
-  )
+    const lastCols = [{
+      Header: 'Action',
+      // accessor: 'delete',
+      Cell: (value)=> (
+        <div>
+          <span style={{cursor:'pointer'}}
+              onClick={(event) => {
+                  onRemoveItem(value.cell.row.original);
+                  event.stopPropagation();
+                }}>
+                <FontAwesomeIcon className='trash-icon' icon={faTrash} size='sm'/>
+        </span> 
+        </div>
+        
+      )
+    },]
 
+    if (status != statusMap.open.key){
+        basicCols.push(...newCols);
+    }
+    basicCols.push(...lastCols);
+
+    return basicCols;
+}
 
     const openDeleteProjectWindow = ()=>{
       setIsDeleteModalOpen(true);
@@ -123,13 +135,10 @@ function AllProjects(props){
     };
 
     const submitUpdateProject = async (dataToSent) => {
-        const res = await crmApi.updateProject({project_id: projectDetailsRef.current.project_id, set:{project_status: statusMap.inProgress, estimated_time: dataToSent.hours.value}});
+        const res = await crmApi.updateProject({project_id: projectDetailsRef.current.project_id, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
         console.log("here", res);
         if(res > 0){
-          history.push({
-            pathname: '/project',
-            state: {projectId: projectDetailsRef.current.project_id}
-          });
+          history.push(`/project/${projectDetailsRef.current.project_id}`);
         }
         // TODO error
     };
@@ -176,15 +185,15 @@ function AllProjects(props){
 
     const submitTab = (status) =>{
         setProjectStatus(status);
+        setCols(getCols(status));
         const filtered = dataRef.current.filter((item)=>{
             return item.project_status === status;
         })
-        console.log(dataRef.current);
         setFilteredData(filtered);
     }
 
     const handleProjectClick = (row) => {
-      if(!mineRef.current && projectStatus == statusMap.open){
+      if(!mineRef.current && projectStatus == statusMap.open.key){
         openProjectWindow(row);
       } else {
         history.push(`/project/${row.original.project_id}`);
@@ -203,7 +212,7 @@ function AllProjects(props){
             }
             </div>
             { isTableShow ? 
-            <Table columns={columns} data={filteredData} clickRow={handleProjectClick}/> : <Calendar/>}
+            <Table columns={columnsData} data={filteredData} clickRow={handleProjectClick}/> : <Calendar/>}
             
             {/* <ActionModal title='Are you sure you want delete this item?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/> */}
             {/* <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove Project' onRequestClose={closeDeleteProjectWindow}  overlayClassName="Overlay" className='modal'>

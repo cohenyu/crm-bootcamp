@@ -7,6 +7,7 @@ import CrmApi from '../helpers/CrmApi';
 import Table from '../components/table/Table';
 import TabsTable from '../components/tabsTable/TabsTable';
 import PrevPage from '../components/prevPage/PrevPage'
+import CrmButton from '../components/crmButton/CrmButton';
 
 function ClientPage(props) {
     const crmApi = new CrmApi();
@@ -17,15 +18,14 @@ function ClientPage(props) {
     const dataRef = useRef(data);
     dataRef.current = data;
     const {clientId} = useParams();
-    const [columnsData, setCols] = useState(getCols("open"));
+    const [columnsData, setCols] = useState(getCols(statusMap.open.key));
     const [currentClient, setCurrentClient] = useState({});
 
     useEffect(() => {
         (async () => {
             const result = await crmApi.getAllProjects(false, clientId);
-            console.log(result[0]);
             setData(result);
-            submitTab(statusMap.open);
+            submitTab(statusMap.open.key);
             //  setFilteredData(result);
         })();
 
@@ -34,7 +34,7 @@ function ClientPage(props) {
             if(result){
                 setCurrentClient(result);
             } else {
-                // send to home or clients
+                history.push('/home');
             }
         })();
 
@@ -74,7 +74,7 @@ function ClientPage(props) {
             }
         }]
 
-        if (status != statusMap.open){
+        if (status != statusMap.open.key){
             basicCols.push(...newCols)
         }
 
@@ -82,10 +82,7 @@ function ClientPage(props) {
     }
 
     const handleProjectClick = (row) => {
-        history.push({
-            pathname: '/project',
-            state: { projectId: row.original.project_id, prev: 'client page' }
-        });
+        history.push(`/project/${row.original.project_id}`);
         
     }
 
@@ -114,6 +111,8 @@ function ClientPage(props) {
                 />
                 <div className='table-actions-box'>
                     <TabsTable submit={submitTab} status={projectStatus} mode='allProjects' />
+                    <CrmButton content='Add Project' buttonClass='main-button' icon='plus' isLoading={false} callback={()=> {history.push({pathname: '/addProject',
+                    state: { client: currentClient }})}}/>
                 </div>
                 <Table columns={columnsData} data={filteredData} clickRow={handleProjectClick} />
             </div>

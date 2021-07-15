@@ -71,6 +71,7 @@ class CrmApi {
     }
 
     async addProject(data){
+        console.log("sent to the server",data);
         const response = await axios.post(`${this.basicUrl}/projects/addProject/`, {...data, token: localStorage.getItem('jwtToken')});
 
         if(response){
@@ -80,6 +81,75 @@ class CrmApi {
             return false;
         }
     }
+
+    async startWorkingTime(data){
+        const response = await axios.post(`${this.basicUrl}/workingTime/addWorkingTime/`, {...data, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async stopWorkingTime(data){
+        console.log({...data, set: {stop_time: 'NOW()'}, token: localStorage.getItem('jwtToken')});
+        const response = await axios.post(`${this.basicUrl}/workingTime/updateWorkingTime/`, {...data, set: {stop_time: 'NOW()'}, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async getWorkingTime(data){
+        const response = await axios.post(`${this.basicUrl}/workingTime/getWorkingDetails/`, {...data, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async saveImg(data){
+        console.log("inside save img :", data);
+        const response = await axios.post(`${this.basicUrl}/imgs/saveImg/`, data);
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async addImg(data){
+        const response = await axios.post(`${this.basicUrl}/imgs/addImg/`, {...data, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async getImgs(data){
+        const response = await axios.post(`${this.basicUrl}/imgs/getImgs/`, {...data, token: localStorage.getItem('jwtToken')});
+
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
 }
 
 export default CrmApi;

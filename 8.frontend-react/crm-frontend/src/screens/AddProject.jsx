@@ -11,22 +11,20 @@ const crmApi = new CrmApi();
 function AddProject(props){
 
     let history = useHistory();
+    const clientData = (history.location.state && history.location.state.client) ? history.location.state.client : null;
+
     const submitAddProject = async (formFieldsData) => {
       console.log("success", formFieldsData);
       if(!formFieldsData.clientId.value){
         delete formFieldsData.clientId;
       }
       delete formFieldsData.search;
-      const resultData = await crmApi.addProject({status: statusMap.open, fields: formFieldsData});
+      const resultData = await crmApi.addProject({status: statusMap.open.key, fields: formFieldsData});
       console.log(resultData);
       if(resultData > 0){
-        // TODO send to project something else
-        history.push({
-          pathname: '/project',
-          state: {projectId: resultData, details: formFieldsData}
-        });
-        // redirect to project page
+        history.push(`/project/${resultData}`);
       }
+      // TODO error
     };
 
 
@@ -85,7 +83,9 @@ function AddProject(props){
             id: "name",
             type: 'text',
             error: false,
-            mainType: 'name'
+            mainType: 'name',
+            isDisabled: !!clientData,
+            value: clientData ? clientData.client_name : '',
           },
           mail: {
             side: true,
@@ -93,7 +93,9 @@ function AddProject(props){
             id: "mail",
             type: 'text',
             error: false,
-            mainType: 'mail'
+            mainType: 'mail',
+            isDisabled: !!clientData,
+            value: clientData ? clientData.client_mail : '',
           },
           phone: {
             side: true,
@@ -101,7 +103,9 @@ function AddProject(props){
             id: "phone",
             type: 'text',
             error: false,
-            mainType: 'phone'
+            mainType: 'phone',
+            isDisabled: !!clientData,
+            value: clientData ? clientData.client_phone : '',
           },
           cancel: {
             side: true,
@@ -130,7 +134,8 @@ function AddProject(props){
             id: "client-id",
             type: 'hidden',
             error: false,
-            mainType: 'hidden'
+            mainType: 'hidden',
+            value: clientData ? clientData.client_id : '',
           },
         }
       });

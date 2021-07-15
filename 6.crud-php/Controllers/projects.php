@@ -16,16 +16,7 @@ class projects extends controller
     public function addProject()
     {
         $result= $this->model->addProject($this->getPostJsonData());
-        if($result == -1){
-            // $this->response->valid = false;
-            // $this->response->serverError = "serverError";
-            $this->response = false;
-        }
-        else {
-            // $this->response->valid = true;
-            // $this->response->projectId = $result;
-            $this->response = $result;
-        }
+        $this->response = $result;
         return $this->response;
     }
 
@@ -70,8 +61,19 @@ class projects extends controller
 
     public function getProject()
     {
-        // TODO
-        return false;
+        $params = $this->getPostJsonData();
+        if(!empty($params->projectId)){
+            $data = [
+                'projectId' => $params->projectId
+             ];
+            $result= $this->model->getAllProjects($data);
+            if($result){
+                $this->response = $result[0];
+                return $this->response;
+            } 
+        }
+        $this->response = false;
+        return $this->response;
     }
 
 }

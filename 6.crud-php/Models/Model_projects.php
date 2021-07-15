@@ -42,8 +42,14 @@ class Model_projects extends Model
         $queryData = [
             "cols" => [
                 'projects.*',
+                'clients.client_id',
                 'clients.client_name',
-                'users.user_name'
+                'clients.client_phone',
+                'clients.client_mail',
+                'users.user_id',
+                'users.user_name',
+                'users.user_mail',
+                'users.user_phone',
             ],
             "where" => [
                 "projects.account_id" => $this->account_id,
@@ -59,6 +65,9 @@ class Model_projects extends Model
         }
         if(!empty($data['client'])){
             $queryData["where"]["clients.client_id"] = $data['client'];
+        }
+        if(!empty($data['projectId'])){
+            $queryData["where"]["projects.project_id"] = $data['projectId'];
         }
         return $this->getAll($queryData); 
     }
