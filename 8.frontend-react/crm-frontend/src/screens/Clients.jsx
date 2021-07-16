@@ -67,7 +67,7 @@ function Clients(props){
     
 
     return (
-        <div>
+        <div className='page-container'>
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title='All Clients' description='Manage your clients.'/>

@@ -252,7 +252,7 @@ function Team(props){
     
 
     return (
-        <div>
+        <div className='page-container'>
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title='Team' description='Manage your team.'/>

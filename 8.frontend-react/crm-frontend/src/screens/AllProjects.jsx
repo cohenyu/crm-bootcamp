@@ -201,7 +201,7 @@ function AllProjects(props){
     }
 
     return (
-        <div>
+        <div className='page-container'>
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title={props.mine ? 'My Projects' : 'All Projects'} description='Manage your projects.'/>

@@ -4,7 +4,8 @@ import Logo from '../logo/Logo';
 import AuthApi from '../../helpers/authApi';
 import CrmButton from '../crmButton/CrmButton';
 import './header.scss';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown, faCaretRight, faUserCircle } from '@fortawesome/free-solid-svg-icons'
 const authApi = new AuthApi();
 
 function Header(props) {
@@ -55,13 +56,19 @@ function Header(props) {
 
     return (
         <div className="header-container">
+            <div className='nav-logo'>
             <Logo size='xsmall'/>
-            <div className='links-container'>
+            </div>
+            <div className='crm-nav-container'>
                 <Navigation links={links}/>
                 </div>
             <div className='nav-wrapper' >
-            <CrmButton buttonClass='spacial-button' content='Log Out' callback={()=> logoutFunc()}/>
-            {/* <button id="logout" onClick={()=>logoutFunc()}>Logout</button> */}
+            {/* <CrmButton buttonClass='spacial-button' content='Log Out' callback={()=> logoutFunc()}/> */}
+            <FontAwesomeIcon className='nav-icon' icon={faUserCircle} size='2x'/>
+            <div className='personal'>
+                <span>Personal Settings</span>
+                <span onClick={logoutFunc}>Logout</span>
+            </div>
             </div>
         </div>
     );

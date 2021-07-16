@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { Link } from "react-router-dom";
 import './navigation.scss';
 
@@ -20,7 +20,7 @@ function Navigation(props) {
             for(let sublink of link.subLinks){
                 subLinks.push(<li key={sublink.title}><Link className='nav-link' key={sublink.title} to={sublink.url}>{sublink.title}</Link></li>);
             }
-            navList.push(<li key={link.title}><Link className='nav-link' key={link.title} to='#'>{link.title}</Link><FontAwesomeIcon className='nav-icon' icon={faCaretDown} size='xs'/><ul className="dropdown">{subLinks}</ul></li>);
+            navList.push(<li key={link.title}><Link className='nav-link' key={link.title} to='#'>{link.title}</Link><FontAwesomeIcon className='nav-icon' icon={faCaretRight} size='xs'/><ul className="dropdown">{subLinks}</ul></li>);
         }
     }
 

@@ -96,7 +96,7 @@ function ClientPage(props) {
     }
 
     return (
-        <div>
+        <div className='page-container'>
             <Header />
             <div className='crm-page'>
                 <PageTitle className='page-title' title={currentClient.client_name} 

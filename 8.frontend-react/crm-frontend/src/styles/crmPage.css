@@ -1,13 +1,27 @@
 .crm-page {
-    width: 70%;
+    background: #f8f8f8;
+    /* display: flex; */
+    width: 75%;
     margin: auto;
+    margin-top: 30px;
     margin-bottom: 30px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    /* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */
     padding: 10px 30px;
-    min-width: 700px;
-    min-height: 85vh;
+    position: relative;
+    left: 70px
+    /* min-width: 700px; */
+    /* min-height: 85vh; */
 }
 
+div {
+    white-space: pre-wrap;
+}
+
+.page-container {
+    min-height: 100vh;
+    background: #f8f8f8;
+    display: flex;
+}
 .status-icon {
     color: #63b67f;
 }
@@ -39,6 +53,10 @@
     margin-bottom: 5px;
 }
 
-
+.add-project-container {
+    border: 0.660428px solid #DFE0EB;
+    padding: 30px;
+    background-color: white;
+}
 
 

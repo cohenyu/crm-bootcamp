@@ -34,6 +34,7 @@ function ProjectPage(props) {
     const [imgUploaded, setImgUploaded] = useState(false);
     const [isEditDescription, setIsEditDescription] = useState(false);
     let tempDescription =  currentProject ? currentProject.description: '';
+    const [isStatusChanged, setStatusChanged] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -47,7 +48,7 @@ function ProjectPage(props) {
                 // send to home or projects
             }
         })();
-    }, [isEditDescription])
+    }, [isEditDescription, isStatusChanged])
 
     useEffect(() => {
         (async () => {
@@ -170,12 +171,14 @@ function ProjectPage(props) {
         if(newStatus != currentProject.project_status){
             const res = await crmApi.updateProject({project_id: currentProject.project_id, set:{project_status: newStatus}});
         }
+        setStatusChanged(!isStatusChanged);
     };
 
     const dropdownStatusMap = {...statusMap};
     delete dropdownStatusMap.open;
     return (
-        <div>
+        <div className='background'>
+        <div className='page-container'>
             <Header/>
             {currentProject && 
             <div className='crm-page project-page'>
@@ -217,6 +220,7 @@ function ProjectPage(props) {
                         <span className='counting'>2</span>
                         </div>
                     </div>
+                    {currentProject.project_status == statusMap.inProgress.key &&
                     <div className='working-time'>
                         <div className='clock'>
                             <FontAwesomeIcon className='icon' icon={faStopwatch} size={'1x'}/>
@@ -224,7 +228,7 @@ function ProjectPage(props) {
                             <Timer className='timer' startingTime={workRef.current.start_time} run={isWorking}/>
                         </div>
                     <CrmButton content={isWorking ? 'Stop' : 'Start'} buttonClass='main-button' isLoading={false} callback={isWorking ? stoptWork : startWork}/>
-                    </div>
+                    </div>}
                 </div>
                 <div className='sub-details'>
                 <span>Due on: {currentProject.deadline}</span>
@@ -238,10 +242,10 @@ function ProjectPage(props) {
                             </div>
                         {isEditDescription ? 
                         <div className='description-edit'> 
-                        <textarea rows='6' onChange={((e)=>{tempDescription = e.target.value})} defaultValue={currentProject.description}></textarea> 
+                        <textarea rows='8' onChange={((e)=>{tempDescription = e.target.value})} defaultValue={currentProject.description}></textarea> 
                         <CrmButton content={'Save'} buttonClass='secondary-button' containerClass= {'form-action'} callback={()=> {submitUpdateDescription(tempDescription)}}/>
                         </div>
-                        : currentProject.description}
+                        : <div>{currentProject.description}</div>}
                         </div>
                         <div>
                         <h4>Tasks</h4>
@@ -276,6 +280,7 @@ function ProjectPage(props) {
                 </div>
             </div>
             }
+        </div>
         </div>
     );
 }

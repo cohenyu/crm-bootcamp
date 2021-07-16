@@ -142,14 +142,16 @@ function AddProject(props){
 
 
     return (
-        <div>
+        <div className='page-container'>
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title={''} description={''}/>
+            <div className='add-project-container'>
             <Form 
                     className='form-body'
                     {...addFormData}
                 />
+                </div>
             </div>
         </div>
     );
