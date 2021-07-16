@@ -7,9 +7,10 @@ import Timer from '../components/timer/Timer';
 import CrmButton from '../components/crmButton/CrmButton';
 import '../styles/projectPage.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faStopwatch, faUserCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import {faStopwatch, faUserCircle, faPaperclip, faEdit } from '@fortawesome/free-solid-svg-icons';
 import statusMap from '../helpers/StatusMap';
 import ImgProject from '../components/imgProject/ImgProject';
+import CrmDropdown from '../components/crmDropdown/CrmDropdown';
 
 
 function ProjectPage(props) {
@@ -31,6 +32,8 @@ function ProjectPage(props) {
     selectedFileRef.current = selectedFile;
     const [imgList, setImgList] = useState([]);
     const [imgUploaded, setImgUploaded] = useState(false);
+    const [isEditDescription, setIsEditDescription] = useState(false);
+    let tempDescription =  currentProject ? currentProject.description: '';
 
     useEffect(() => {
         (async () => {
@@ -44,28 +47,7 @@ function ProjectPage(props) {
                 // send to home or projects
             }
         })();
-
-
-        // (async () => {
-        //     const result = await crmApi.getWorkingTime({projectId: projectId});
-        //     if(result){
-        //         let $openWork  = result.works.filter((workingTime)=>{
-        //             return workingTime.stop_time == null;
-        //         })
-                
-        //         if($openWork.length == 1) {
-        //             setCurrentWork($openWork[0]);
-        //             setIsWorking(true);
-        //             setWorkId($openWork[0].work_id);
-        //         }
-        //         console.log("total: ", result);
-        //         setTotalHours(result.total);
-        //     } else {
-        //         // TODO error
-        //     }
-        // })();
-
-    }, [])
+    }, [isEditDescription])
 
     useEffect(() => {
         (async () => {
@@ -177,6 +159,21 @@ function ProjectPage(props) {
         return imgs;
     }
 
+    const submitUpdateDescription = async (newDesc) => {
+        if(newDesc != currentProject.description){
+            const res = await crmApi.updateProject({project_id: currentProject.project_id, set:{description: newDesc}});
+        }
+        setIsEditDescription(false);
+    };
+
+    const submitUpdateStatus = async (newStatus) => {
+        if(newStatus != currentProject.project_status){
+            const res = await crmApi.updateProject({project_id: currentProject.project_id, set:{project_status: newStatus}});
+        }
+    };
+
+    const dropdownStatusMap = {...statusMap};
+    delete dropdownStatusMap.open;
     return (
         <div>
             <Header/>
@@ -185,10 +182,18 @@ function ProjectPage(props) {
                 <div className='project-header'>
                     <h1>{currentProject.item_type.charAt(0).toUpperCase() + currentProject.item_type.slice(1).toLowerCase()} </h1>
                     <h5>{`Total ${+(totalHours/60).toFixed(2)} Working Hours`}</h5>
-                    <span> {currentProject.project_status}</span>
+                    <div className='dropdown-container'>
+                    <span className='mini-title'>STATUS</span>
+                    <CrmDropdown handleChange={(e)=>{submitUpdateStatus(e.target.value)}} options={dropdownStatusMap} default={currentProject.project_status}/>
+                    </div>
                 </div>
                 <div className='quick-view'>
-             
+                <div>
+                        <span className='sub-title'>Estimated Working Hours</span>
+                        <div className='count-container'>
+                        <span className='counting'>{currentProject.estimated_time}</span>
+                        </div>
+                    </div>
                 {daysFromDeadline <= 0 ? 
                     <div className="due">
                         <span className='sub-title'>Due In</span>
@@ -214,7 +219,7 @@ function ProjectPage(props) {
                     </div>
                     <div className='working-time'>
                         <div className='clock'>
-                            <FontAwesomeIcon className='button-icon' icon={faStopwatch} size={'1x'}/>
+                            <FontAwesomeIcon className='icon' icon={faStopwatch} size={'1x'}/>
                             <h4 className='working-title'>Working time</h4>
                             <Timer className='timer' startingTime={workRef.current.start_time} run={isWorking}/>
                         </div>
@@ -227,8 +232,16 @@ function ProjectPage(props) {
                 <div className='main-project-content'>
                     <div className='first-group'>
                         <div>
-                        <h4>Description</h4>
-                        {currentProject.description}
+                            <div className='action-title'>                    
+                                <h4>Description</h4>
+                                <FontAwesomeIcon className='button-icon' onClick={()=>{setIsEditDescription(true)}} icon={faEdit} size={'1x'}/>
+                            </div>
+                        {isEditDescription ? 
+                        <div className='description-edit'> 
+                        <textarea rows='6' onChange={((e)=>{tempDescription = e.target.value})} defaultValue={currentProject.description}></textarea> 
+                        <CrmButton content={'Save'} buttonClass='secondary-button' containerClass= {'form-action'} callback={()=> {submitUpdateDescription(tempDescription)}}/>
+                        </div>
+                        : currentProject.description}
                         </div>
                         <div>
                         <h4>Tasks</h4>

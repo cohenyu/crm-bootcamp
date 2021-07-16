@@ -17,15 +17,28 @@
     align-items: center;
 }
 
+// .main-button {
+//     color: #fe5f55;
+//     background-color: white;
+//     border: solid 1px #fe5f55 ;
+//     font-size: 18px;
+
+//     &:hover{
+//         color: white;
+//         background-color: #fa4639;
+//         cursor: pointer;
+//     }
+// }
+
 .main-button {
-    color: #fe5f55;
-    background-color: white;
-    border: solid 1px #fe5f55 ;
+    color: white;
+    background-color: #577399;
+    border: solid 1px  #577399;
     font-size: 18px;
 
     &:hover{
         color: white;
-        background-color: #fa4639;
+        background-color: #495867;
         cursor: pointer;
     }
 }
@@ -66,8 +79,8 @@
 .form-action {
     display: flex;
     justify-content: flex-end;
-    margin-top: -14px;
 }
+
 .form-action button{
     font-size: 12px;
 }

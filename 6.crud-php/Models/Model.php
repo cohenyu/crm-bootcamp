@@ -7,7 +7,6 @@ class Model
     public static $db_instance = null;
     public $table;
     public $account_id;
-    // static public $account_id;
 
     public function __construct()
     {
@@ -40,6 +39,14 @@ class Model
         return $this->insert($query);
     }
 
+
+    public function deleteItem($queryData)
+    {
+        $where = $this->build($queryData, 'where');
+        $query = "DELETE FROM $this->table $where";
+        return $this->delete($query);
+    }
+
     /**
      * Creates a sql query string and make an select query.
      * Returns all items that match the query.
@@ -62,7 +69,12 @@ class Model
         if(!empty($queryData["limit"])){
             $limit = "LIMIT " . $queryData['limit'];
         }
-        return $this->select("SELECT $columns FROM $this->table $join $where $limit;"); 
+
+        $order ='';
+        if(!empty($queryData["orderBy"])){
+            $order = "ORDER BY " . join(", ", $queryData["orderBy"]);
+        }
+        return $this->select("SELECT $columns FROM $this->table $join $where $order $limit;"); 
         // return "SELECT $columns FROM $this->table $join $where $limit;";   
 
     }
@@ -72,7 +84,6 @@ class Model
         
         $where = $this->build($queryData, 'where');
         $set = $this->build($queryData, 'set');
-
 
         // return $this->update("UPDATE $this->table $set $where;");   
         $query =  "UPDATE $this->table $set $where;"; 
@@ -140,6 +151,14 @@ class Model
     public function setAccountId($account_id){
         $this->account_id = $account_id;
         return $account_id;
+    }
+
+    public function delete($sql){
+        $result = $this->getDB()->query($sql);
+        if($result){
+            return $this->getDB()->affected_rows;
+        }
+        return -1;
     }
 
 }

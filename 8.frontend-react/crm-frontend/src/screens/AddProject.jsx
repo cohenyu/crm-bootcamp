@@ -22,7 +22,7 @@ function AddProject(props){
       const resultData = await crmApi.addProject({status: statusMap.open.key, fields: formFieldsData});
       console.log(resultData);
       if(resultData > 0){
-        history.push(`/project/${resultData}`);
+        history.push(`/allProjects`);
       }
       // TODO error
     };

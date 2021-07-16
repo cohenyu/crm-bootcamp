@@ -5,7 +5,7 @@ require_once("Model.php");
 class Model_clients extends Model
 {
     public $table = "clients";
-    public $account_id = 1;
+    // public $account_id = 1;
     
     public function __construct()
     {

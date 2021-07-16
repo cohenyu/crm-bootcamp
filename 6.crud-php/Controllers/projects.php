@@ -41,11 +41,15 @@ class projects extends controller
     public function updateProject()
     {
         $params = $this->getPostJsonData();
-       
+        
         $data = [
             'account' => $this->account_id,
-            'user' => $this->user_id,
         ];
+
+        $user = $params->user ?? false;
+        if($user){
+            $data['user'] = $this->user_id;
+        }
         $result= $this->model->updateProject($data, $params);
         // if($result == -1){
         //     $this->response->valid = false;

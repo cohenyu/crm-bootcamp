@@ -135,7 +135,7 @@ function AllProjects(props){
     };
 
     const submitUpdateProject = async (dataToSent) => {
-        const res = await crmApi.updateProject({project_id: projectDetailsRef.current.project_id, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
+        const res = await crmApi.updateProject({project_id: projectDetailsRef.current.project_id, user: true, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
         console.log("here", res);
         if(res > 0){
           history.push(`/project/${projectDetailsRef.current.project_id}`);

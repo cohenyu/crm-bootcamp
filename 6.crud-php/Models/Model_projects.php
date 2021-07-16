@@ -57,6 +57,9 @@ class Model_projects extends Model
             "join" => [
                 'INNER JOIN clients ON clients.client_id = projects.client_id',
                 'LEFT JOIN users ON users.user_id = projects.assigned_user_id',
+            ],
+            "orderBy" => [
+                "deadline"
             ]
             
         ];
@@ -74,7 +77,10 @@ class Model_projects extends Model
 
     public function updateProject($authData, $params)
     {
-        $params->set->assigned_user_id = $authData["user"];
+        $assignedUser = $authData["user"] ?? -1;
+        if($assignedUser != -1){
+            $params->set->assigned_user_id = $authData["user"];
+        }
         $queryData = [
             "set" => $params->set,
             "where" => [

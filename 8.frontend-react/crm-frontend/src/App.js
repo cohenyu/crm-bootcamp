@@ -42,7 +42,11 @@ function App() {
         }
       }
       setTimeout(checkConnection, 800);
-      // checkConnection();
+      setTimeout(() => {
+        if(isLoading){
+          setLoading(false);
+        }
+      }, 1800);
   }, [])
 
   const loader = <Loading color="#fe5f55" width={100} height={100}/>
