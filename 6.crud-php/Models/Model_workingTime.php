@@ -22,6 +22,13 @@ class Model_workingTime extends Model
         return $this->insertItem($queryData);
     }
 
+    public function isWorking($userId){
+        $queryData = [
+            "specialCondition" => "user_id = $userId AND stop_time is NULL"
+        ];
+        
+        return $this->getAll($queryData, true); 
+    }
 
     public function getWorkingTimes($params)
     {   

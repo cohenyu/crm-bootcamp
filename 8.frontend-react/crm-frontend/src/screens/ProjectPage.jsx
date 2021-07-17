@@ -45,7 +45,6 @@ function ProjectPage(props) {
                 calculateDays(result.deadline);
             } else {
                 history.push('/home');
-                // send to home or projects
             }
         })();
     }, [isEditDescription, isStatusChanged])
@@ -63,7 +62,6 @@ function ProjectPage(props) {
                     setIsWorking(true);
                     setWorkId($openWork[0].work_id);
                 }
-                console.log("total: ", result);
                 setTotalHours(result.total);
             } else {
                 // TODO error
@@ -82,12 +80,7 @@ function ProjectPage(props) {
         (async () => {
             const result = await crmApi.getImgs({projectId: projectId});
             if(result){
-                console.log(result);
                 setImgList(result);
-                // setImgList(result.map((item)=>{
-                //     console.log(item.img_url);
-                //     return item.img_url;
-                // }))
             } else {
                 // TODO error
             }
@@ -97,14 +90,10 @@ function ProjectPage(props) {
 
     const startWork = async () => {
         setCurrentWork({});
-        console.log("start");
         const result = await crmApi.startWorkingTime({projectId: projectId});
         if(result){
             setWorkId(result);
             setIsWorking(true);
-            console.log(result);
-        } else {
-            // send to home or projects
         }
     }
 
@@ -114,9 +103,7 @@ function ProjectPage(props) {
         if(result){
             setIsWorking(false);
             console.log(result);
-        } else {
-            // send to home or projects
-        }
+        } 
     }
 
 
@@ -152,10 +139,10 @@ function ProjectPage(props) {
     const getImgs = () => {
         const imgs = [];
         if(imgList.length > 0){
-            for(let imgItem of imgList){
+            imgList.forEach((imgItem, index)=>{
                 const path = `http://localhost:9991/imgs/${imgItem.img_url}`;
-                imgs.push(<ImgProject imgPath={path} clickHandle={()=>{}} key={imgItem.img_url}/>)
-            }
+                imgs.push(<ImgProject imgPath={path} clickHandle={()=>{}} key={index}/>)
+            })
         }
         return imgs;
     }
@@ -262,7 +249,7 @@ function ProjectPage(props) {
                         <div>
                             <h4>Assigned Teammate</h4>
                             <div>
-                            <FontAwesomeIcon className='button-icon' icon={faUserCircle} size={'lg'}/>
+                            <FontAwesomeIcon className='icon' icon={faUserCircle} size={'lg'}/>
                             <span>{currentProject.user_name}</span>
                             </div>
                         </div>

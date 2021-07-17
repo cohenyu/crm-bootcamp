@@ -37,13 +37,4 @@ class users extends controller
         $this->response["arr_stringify"] = json_encode($arr);
         return $this->response;
     }
-
-    public function test($key)
-    {
-
-        $this->response = $this->model->getFakeData();
-        $this->response["my_key"] = $key;
-        $this->response["post"] = $_POST;
-        return $this->response;
-    }
 }

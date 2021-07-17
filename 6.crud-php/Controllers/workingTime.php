@@ -20,9 +20,11 @@ class workingTime extends controller
         return $this->response;
     }
 
-    public function getAllWorkingTime()
+    public function isWorking()
     {
-
+        $result= $this->model->isWorking($this->user_id);   
+        $this->response = $result;
+        return $this->response;
     }
 
     public function getWorkingDetails()

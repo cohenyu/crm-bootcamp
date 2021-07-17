@@ -150,6 +150,17 @@ class CrmApi {
         }
     }
 
+    async isWorking(){
+        const response = await axios.post(`${this.basicUrl}/workingTime/isWorking/`, {token: localStorage.getItem('jwtToken')});
+
+        if(response) {
+            return response.data && response.data.length > 0;
+        }
+        else {
+            return false;
+        }
+    }
+
 }
 
 export default CrmApi;

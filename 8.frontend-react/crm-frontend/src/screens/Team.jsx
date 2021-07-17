@@ -272,14 +272,7 @@ function Team(props){
                     submitHandle={addUserForm.submitHandle} 
                 />
             </Modal>
-            <ActionModal title='Are you sure you want delete this User?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/>
-            {/* <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove User' onRequestClose={closeDeleteUserWindow}  overlayClassName="Overlay" className='modal'>
-                <h2>Are you sure you want delete this item?</h2>
-                <div className='action-buttons-modal'>
-                <CrmButton content='Delete' buttonClass='main-button' isLoading={isLoading} callback={()=> removeItem()}/>
-                <CrmButton content='Cancel' buttonClass='secondary-button' isLoading={isLoading} callback={()=> closeDeleteUserWindow()}/>
-                </div>
-            </Modal> */}
+            <ActionModal title='Are you sure you want delete this user?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/>
             <Modal isOpen={isEditModalOpen} ariaHideApp={false} contentLabel='Edit User' onRequestClose={closeEditUserWindow}  overlayClassName="Overlay" className='modal'>
             <Form 
                     className='form-body'

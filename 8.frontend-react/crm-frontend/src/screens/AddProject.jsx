@@ -6,6 +6,7 @@ import { Link, Redirect, useHistory, BrowserRouter } from 'react-router-dom';
 import CrmApi from '../helpers/CrmApi';
 import statusMap from '../helpers/StatusMap'
 import PrevPage from '../components/prevPage/PrevPage';
+import CrmButton from '../components/crmButton/CrmButton';
 const crmApi = new CrmApi(); 
 
 function AddProject(props){
@@ -31,6 +32,67 @@ function AddProject(props){
     const mapFunc = (data) => {
       return {main: data.client_name, second: [data.client_mail, data.client_phone], details: {name: data.client_name, mail: data.client_mail, phone: data.client_phone, clientId: data.client_id}};
     }
+
+
+    const [projectFields, setProjectFields] = useState({
+      type: {
+        text: "Item Type",
+        id: "type",
+        type: 'text',
+        error: false,
+        mainType: 'name',
+      },
+      description: {
+        text: "Description",
+        id: "description",
+        type: 'textarea',
+        error: false,
+        mainType: 'text',
+      },
+      deadline: {
+        text: '2021-07-12',
+        value: new Date().toISOString().substr(0, 10),
+        min: new Date().toISOString().substr(0, 10),
+        label: "Deadline",
+        id: "date",
+        type: 'date',
+        error: false,
+        mainType: 'date',
+      }
+    });
+
+    const [clientFields, setClientFields] = useState({
+      name: {
+        side: true,
+        text: "Client Full Name",
+        id: "name",
+        type: 'text',
+        error: false,
+        mainType: 'name',
+        isDisabled: !!clientData,
+        value: clientData ? clientData.client_name : '',
+      },
+      mail: {
+        side: true,
+        text: "Client Mail",
+        id: "mail",
+        type: 'text',
+        error: false,
+        mainType: 'mail',
+        isDisabled: !!clientData,
+        value: clientData ? clientData.client_mail : '',
+      },
+      phone: {
+        side: true,
+        text: "Client Phone Number",
+        id: "phone",
+        type: 'text',
+        error: false,
+        mainType: 'phone',
+        isDisabled: !!clientData,
+        value: clientData ? clientData.client_phone : '',
+      }
+    });
 
     const [addFormData, setAddFormData] = useState({
       submitHandle: submitAddProject,
@@ -140,7 +202,7 @@ function AddProject(props){
         }
       });
 
-
+    
     return (
         <div className='page-container'>
             <Header/>
