@@ -161,6 +161,61 @@ class CrmApi {
         }
     }
 
+    async addTask(data){
+        const response = await axios.post(`${this.basicUrl}/tasks/addTask/`, {...data,token: localStorage.getItem('jwtToken')});
+
+        if(response) {
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async updateTask(data){
+        const response = await axios.post(`${this.basicUrl}/tasks/updateTask/`, {...data,token: localStorage.getItem('jwtToken')});
+
+        if(response) {
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async deleteTask(data){
+        const response = await axios.post(`${this.basicUrl}/tasks/deleteTask/`, {...data, token: localStorage.getItem('jwtToken')});
+
+        if(response) {
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async getAllTasks(data){
+        const response = await axios.post(`${this.basicUrl}/tasks/getAllTasks/`, {...data, token: localStorage.getItem('jwtToken')});
+
+        if(response) {
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async updateTasksIndex(data) {
+        const response = await axios.post(`${this.basicUrl}/tasks/updateTasksIndex/`, {data: data, token: localStorage.getItem('jwtToken')});
+
+        if(response) {
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
 }
 
 export default CrmApi;

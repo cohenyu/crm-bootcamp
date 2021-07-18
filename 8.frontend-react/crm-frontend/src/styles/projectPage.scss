@@ -4,7 +4,7 @@
     .icon {
         margin-right: 8px;
     }
-    
+
     .project-header{
         display: flex;
         flex-direction: row;
@@ -120,8 +120,40 @@
             textarea {
                 font-size: 14px;
                 margin-bottom: 8px;
+                border: solid 1px lightgray;
+                border-radius: 8px;
+
+                &:focus {
+                    outline: none;
+                    border: solid 2px #bdd5ea;
+                }
             }
         }
+
+        .task-edit {
+            display: flex;
+
+            input {
+                width: 100%;
+                margin-right: 24px;
+                border: solid 1px lightgray;
+                border-radius: 8px;
+                padding: 4px 8px;
+
+                &:focus {
+                    border: solid 2px #bdd5ea;
+                    outline: none;
+                }
+            }
+        }
+
+        .ok-icon {
+            color: #577399;
+        }
+
+        .cancel-icon{
+            color: #577399b5;
+        }        
 
         .action-title {
             display: flex;
@@ -160,6 +192,7 @@
                 font-size: 17px;
             }
         }
+
 
     }
 

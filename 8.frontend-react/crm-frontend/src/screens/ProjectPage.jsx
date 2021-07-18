@@ -7,11 +7,14 @@ import Timer from '../components/timer/Timer';
 import CrmButton from '../components/crmButton/CrmButton';
 import '../styles/projectPage.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faStopwatch, faUserCircle, faPaperclip, faEdit } from '@fortawesome/free-solid-svg-icons';
+import {faStopwatch, faUserCircle, faPaperclip, faEdit, faPlus, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import statusMap from '../helpers/StatusMap';
 import ImgProject from '../components/imgProject/ImgProject';
 import CrmDropdown from '../components/crmDropdown/CrmDropdown';
-
+import Task from '../components/task/Task';
+import {DndProvider} from "react-dnd";
+import DragDrop from '../components/dragDrop/DragDrop';
+import {HTML5Backend} from 'react-dnd-html5-backend'
 
 function ProjectPage(props) {
 
@@ -35,6 +38,11 @@ function ProjectPage(props) {
     const [isEditDescription, setIsEditDescription] = useState(false);
     let tempDescription =  currentProject ? currentProject.description: '';
     const [isStatusChanged, setStatusChanged] = useState(false);
+    const [addTask,setAddTask] = useState(false);
+    let newTaskDescription = '';
+    const [tasks, setTasks] = useState([]);
+
+
 
     useEffect(() => {
         (async () => {
@@ -48,6 +56,22 @@ function ProjectPage(props) {
             }
         })();
     }, [isEditDescription, isStatusChanged])
+
+    useEffect(()=>{
+        (async ()=>{
+            if(currentProject){
+                const result = await crmApi.getAllTasks({projectId: currentProject.project_id});
+                if(result){
+                    console.log(result);
+                    const tasksList = result.map((item)=>{
+                        return {id: item.task_id, index: item.task_index, title: item.description, done: item.done};
+                    })
+                    console.log(tasksList)
+                    setTasks(tasksList);
+                }
+            }
+        })();
+    },[currentProject,addTask]);
 
     useEffect(() => {
         (async () => {
@@ -161,6 +185,15 @@ function ProjectPage(props) {
         setStatusChanged(!isStatusChanged);
     };
 
+    const handleAddTask = async () => {
+       const result = await crmApi.addTask({projectId: currentProject.project_id, description: newTaskDescription});
+       if(result) {
+           console.log("task added");
+           newTaskDescription = '';
+           setAddTask(false);
+       }
+    }
+
     const dropdownStatusMap = {...statusMap};
     delete dropdownStatusMap.open;
     return (
@@ -234,9 +267,20 @@ function ProjectPage(props) {
                         </div>
                         : <div>{currentProject.description}</div>}
                         </div>
-                        <div>
+                        <div className='tasks'>
+                        <div className='action-title'>
                         <h4>Tasks</h4>
-                        bla bla bla
+                        <FontAwesomeIcon onClick={()=>{setAddTask(true)}} className='button-icon' icon={faPlus} size={'lg'}/>
+                        </div>
+                        {addTask && 
+                        <div className='task-edit'> 
+                            <input type='text' onChange={(e)=>{newTaskDescription=e.target.value}}/>
+                            <FontAwesomeIcon  onClick={()=>{handleAddTask()}} className='button-icon ok-icon' icon={faCheckCircle} size={'2x'}/>
+                            <FontAwesomeIcon  onClick={()=>{setAddTask(false)}} className='button-icon cancel-icon' icon={faTimesCircle} size={'2x'}/>
+                        </div>}
+                        <DndProvider backend={HTML5Backend}>
+                            <DragDrop tasks={tasks}/>
+                        </DndProvider>
                         </div>
                     </div>
                     <div className='second-group'>

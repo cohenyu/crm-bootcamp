@@ -23,7 +23,7 @@ class tasks extends controller
     public function getAllTasks()
     {
         $data = $this->getPostJsonData();
-        $result= $this->model->getAllClients($data);
+        $result= $this->model->getAllTasks($data->projectId);
         $this->response = $result;
         return $this->response;
     }
@@ -39,6 +39,16 @@ class tasks extends controller
     public function deleteTask(){
         $data = $this->getPostJsonData();
         $this->response = $this->model->deleteTask($data->taskId);
+        return $this->response;
+    }
+
+    public function updateTasksIndex(){
+        $data = $this->getPostJsonData()->data;
+        $affectedRows = 0;
+        foreach($data as $task){
+            $affectedRows += $this->model->updateTask((object) $task);
+        }
+        $this->response = $affectedRows;
         return $this->response;
     }
 }
