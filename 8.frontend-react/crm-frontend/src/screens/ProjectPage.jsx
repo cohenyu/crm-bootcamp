@@ -145,7 +145,7 @@ function ProjectPage(props) {
     }
 
     const onFileUpload = async () => {
-        console.log("selected: ",selectedFile);
+        
         const formData = new FormData(); 
         formData.append( 
             "newFile", 
@@ -153,7 +153,7 @@ function ProjectPage(props) {
             selectedFile.name 
           );
 
-        console.log("uploaded"); 
+        
         await crmApi.saveImg(formData);
         const result = await crmApi.addImg({img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
         setImgUploaded(!imgUploaded);

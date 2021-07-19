@@ -2,3 +2,4 @@ RewriteEngine On
 RewriteBase /
 RewriteRule  (.*)\/(.*)\/(.*)\/ index.php?cls=$1&method=$2&key=$3
 RewriteRule  (^(?!.*_assets|index).*)\/(.*)\/ index.php?cls=$1&method=$2
+SetEnv MY_VAR 1

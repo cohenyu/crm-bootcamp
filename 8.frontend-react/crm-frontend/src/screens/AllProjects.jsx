@@ -101,27 +101,9 @@ function AllProjects(props){
       },
     ];
 
-    const lastCols = [{
-      Header: 'Action',
-      // accessor: 'delete',
-      Cell: (value)=> (
-        <div>
-          <span style={{cursor:'pointer'}}
-              onClick={(event) => {
-                  onRemoveItem(value.cell.row.original);
-                  event.stopPropagation();
-                }}>
-                <FontAwesomeIcon className='trash-icon' icon={faTrash} size='sm'/>
-        </span> 
-        </div>
-        
-      )
-    },]
-
     if (status != statusMap.open.key){
         basicCols.push(...newCols);
     }
-    basicCols.push(...lastCols);
 
     return basicCols;
 }

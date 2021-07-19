@@ -20,21 +20,23 @@ class users extends controller
         return $this->response;
     }
 
-    public function getPostData()
-    {
-        $this->response["post"] = $_POST;
-        return $this->response;
-    }
+    
 
-    public function getPostJsonData()
-    {
-        $json = file_get_contents('php://input');
-        // Converts it into a PHP object
-        $data = json_decode($json);
-        $arr = ["1" => 2];
-        $this->response["data"] = $data;
-        $this->response["arr"] = $arr;
-        $this->response["arr_stringify"] = json_encode($arr);
-        return $this->response;
-    }
+    // public function getPostData()
+    // {
+    //     $this->response["post"] = $_POST;
+    //     return $this->response;
+    // }
+
+    // public function getPostJsonData()
+    // {
+    //     $json = file_get_contents('php://input');
+    //     // Converts it into a PHP object
+    //     $data = json_decode($json);
+    //     $arr = ["1" => 2];
+    //     $this->response["data"] = $data;
+    //     $this->response["arr"] = $arr;
+    //     $this->response["arr_stringify"] = json_encode($arr);
+    //     return $this->response;
+    // }
 }

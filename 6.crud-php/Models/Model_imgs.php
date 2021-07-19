@@ -14,8 +14,6 @@ class Model_imgs extends Model
 
     public function saveImg() 
     {
-        var_dump($_FILES);
-        exit();
         move_uploaded_file($_FILES["newFile"]["tmp_name"], "imgs/" . $_FILES["newFile"]["name"]);
         return true;
     }

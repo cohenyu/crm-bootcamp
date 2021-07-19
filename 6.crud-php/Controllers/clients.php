@@ -1,7 +1,8 @@
 <?php
 
 require_once('controller.php');
-
+require 'vendor/autoload.php';
+use Mailgun\Mailgun;
 
 class clients extends controller
 {
@@ -33,6 +34,21 @@ class clients extends controller
         $data = $this->getPostJsonData();
         $result= $this->model->getClient($data->clientId);
         $this->response = $result ? $result[0] : false;
+        return $this->response;
+    }
+
+    public function sendMail(){
+
+        var_dump($_SERVER['DOMAIN']);
+        exit();
+        $mg = Mailgun::create('key'); // For US servers
+        $mg->messages()->send('domain', [
+        'from'    => 'coheen1@gmail.com',
+        'to'      => 'coheen1@gmail.com',
+        'subject' => 'The PHP SDK is awesome!',
+        'text'    => 'It is so simple to send a message.'
+        ]);
+        $this->response = "the mail has sent";
         return $this->response;
     }
 

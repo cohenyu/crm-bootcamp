@@ -28,9 +28,29 @@ class controller
 
     protected function parseAuthentication()
     {
-        // TODO send request to auth service and parse the response
-        $this->account_id = 1;
-        $this->user_id = 1;
+        
+        $token = $this->getPostJsonData()->token;
+        $url = "http://host.docker.internal:8005/getUser";
+        
+        
+            $ch = curl_init();
+            
+            $headers = array(
+                'Accept: application/json',
+                'Content-Type: application/json',
+                "authorization: $token"
+            );
+    
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $user = curl_exec($ch);
+            if($user !== false){
+                $user = json_decode($user);
+                $this->account_id = $user->accountId;
+                $this->user_id = $user->userId;
+               
+            }
     }
 
     protected function validateAll($data){
