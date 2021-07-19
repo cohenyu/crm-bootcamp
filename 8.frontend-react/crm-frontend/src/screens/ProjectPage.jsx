@@ -173,25 +173,27 @@ function ProjectPage(props) {
 
     const submitUpdateDescription = async (newDesc) => {
         if(newDesc != currentProject.description){
-            const res = await crmApi.updateProject({project_id: currentProject.project_id, set:{description: newDesc}});
+            const res = await crmApi.updateProject({projectId: currentProject.project_id, set:{description: newDesc}});
         }
         setIsEditDescription(false);
     };
 
     const submitUpdateStatus = async (newStatus) => {
         if(newStatus != currentProject.project_status){
-            const res = await crmApi.updateProject({project_id: currentProject.project_id, client_id: currentProject.client_id,  set:{project_status: newStatus}});
+            const res = await crmApi.updateProject({projectId: currentProject.project_id, clientId: currentProject.client_id,  set:{project_status: newStatus}});
         }
         setStatusChanged(!isStatusChanged);
     };
 
     const handleAddTask = async () => {
-       const result = await crmApi.addTask({projectId: currentProject.project_id, description: newTaskDescription});
-       if(result) {
-           console.log("task added");
-           newTaskDescription = '';
-           setAddTask(false);
-       }
+    if(newTaskDescription){
+        const result = await crmApi.addTask({projectId: currentProject.project_id, description: newTaskDescription});
+        if(result) {
+            console.log("task added");
+            newTaskDescription = '';
+        }
+    }
+    setAddTask(false);
     }
 
     const dropdownStatusMap = {...statusMap};

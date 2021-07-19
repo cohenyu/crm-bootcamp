@@ -4,6 +4,7 @@ require_once("Model.php");
 require_once("Model_clients.php");
 require_once(__DIR__ . "/../helpers/mailgunHelper.php");
 require_once("Model_imgs.php");
+require_once("Model_workingTime.php");
 
 class Model_projects extends Model
 {
@@ -12,6 +13,7 @@ class Model_projects extends Model
     public $account_id;
     private $mailHelper;
     private $imgsModel;
+    private $workingModel;
 
     public function __construct()
     {
@@ -19,6 +21,7 @@ class Model_projects extends Model
         $this->clientModel = new Model_clients();
         $this->imgsModel = new Model_imgs();
         $this->mailHelper = new mailgunHelper();
+        $this->workingModel = new Model_workingTime();
 
     }
 
@@ -83,17 +86,17 @@ class Model_projects extends Model
         return $this->getAll($queryData); 
     }
 
-    public function mailToClient($projectId, $clientId, $projectData){
+    public function mailToClient($params){
+        $projectId = $params->projectId;
+        $costPerHour = 20;
         $from = 'coheen1@gmail.com';
         $to = 'coheen1@gmail.com';
         $project = $this->getAllProjects(["projectId" => $projectId]) ?? false;
         if($project){
             $project = $project[0];
-            // $from = $projectData["user_mail"];
-            // $to = $projectData["client_mail"];
-
+            // $to = $project["client_mail"];
             if($project['project_status'] == 'in progress'){
-                $estimatedHours = ((int) $project["estimated_time"]) * 14;
+                $estimatedHours = ((int) $project["estimated_time"]) * $costPerHour;
                 $type = $project["item_type"];
                 $description = $project["description"];
                 
@@ -103,20 +106,19 @@ class Model_projects extends Model
                     "Your project has been accepted!",
                     $this->projectAccepted($type, $description, $estimatedHours));
             } else if($project['project_status'] == 'done'){
-            
+                $totalWorking = intval($this->workingModel->getWorkingTotal($params) ?? 0) / 60 * $costPerHour;
                 $imgs = $this->imgsModel->getImgs($projectId);
                 $attachments = [];
                 foreach($imgs as $imgsData){
                     array_push($attachments, $imgsData['img_url']);
                 }
                 $type = $project["item_type"];
-                $total = 100;
                 
                 $this->mailHelper->sendMail(
                     $from, 
                     $to, 
                     "Your project is ready!", 
-                    $this->projectDone($type, $total),
+                    $this->projectDone($type, $totalWorking),
                     $attachments
                 );
                     
@@ -124,6 +126,7 @@ class Model_projects extends Model
         }
         
     }
+
 
     public function updateProject($authData, $params)
     {
@@ -134,12 +137,12 @@ class Model_projects extends Model
         $queryData = [
             "set" => $params->set,
             "where" => [
-                "project_id" => $params->project_id,
+                "project_id" => $params->projectId,
             ],
         ];
         $result = $this->updateItem($queryData); 
         if(!empty($params->set->project_status)){
-            $this->mailToClient($params->project_id, $params->client_id, $params->set);
+            $this->mailToClient($params);
         }
         return $result;
     }
