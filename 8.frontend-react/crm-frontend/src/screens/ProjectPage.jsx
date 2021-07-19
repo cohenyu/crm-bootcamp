@@ -180,7 +180,7 @@ function ProjectPage(props) {
 
     const submitUpdateStatus = async (newStatus) => {
         if(newStatus != currentProject.project_status){
-            const res = await crmApi.updateProject({project_id: currentProject.project_id, set:{project_status: newStatus}});
+            const res = await crmApi.updateProject({project_id: currentProject.project_id, client_id: currentProject.client_id,  set:{project_status: newStatus}});
         }
         setStatusChanged(!isStatusChanged);
     };

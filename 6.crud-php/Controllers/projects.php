@@ -51,14 +51,6 @@ class projects extends controller
             $data['user'] = $this->user_id;
         }
         $result= $this->model->updateProject($data, $params);
-        // if($result == -1){
-        //     $this->response->valid = false;
-        //     $this->response->serverError = "serverError";
-        // }
-        // else {
-        //     $this->response->valid = true;
-        //     $this->response->affectedRows = $result;
-        // }
         $this->response = $result;
         return $this->response;
     }
@@ -81,3 +73,29 @@ class projects extends controller
     }
 
 }
+
+
+
+// public function sendMail(){
+
+//     try {          
+//         $html = file_get_contents(__DIR__ .'/../htmlFolder/projectAccepted.html');
+//         $mg = Mailgun::create(getenv('API_KEY')); 
+        
+//         $mg->messages()->send(getenv('DOMAIN'), [
+//         'from'    => 'coheen1@gmail.com',
+//         'to'      => 'coheen1@gmail.com',
+//         'subject' => 'The PHP SDK is awesome!',
+//         'text'    => 'It is so simple to send a message.',
+//         'html'    => $html,
+//         'attachment' => [
+//             ['filePath'=> __DIR__ .'/../imgs/yuval.png']
+//           ]
+//         ]);
+//         $this->response = true;
+//     } catch (Exception $e){
+//         $this->response = false;
+//     }
+
+//     return $this->response;
+// }

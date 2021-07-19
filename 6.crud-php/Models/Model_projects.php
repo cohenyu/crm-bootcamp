@@ -2,16 +2,24 @@
 
 require_once("Model.php");
 require_once("Model_clients.php");
+require_once(__DIR__ . "/../helpers/mailgunHelper.php");
+require_once("Model_imgs.php");
+
 class Model_projects extends Model
 {
     public $table = "projects";
     public $clientModel;
     public $account_id;
+    private $mailHelper;
+    private $imgsModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->clientModel = new Model_clients();
+        $this->imgsModel = new Model_imgs();
+        $this->mailHelper = new mailgunHelper();
+
     }
 
     public function addProject($projectDetails)
@@ -75,6 +83,48 @@ class Model_projects extends Model
         return $this->getAll($queryData); 
     }
 
+    public function mailToClient($projectId, $clientId, $projectData){
+        $from = 'coheen1@gmail.com';
+        $to = 'coheen1@gmail.com';
+        $project = $this->getAllProjects(["projectId" => $projectId]) ?? false;
+        if($project){
+            $project = $project[0];
+            // $from = $projectData["user_mail"];
+            // $to = $projectData["client_mail"];
+
+            if($project['project_status'] == 'in progress'){
+                $estimatedHours = ((int) $project["estimated_time"]) * 14;
+                $type = $project["item_type"];
+                $description = $project["description"];
+                
+                $this->mailHelper->sendMail(
+                    $from, 
+                    $to, 
+                    "Your project has been accepted!",
+                    $this->projectAccepted($type, $description, $estimatedHours));
+            } else if($project['project_status'] == 'done'){
+            
+                $imgs = $this->imgsModel->getImgs($projectId);
+                $attachments = [];
+                foreach($imgs as $imgsData){
+                    array_push($attachments, $imgsData['img_url']);
+                }
+                $type = $project["item_type"];
+                $total = 100;
+                
+                $this->mailHelper->sendMail(
+                    $from, 
+                    $to, 
+                    "Your project is ready!", 
+                    $this->projectDone($type, $total),
+                    $attachments
+                );
+                    
+            }
+        }
+        
+    }
+
     public function updateProject($authData, $params)
     {
         $assignedUser = $authData["user"] ?? -1;
@@ -87,6 +137,79 @@ class Model_projects extends Model
                 "project_id" => $params->project_id,
             ],
         ];
-        return $this->updateItem($queryData); 
+        $result = $this->updateItem($queryData); 
+        if(!empty($params->set->project_status)){
+            $this->mailToClient($params->project_id, $params->client_id, $params->set);
+        }
+        return $result;
     }
+
+    public function projectAccepted($type, $description, $estimatedHours){
+        return "<html>
+        <body style='background-color: #bdd5ea;
+        padding: 44px;'>
+            <div style='display: flex; width: 635px;
+            margin: 10px auto; font-family: Roboto;'>
+    
+                <div style='background-color: #495867;
+                            color: white;
+                            padding: 30px;
+                            width: 40%;
+                            font-size: 26px;'>
+                    <h3 style='color: #bdd5ea;'>Your project is underway...</h3>
+                    <h3>Our best designers have started working on it!</h3>
+                </div>
+                <div style='background-color: white;
+                            padding: 36px 41px;
+                            width: 60%;
+                            font-size: 14px;'>
+                    <h4 style='color: #fe5f55;
+                    font-size: 22px;'>Project Info:</h4>
+                    <p style='font-weight: bold;'>Project type: <span style='font-weight: 100;'>$type</span><p>
+                    <p style='font-weight: bold; margin-bottom: 50px;'>Project Description: <span style='font-weight: 100;'>$description</span><p>
+                    <p> We assume the total price will be around <span style='font-weight: bold;'>$estimatedHours$</span>.</p>
+                <p>Please feel free to contact us if you need any further information!</p>
+                </div>
+            </div>
+            <div style='text-align: center; font-size: 16px;'>
+            <span>RGB<span style='color: #fe5f55; font-size: 30px;'>.</span></span>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public function projectDone($type, $total){
+        return "<html>
+        <body style='background-color: #bdd5ea;
+        padding: 44px;'>
+            <div style='display: flex; width: 635px;
+            margin: 10px auto; font-family: Roboto;'>
+    
+                <div style='background-color: #495867;
+                            color: white;
+                            padding: 30px;
+                            width: 40%;
+                            font-size: 40px;'>
+                    <h3 style='color: #bdd5ea;'>Your project is ready!</h3>
+                </div>
+                <div style='background-color: white;
+                            padding: 36px 41px;
+                            width: 60%;
+                            font-size: 14px;'>
+                    <h4 style='color: #fe5f55;
+                    font-size: 22px;'>Project Info:</h4>
+                    <p style='font-weight: bold;'>Project type: <span style='font-weight: 100;'>$type</span><p>
+
+                    <p>The total price is <span style='font-weight: bold;'>$total$</span>.</p>
+                <p>Please take a look at the attached files and we will contact you soon.</p>
+                <p>Feel free to contact us if you need any further information!</p>
+                </div>
+            </div>
+            <div style='text-align: center; font-size: 16px;'>
+            <span>RGB<span style='color: #fe5f55; font-size: 30px;'>.</span></span>
+            </div>
+        </body>
+        </html>";
+    }
+
 }

@@ -53,7 +53,7 @@ class Model_clients extends Model
 
         $queryData = [
             "where" => [
-                "account_id" => $this->account_id,
+                // "account_id" => $this->account_id,
                 "client_id" => $clientId
             ]
         ];
