@@ -116,8 +116,9 @@ function AddProject(props){
     
     const submitAddProject = async () => {
       setIsLoading(true);
-      if(validationFields(clientFields, setClientFields) && validationFields(projectFields, setProjectFields)){
-        console.log("succeed");
+      const validClient = validationFields(clientFields, setClientFields);
+      const validProject = validationFields(projectFields, setProjectFields);
+      if(validClient && validProject){
         const data = {};
         for(let field in clientFields){
           data[field] = {type: clientFields[field].mainType, value:clientFields[field].value}

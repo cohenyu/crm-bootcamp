@@ -11,13 +11,14 @@ class Model_tasks extends Model
         parent::__construct();
     }
 
-    public function addTask($userId, $projectId, $description)
+    public function addTask($userId, $projectId, $description, $index)
     {
         $queryData = [
             'user_id' => $userId,
             'account_id' => $this->account_id,
             'project_id' => $projectId,
             'description' => $description,
+            'task_index' => $index,
         ];
         return $this->insertItem($queryData);
     }

@@ -16,7 +16,7 @@ class tasks extends controller
     public function addTask()
     {
         $data = $this->getPostJsonData()->data;
-        $this->response = $this->model->addTask($this->user_id, $data->projectId, $data->description);
+        $this->response = $this->model->addTask($this->user_id, $data->projectId, $data->description, $data->index);
         return $this->response;
     }
 

@@ -191,8 +191,7 @@ function ProjectPage(props) {
 
     const handleAddTask = async () => {
     if(newTaskDescription){
-        // const result = await crmApi.addTask({projectId: currentProject.project_id, description: newTaskDescription});
-        const result = await crmApi.postRequest("/tasks/addTask/", {projectId: currentProject.project_id, description: newTaskDescription});
+        const result = await crmApi.postRequest("/tasks/addTask/", {projectId: currentProject.project_id, description: newTaskDescription, index: tasks.length});
         if(result) {
             console.log("task added");
             newTaskDescription = '';

@@ -46,11 +46,13 @@ class controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             $user = curl_exec($ch);
-            if($user !== false){
+            if($user){
                 $user = json_decode($user);
                 $this->account_id = $user->accountId;
                 $this->user_id = $user->userId;
-               
+            } else {
+                header('HTTP/1.0 401 Unauthorized');
+                exit();
             }
     }
 
