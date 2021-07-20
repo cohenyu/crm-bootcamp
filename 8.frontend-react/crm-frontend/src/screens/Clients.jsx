@@ -17,7 +17,6 @@ function Clients(props){
     let history = useHistory();
     
     useEffect(()=>{
-      console.log("in effect");
       (async () => {
        const result = await getClientsList();
        setData(result);
@@ -26,7 +25,7 @@ function Clients(props){
 
         
     const getClientsList = async () => {
-      let clients = await crmApi.getAllClients();
+      let clients = await crmApi.postRequest("/clients/getAllClients/");
       if(clients){
           return clients;
       }

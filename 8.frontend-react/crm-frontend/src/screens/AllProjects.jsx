@@ -40,12 +40,9 @@ function AllProjects(props){
 
     useEffect(()=>{
         (async () => {
-          console.log("mine? ", props.mine);
-         const result = await crmApi.getAllProjects(props.mine);
-         console.log(result);
+         const result = await crmApi.postRequest("/projects/getAllProjects/", {user: props.mine});
          setData(result);
          submitTab(props.mine ? statusMap.inProgress.key : statusMap.open.key);
-        //  setFilteredData(result);
         })();
       }, [props.mine])
 
@@ -54,17 +51,6 @@ function AllProjects(props){
         return date.split(' ')[0].split('-').reverse().join('/');
    }
    
-   const onRemoveItem = (value) => {
-     setItemToDelete(value);
-     openDeleteProjectWindow();
-   }
-   
-   const removeItem = () => {
-       console.log("removing");
-      //   TODO
-       setIsDeleteModalOpen(false);
-   }
-
 
   function getCols(status) {
 
@@ -108,18 +94,9 @@ function AllProjects(props){
     return basicCols;
 }
 
-    const openDeleteProjectWindow = ()=>{
-      setIsDeleteModalOpen(true);
-    };
-
-    const closeDeleteProjectWindow = ()=>{
-        setIsDeleteModalOpen(false);
-    };
 
     const submitUpdateProject = async (dataToSent) => {
-        console.log("the project is", projectDetailsRef.current);
-        const res = await crmApi.updateProject({projectId: projectDetailsRef.current.project_id, user: true, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
-        console.log("here", res);
+        const res = await crmApi.postRequest("/projects/updateProject/", {projectId: projectDetailsRef.current.project_id, user: true, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
         if(res > 0){
           history.push(`/project/${projectDetailsRef.current.project_id}`);
         }

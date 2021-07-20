@@ -48,7 +48,7 @@ function ProjectPage(props) {
 
     useEffect(() => {
         (async () => {
-            const result = await crmApi.getProject(projectId);
+            const result = await crmApi.postRequest('/projects/getProject/', {projectId: projectId});
             if(result){
                 console.log(result);
                 setCurrentProject(result);
@@ -125,7 +125,8 @@ function ProjectPage(props) {
     }
 
     const stoptWork = async () => {
-        const result = await crmApi.stopWorkingTime({workId: workId});
+        // const result = await crmApi.stopWorkingTime({workId: workId});
+        const result = await crmApi.postRequest("/workingTime/updateWorkingTime/", {workId: workId, set: {stop_time: 'NOW()'}});
         if(result){
             setIsWorking(false);
         } 
@@ -157,7 +158,6 @@ function ProjectPage(props) {
 
         
         await crmApi.saveImg(formData);
-        // const result = await crmApi.addImg({img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
         const result = await crmApi.postRequest("/imgs/addImg/", {img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
         setImgUploaded(!imgUploaded);
         console.log(result);
@@ -176,14 +176,15 @@ function ProjectPage(props) {
 
     const submitUpdateDescription = async (newDesc) => {
         if(newDesc != currentProject.description){
-            const res = await crmApi.updateProject({projectId: currentProject.project_id, set:{description: newDesc}});
+            const res = await crmApi.postRequest("/projects/updateProject/", {projectId: currentProject.project_id, set:{description: newDesc}});
         }
         setIsEditDescription(false);
     };
 
     const submitUpdateStatus = async (newStatus) => {
         if(newStatus != currentProject.project_status){
-            const res = await crmApi.updateProject({projectId: currentProject.project_id, clientId: currentProject.client_id,  set:{project_status: newStatus}});
+            const res = await crmApi.postRequest("/projects/updateProject/", {projectId: currentProject.project_id, clientId: currentProject.client_id,  set:{project_status: newStatus}});
+
         }
         setStatusChanged(!isStatusChanged);
     };

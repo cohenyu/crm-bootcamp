@@ -36,7 +36,7 @@ class Model_clients extends Model
                 "specialCondition" => "account_id=$this->account_id AND client_name like '$input%'"
             ];
         }
-
+        $limit = intval($limit) ?? -1;
         if($limit != -1){
             $queryData["limit"] = $limit;
         }

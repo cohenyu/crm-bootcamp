@@ -42,7 +42,7 @@ class workingTime extends controller
 
     public function updateWorkingTime()
     {
-        $result= $this->model->updateWorkingTime($this->getPostJsonData());
+        $result= $this->model->updateWorkingTime($this->getPostJsonData()->data);
         $this->response = $result;
         return $this->response;
     }

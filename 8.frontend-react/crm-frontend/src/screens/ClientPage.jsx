@@ -23,14 +23,13 @@ function ClientPage(props) {
 
     useEffect(() => {
         (async () => {
-            const result = await crmApi.getAllProjects(false, clientId);
+            const result = await crmApi.postRequest("/projects/getAllProjects/", {user: false, client: clientId});
             setData(result);
             submitTab(statusMap.open.key);
-            //  setFilteredData(result);
         })();
 
         (async () => {
-            const result = await crmApi.getClient(clientId);
+            const result = await crmApi.postRequest("/clients/getClient/", {clientId: clientId});
             if(result){
                 setCurrentClient(result);
             } else {

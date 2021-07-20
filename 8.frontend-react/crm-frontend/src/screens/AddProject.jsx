@@ -216,7 +216,9 @@ function AddProject(props){
                 type: 'search',
                 side: true,
                 text : 'Search Client',
-                fetchData:  async (input) => {return await crmApi.getAllClients(input, 3)},
+                fetchData:  async (input) => {
+                  console.log("input: ", input);
+                  return await crmApi.postRequest("/clients/getAllClients/", {input: input, limit: 3})},
                 mapFunc: mapFunc,
                 mainType: 'hidden',
               }} callback={(values)=> setSearchValues(values)}/>

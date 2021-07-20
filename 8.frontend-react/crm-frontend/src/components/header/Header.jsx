@@ -62,8 +62,8 @@ function Header(props) {
 
     useEffect(()=>{
         (async () => {
-            const result = await crmApi.isWorking();
-            if(result){
+            const result = await crmApi.postRequest("/workingTime/isWorking/");
+            if(result && result.length > 0){
                 setIsWorking(true);
             } 
         })();

@@ -22,7 +22,7 @@ class projects extends controller
 
     public function getAllProjects()
     {
-        $params = $this->getPostJsonData();
+        $params = $this->getPostJsonData()->data;
         // $requried_fields = ["desc", "name" .. ]
         // $this->validate($requried_fields, $params);
         $data = [
@@ -40,7 +40,7 @@ class projects extends controller
 
     public function updateProject()
     {
-        $params = $this->getPostJsonData();
+        $params = $this->getPostJsonData()->data;
         
         $data = [
             'account' => $this->account_id,
@@ -57,7 +57,7 @@ class projects extends controller
 
     public function getProject()
     {
-        $params = $this->getPostJsonData();
+        $params = $this->getPostJsonData()->data;
         if(!empty($params->projectId)){
             $data = [
                 'projectId' => $params->projectId
@@ -73,29 +73,3 @@ class projects extends controller
     }
 
 }
-
-
-
-// public function sendMail(){
-
-//     try {          
-//         $html = file_get_contents(__DIR__ .'/../htmlFolder/projectAccepted.html');
-//         $mg = Mailgun::create(getenv('API_KEY')); 
-        
-//         $mg->messages()->send(getenv('DOMAIN'), [
-//         'from'    => 'coheen1@gmail.com',
-//         'to'      => 'coheen1@gmail.com',
-//         'subject' => 'The PHP SDK is awesome!',
-//         'text'    => 'It is so simple to send a message.',
-//         'html'    => $html,
-//         'attachment' => [
-//             ['filePath'=> __DIR__ .'/../imgs/yuval.png']
-//           ]
-//         ]);
-//         $this->response = true;
-//     } catch (Exception $e){
-//         $this->response = false;
-//     }
-
-//     return $this->response;
-// }
