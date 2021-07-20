@@ -7,6 +7,7 @@ class Model
     public static $db_instance = null;
     public $table;
     public $account_id;
+    public $user_id;
 
     public function __construct()
     {
@@ -150,6 +151,11 @@ class Model
     public function setAccountId($account_id){
         $this->account_id = $account_id;
         return $account_id;
+    }
+
+    public function setUserId($user_id){
+        $this->user_id = $user_id;
+        return $user_id;
     }
 
     public function delete($sql){

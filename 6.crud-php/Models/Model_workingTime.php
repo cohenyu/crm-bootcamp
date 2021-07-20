@@ -30,15 +30,11 @@ class Model_workingTime extends Model
         return $this->getAll($queryData, true); 
     }
 
-    public function getWorkingTimes($params)
+    public function getWorkingTimes($params, $mode)
     {   
         $queryData = [
-            "cols" => [
-                '*',
-            ],
-            "where" => [
-                "project_id" => $params->projectId,
-            ], 
+            "cols" => $mode === 'project' ? ['*'] : ['start_time', 'stop_time'],
+            "where" => $mode === 'project' ? ["project_id" => $params->projectId] : ["user_id" =>$params->userId], 
         ];
         
         return $this->getAll($queryData); 
@@ -66,5 +62,32 @@ class Model_workingTime extends Model
             ],
         ];
         return $this->updateItem($queryData);
+    }
+
+    public function exportWorkingTimeToCsv($params)
+    {
+        $q = "SELECT start_time, stop_time FROM $this->table WHERE user_id = '$params->userId';";
+        $result = $this->getDB()->query($q);
+        if ($result->num_rows > 0) {
+        $data = $result->fetch_assoc();
+        $csv[] = ["start working time", 'stop working time'];
+        $result->data_seek(0);
+        //SET THE CSV BODY LINES
+            while ($data = $result->fetch_assoc()) {
+                $csv[] = array_values($data);
+            }
+            header('Content-Type: application/csv');
+            header('Content-Disposition: attachment; filename="myCSV.csv";');
+            $f = fopen('php://output', 'w');
+            foreach ($csv as $line) {
+                fputcsv($f, $line, ',');
+            }
+            fpassthru($f);
+            exit;
+            
+        } else {
+            // TODO return empty csv file
+            return false;
+        }
     }
 }

@@ -14,7 +14,9 @@ import CrmDropdown from '../components/crmDropdown/CrmDropdown';
 import Task from '../components/task/Task';
 import {DndProvider} from "react-dnd";
 import DragDrop from '../components/dragDrop/DragDrop';
-import {HTML5Backend} from 'react-dnd-html5-backend'
+import {HTML5Backend} from 'react-dnd-html5-backend';
+import {useDispatch} from 'react-redux';
+import {start, stop} from '../reduxData/actions'
 
 function ProjectPage(props) {
 
@@ -41,7 +43,7 @@ function ProjectPage(props) {
     const [addTask,setAddTask] = useState(false);
     let newTaskDescription = '';
     const [tasks, setTasks] = useState([]);
-
+    const dispatch = useDispatch();
 
 
     useEffect(() => {
@@ -60,7 +62,7 @@ function ProjectPage(props) {
     useEffect(()=>{
         (async ()=>{
             if(currentProject){
-                const result = await crmApi.getAllTasks({projectId: currentProject.project_id});
+                const result = await crmApi.postRequest("/tasks/getAllTasks/", {projectId: currentProject.project_id});
                 if(result){
                     console.log(result);
                     const tasksList = result.map((item)=>{
@@ -75,7 +77,7 @@ function ProjectPage(props) {
 
     useEffect(() => {
         (async () => {
-            const result = await crmApi.getWorkingTime({projectId: projectId});
+            const result = await crmApi.postRequest("/workingTime/getWorkingDetails/" ,{projectId: projectId});
             if(result){
                 let $openWork  = result.works.filter((workingTime)=>{
                     return workingTime.stop_time == null;
@@ -102,7 +104,7 @@ function ProjectPage(props) {
 
     useEffect(() => {
         (async () => {
-            const result = await crmApi.getImgs({projectId: projectId});
+            const result = await crmApi.postRequest("/imgs/getImgs/", {projectId: projectId});
             if(result){
                 setImgList(result);
             } else {
@@ -114,20 +116,20 @@ function ProjectPage(props) {
 
     const startWork = async () => {
         setCurrentWork({});
-        const result = await crmApi.startWorkingTime({projectId: projectId});
+        const result = await crmApi.postRequest("/workingTime/addWorkingTime/", {projectId: projectId});
         if(result){
             setWorkId(result);
             setIsWorking(true);
         }
+        dispatch(start());
     }
 
     const stoptWork = async () => {
-        console.log("stop");
         const result = await crmApi.stopWorkingTime({workId: workId});
         if(result){
             setIsWorking(false);
-            console.log(result);
         } 
+        dispatch(stop());
     }
 
 
@@ -155,7 +157,8 @@ function ProjectPage(props) {
 
         
         await crmApi.saveImg(formData);
-        const result = await crmApi.addImg({img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
+        // const result = await crmApi.addImg({img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
+        const result = await crmApi.postRequest("/imgs/addImg/", {img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
         setImgUploaded(!imgUploaded);
         console.log(result);
     }
@@ -187,7 +190,8 @@ function ProjectPage(props) {
 
     const handleAddTask = async () => {
     if(newTaskDescription){
-        const result = await crmApi.addTask({projectId: currentProject.project_id, description: newTaskDescription});
+        // const result = await crmApi.addTask({projectId: currentProject.project_id, description: newTaskDescription});
+        const result = await crmApi.postRequest("/tasks/addTask/", {projectId: currentProject.project_id, description: newTaskDescription});
         if(result) {
             console.log("task added");
             newTaskDescription = '';

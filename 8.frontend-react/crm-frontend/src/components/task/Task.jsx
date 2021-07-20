@@ -14,7 +14,7 @@ function Task(props) {
     const [title, setTitle] = useState(props.title);
 
     const handleCheckTask =  async (value)=> {
-       const result =  await crmApi.updateTask({taskId: props.id, set: {done: value}});
+       const result =  await crmApi.postRequest("/tasks/updateTask/", {taskId: props.id, set: {done: value}});
        if(result){
            console.log("task updated");
         }
@@ -22,7 +22,6 @@ function Task(props) {
     }
 
     const setNewTitle = () => {
-        crmApi.updateTask({taskId: props.id, set: {description: title}});
         setTitle(title);
         setEditTask(false);
     }

@@ -15,7 +15,7 @@ class workingTime extends controller
 
     public function addWorkingTime()
     {
-        $result= $this->model->addWorkingTime($this->user_id, $this->getPostJsonData());
+        $result= $this->model->addWorkingTime($this->user_id, $this->getPostJsonData()->data);
         $this->response = $result;
         return $this->response;
     }
@@ -30,8 +30,8 @@ class workingTime extends controller
     public function getWorkingDetails()
     {
 
-        $total = $this->model->getWorkingTotal($this->getPostJsonData());
-        $works = $this->model->getWorkingTimes($this->getPostJsonData());
+        $total = $this->model->getWorkingTotal($this->getPostJsonData()->data);
+        $works = $this->model->getWorkingTimes($this->getPostJsonData()->data, 'project');
         if($works){
             $this->response = ["works" => $works, "total" => $total];
             return $this->response;
@@ -43,6 +43,13 @@ class workingTime extends controller
     public function updateWorkingTime()
     {
         $result= $this->model->updateWorkingTime($this->getPostJsonData());
+        $this->response = $result;
+        return $this->response;
+    }
+
+    public function exportWorkingTimeToCsv()
+    {
+        $result= $this->model->exportWorkingTimeToCsv($this->getPostJsonData()->data);   
         $this->response = $result;
         return $this->response;
     }

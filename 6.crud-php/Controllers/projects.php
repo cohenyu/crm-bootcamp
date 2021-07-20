@@ -15,7 +15,7 @@ class projects extends controller
 
     public function addProject()
     {
-        $result= $this->model->addProject($this->getPostJsonData());
+        $result= $this->model->addProject($this->getPostJsonData()->data);
         $this->response = $result;
         return $this->response;
     }

@@ -15,14 +15,14 @@ class tasks extends controller
 
     public function addTask()
     {
-        $data = $this->getPostJsonData();
+        $data = $this->getPostJsonData()->data;
         $this->response = $this->model->addTask($this->user_id, $data->projectId, $data->description);
         return $this->response;
     }
 
     public function getAllTasks()
     {
-        $data = $this->getPostJsonData();
+        $data = $this->getPostJsonData()->data;
         $result= $this->model->getAllTasks($data->projectId);
         $this->response = $result;
         return $this->response;
@@ -30,14 +30,13 @@ class tasks extends controller
 
     public function updateTask()
     {
-        $data = $this->getPostJsonData();
+        $data = $this->getPostJsonData()->data;
         $this->response = $this->model->updateTask($data);
         return $this->response;
-        
     }
 
     public function deleteTask(){
-        $data = $this->getPostJsonData();
+        $data = $this->getPostJsonData()->data;
         $this->response = $this->model->deleteTask($data->taskId);
         return $this->response;
     }

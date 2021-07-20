@@ -21,25 +21,26 @@ import {
 import Loading from './components/loading/Loading';
 import ProjectPage from './screens/ProjectPage';
 import ClientPage from './screens/ClientPage';
+import {useSelector, useDispatch} from 'react-redux';
+import {changedIsLogged} from './reduxData/actions';
 
 const authApi = new AuthApi();
 function App() {
 
-  const [isConnect, setConnection] = useState(false);
+  // const [isConnect, setConnection] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const isLogged = useSelector(state => state.isLogged);
 
-  
     useEffect(() => {
       async function checkConnection() {
         if(localStorage.getItem('jwtToken')){
           const isUserAuthenticated = await authApi.ping();
-          setConnection(isUserAuthenticated);
-          setLoading(false);
-        } else {
-          setLoading(false);
-          setConnection(false);
-          
-        }
+          if(isUserAuthenticated){
+            dispatch(changedIsLogged());
+          }
+        } 
+        setLoading(false);
       }
       setTimeout(checkConnection, 800);
       setTimeout(() => {
@@ -51,101 +52,86 @@ function App() {
 
   const loader = <Loading color="#fe5f55" width={100} height={100}/>
   
+  const loggedInRoutes = () => {
+    return (
+      <Switch>
+            <Route 
+              exact path="/home"
+              component={Home}
+            />,
+            <Route 
+              exact path="/team"
+              component={Team}
+            />,
+            <Route 
+              exact path="/allProjects"
+              render= {() => <AllProjects mine={false}/>}
+            />,
+            <Route 
+              exact path="/myProjects"
+              render={() => <AllProjects mine={true} />}
+            />,
+            <Route 
+              exact path="/clients"
+              component={Clients}
+            />,
+             <Route 
+              exact path="/addProject"
+              component={AddProject}
+            />,
+            <Route 
+              exact path="/project/:projectId"
+              component={ProjectPage}
+            />,
+            <Route 
+              exact path="/client/:clientId"
+              component={ClientPage}
+            />,
+            <Route >
+              <Redirect to="/home"/>
+            </Route>
+      </Switch>
+    );
+  }
+
+  const loggedOutRoutes = () => {
+    return (
+      <Switch>
+            <Route 
+              path="/signup"
+              render={()=><Signup type='newAccount'/>}
+            />,
+            <Route 
+              path="/newUser/:token"
+              render={()=><Signup type='newUser'/>}
+            />,
+            <Route 
+              exact path="/login"
+              component={Login}
+            />,
+            <Route 
+              exact path="/resetPassword/:mail"
+              component={ResetPassword}
+            />,
+            <Route 
+             exact path="/forgotPassword"
+              component={ForgotPassword}
+            />,
+            <Route >
+              <Redirect to="/login"/>
+            </Route>
+      </Switch>
+    );
+  }
+
+  if (isLoading) return <div className="App">{loader}</div>;
 
   return (
     <Router>
     <div className="App">
-      {isLoading ? loader : 
-      <Switch>
-      <Route
-          exact path="/"
-          render={() => {
-              return ( 
-                isConnect ?
-                <Redirect to="/home" /> :
-                <Redirect to="/signup" /> 
-              )
-          }}
-        />
-        <Route 
-           path="/signup">
-            {
-            isLoading ? loader 
-            : isConnect ?
-                <Redirect to="/home" /> :
-                <Signup type='newAccount' /> 
-            }
-          </Route>
-       
-        <Route 
-           exact path="/newUser/:token">
-            {isLoading ? loader : 
-              <Signup type='newUser'/> 
-            }
-        </Route>
-        <Route exact path="/home">
-            {
-            isConnect ?
-            <Home /> :
-            <Redirect to="/login" /> 
-            }
-        </Route>
-        <Route exact path="/login"
-        // render={(props) => <Login {...props} /> }
-        >
-          {isLoading ? loader
-        :(isConnect ? <Redirect to="/home" />  : <Login/>)}
-        </Route>
-        
-        <Route path="/resetPassword/:mail">
-            <ResetPassword/>
-        </Route >
-        <Route exact path="/forgotPassword">
-            <ForgotPassword/>
-        </Route >
-        <Route exact path="/team">
-        {isLoading ? loader: 
-            isConnect ?
-                <Team /> : <Redirect to="/login" /> 
-            }
-        </Route> 
-        <Route exact path="/allProjects">
-        {isLoading ? loader: 
-            isConnect ?
-                <AllProjects mine={false}/> : <Redirect to="/login" /> 
-            }
-        </Route> 
-        <Route exact path="/myProjects">
-        {isLoading ? loader: 
-            isConnect ?
-                <AllProjects mine={true} /> : <Redirect to="/login" /> 
-            }
-        </Route> 
-        <Route exact path="/clients">
-        {isLoading ? loader: 
-            isConnect ?
-                <Clients/> : <Redirect to="/login" /> 
-            }
-        </Route>
-        <Route exact path="/addProject">
-        {isLoading ? loader: 
-            isConnect ?
-                <AddProject/> : <Redirect to="/login" /> 
-            }
-        </Route>
-        <Route exact path="/project/:projectId">
-        {isLoading ? loader: 
-            isConnect ?
-                <ProjectPage/> : <Redirect to="/login" /> 
-            }
-        </Route>
-        <Route exact path="/client/:clientId">
-        {isLoading ? loader: 
-            isConnect ?
-                <ClientPage/> : <Redirect to="/login" /> 
-            }
-        </Route>
-      </Switch>}
+      {
+        isLogged ? loggedInRoutes() : loggedOutRoutes()
+      }
     </div>
   </Router>
   );
@@ -214,3 +200,104 @@ export default App;
 //   </div>
 // </Router>
 // );
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <Switch>
+      <Route
+          exact path="/"
+          render={() => {
+              return ( 
+                isConnect ?
+                <Redirect to="/home" /> :
+                <Redirect to="/signup" /> 
+              )
+          }}
+        />
+        <Route 
+           path="/signup">
+            {
+            isLoading ? loader 
+            : isConnect ?
+                <Redirect to="/home" /> :
+                <Signup type='newAccount' /> 
+            }
+          </Route>
+        <Route 
+           exact path="/newUser/:token">
+            {isLoading ? loader : 
+              <Signup type='newUser'/> 
+            }
+        </Route>
+        <Route exact path="/home">
+            {
+            isConnect ?
+            <Home /> :
+            <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/login"
+        // render={(props) => <Login {...props} /> }
+        >
+          {isLoading ? loader
+        :(isConnect ? <Redirect to="/home" />  : <Login/>)}
+        </Route>
+        
+        <Route path="/resetPassword/:mail">
+            <ResetPassword/>
+        </Route >
+        <Route exact path="/forgotPassword">
+            <ForgotPassword/>
+        </Route >
+        <Route exact path="/team">
+        {isLoading ? loader: 
+            isConnect ?
+                <Team /> : <Redirect to="/login" /> 
+            }
+        </Route> 
+        <Route exact path="/allProjects">
+        {isLoading ? loader: 
+            isConnect ?
+                <AllProjects mine={false}/> : <Redirect to="/login" /> 
+            }
+        </Route> 
+        <Route exact path="/myProjects">
+        {isLoading ? loader: 
+            isConnect ?
+                <AllProjects mine={true} /> : <Redirect to="/login" /> 
+            }
+        </Route> 
+        <Route exact path="/clients">
+        {isLoading ? loader: 
+            isConnect ?
+                <Clients/> : <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/addProject">
+        {isLoading ? loader: 
+            isConnect ?
+                <AddProject/> : <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/project/:projectId">
+        {isLoading ? loader: 
+            isConnect ?
+                <ProjectPage/> : <Redirect to="/login" /> 
+            }
+        </Route>
+        <Route exact path="/client/:clientId">
+        {isLoading ? loader: 
+            isConnect ?
+                <ClientPage/> : <Redirect to="/login" /> 
+            }
+        </Route>
+      </Switch> */}

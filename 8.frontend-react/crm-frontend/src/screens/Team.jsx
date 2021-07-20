@@ -10,11 +10,13 @@ import AuthApi from '../helpers/authApi';
 import Header from '../components/header/Header';
 import Table from '../components/table/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTrash , faEdit} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash , faEdit, faDownload} from '@fortawesome/free-solid-svg-icons';
 import ActionModal from '../components/actionModal/ActionModal';
-
+import CrmApi from '../helpers/CrmApi';
+import fileDownload from 'js-file-download';
 
 const authApi = new AuthApi();
+const crmApi = new CrmApi();
 
 function Team(props){
     var isLoading = false;
@@ -92,7 +94,12 @@ function Team(props){
     setData(newData);
    }
   
-    
+    const downloadCsv =  async (row) => {
+      const img = await crmApi.postRequest("/workingTime/exportWorkingTimeToCsv/", {userId: row.user_id, userName: row.user_name});
+      if(img){
+        fileDownload(img, `${row.user_name}.csv`);
+      }
+    }
   
    const columns = React.useMemo(
     () => [
@@ -118,12 +125,11 @@ function Team(props){
       },
       {
         Header: 'Action',
-        // accessor: 'delete',
+
         Cell: (value)=> (
-          <div>
+          <div className='action-icons'>
             <span style={{cursor:'pointer'}}
                 onClick={() => {
-                  // console.log(value);
                     onRemoveItem(value.cell.row.original);
                   }}>
                   <FontAwesomeIcon className='trash-icon' icon={faTrash} size='sm'/>
@@ -135,6 +141,12 @@ function Team(props){
                   }}>
                   <FontAwesomeIcon className='edit-icon' icon={faEdit} size='sm'/>
           </span> }
+          <span style={{cursor:'pointer'}}
+                onClick={ () => {
+                     downloadCsv(value.cell.row.original);
+                  }}>
+                  <FontAwesomeIcon className='download-icon' icon={faDownload} size='sm'/>
+          </span> 
           </div>
           
         )

@@ -7,6 +7,8 @@ import './header.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import {useHistory } from 'react-router-dom';
+import { useSelector , useDispatch} from 'react-redux';
+import {changedIsLogged} from '../../reduxData/actions'
 const authApi = new AuthApi();
 const crmApi = new CrmApi();
 
@@ -19,6 +21,8 @@ function Header(props) {
     inPersonalRef.current = inPersonal;
     const history = useHistory();
     const [isWorking, setIsWorking] = useState(false);
+    const working = useSelector(state => state.working);
+    const dispatch = useDispatch();
 
     const links = [
         {
@@ -67,10 +71,7 @@ function Header(props) {
 
     const logoutFunc = async ()=>{
         await authApi.logout();
-        // history.push('/login')
-        // TODO - use the state instead of window
-        window.location.href = 'http://localhost:3000/login';
-        
+        dispatch(changedIsLogged());        
     }
 
     return (
@@ -82,7 +83,7 @@ function Header(props) {
                 <Navigation links={links}/>
                 </div>
             <div className='nav-wrapper' onMouseEnter={()=>{setIsHoverPersonal(true)}}  onMouseLeave={()=>{setTimeout(()=>{if(!inPersonalRef.current){setIsHoverPersonal(false)};}, 700)}} >
-            <div className={`is-working ${isWorking? 'working' : 'not-working'}`}></div>
+            <div className={`is-working ${working !== 0 ? 'working' : 'not-working'}`}></div>
             <FontAwesomeIcon className='nav-icon'  icon={faUserCircle} size='2x'/>
             </div>
             {isHoverPersonal && <div className='personal' onMouseEnter={()=>{setInPersonal(true)}}  onMouseLeave={()=>{setInPersonal(false);setIsHoverPersonal(false);; console.log("leave from personal")}}>

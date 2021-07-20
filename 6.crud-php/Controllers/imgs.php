@@ -21,13 +21,13 @@ class imgs extends controller
     }
 
     public function addImg(){
-        $data = $this->getPostJsonData();
+        $data = $this->getPostJsonData()->data;
         $this->response = $this->model->addImg($data->img_url, $data->clientId, $data->projectId);
         return $this->response;
     }
 
     public function getImgs(){
-        $data = $this->getPostJsonData();
+        $data = $this->getPostJsonData()->data;
         $this->response = $this->model->getImgs($data->projectId);
         return $this->response;
     }

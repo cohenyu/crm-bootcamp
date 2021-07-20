@@ -28,7 +28,8 @@ function DragDrop(props) {
       });
 
     const removeTask = async (taskId)=>{
-        const result = crmApi.deleteTask({taskId: taskId});
+        // const result = crmApi.deleteTask({taskId: taskId});
+        const result = crmApi.postRequest("/tasks/deleteTask/", {taskId: taskId});
         if(result){
             const newTasks = tasks.filter((item)=>{
                 return item.id != taskId;
@@ -41,12 +42,10 @@ function DragDrop(props) {
         const result = [...list];
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
-        console.log("reorder", result);
         const dataToSent = result.map((item, index)=>{
             return {taskId: item.id, set: {task_index: index}};
         })
-        console.log("data: ", dataToSent);
-        crmApi.updateTasksIndex(dataToSent);
+        crmApi.postRequest("/tasks/updateTasksIndex/", dataToSent);
         return result;
       };
 

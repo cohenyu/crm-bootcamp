@@ -130,7 +130,7 @@ function AddProject(props){
           delete data.clientId;
         }
         
-        const resultData = await crmApi.addProject({status: statusMap.open.key, fields: data});
+        const resultData = await crmApi.postRequest("/projects/addProject/", {status: statusMap.open.key, fields: data});
         console.log("result from add project",resultData);
         if(resultData > 0){
           history.push(`/allProjects`);

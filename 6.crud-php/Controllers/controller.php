@@ -19,6 +19,7 @@ class controller
         $this->model = new $model_class_name();
         $this->parseAuthentication();
         $this->model->setAccountId($this->account_id);
+        $this->model->setUserId($this->user_id);
     }
 
     public function getPostJsonData()

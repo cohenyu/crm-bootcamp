@@ -3,6 +3,8 @@ import Form from '../components/form/Form';
 import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
 import '../styles/simpleForm.css';
+import {useDispatch} from 'react-redux';
+import {changedIsLogged} from '../reduxData/actions'
 import {
     Link,
     useHistory
@@ -12,13 +14,14 @@ const authApi = new AuthApi();
 
 function Login(props) {  
     const history = useHistory();
-      
+    const dispatch = useDispatch();
+
       const submit = async (data) => {
         const res = await authApi.signin(data);
         console.log("response", res.valid);
         if(res.valid){
-          // history.push('/home');
-          window.location.href = 'http://localhost:3000/home';
+          dispatch(changedIsLogged());
+         // window.location.href = 'http://localhost:3000/home';
         } else {
           return res;
         }
