@@ -2,3 +2,4 @@ data/mysql/*
 8.frontend-react/node_modules
 .DS_Store
 2.landing-page-vanila/.DS_Store
+6.crud-php/vendor
