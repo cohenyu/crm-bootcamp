@@ -1,0 +1,9 @@
+.dropdown {
+    border: none;
+    background: none;
+    padding-right: 10px;
+
+    &:focus {
+        outline: none;
+    }
+}

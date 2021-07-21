@@ -1,5 +1,5 @@
 .result-container {
-    padding: 5px;   
+    padding: 8px 4px;   
 
     .main-result {
         font-weight: bold;
@@ -11,6 +11,10 @@
     .sub-result{
     font-size: 12px;
     color: rgba(0, 0, 0, 0.541);
+    }
+
+    &:hover{
+        background-color: #f3f3f3;
     }
 
 }

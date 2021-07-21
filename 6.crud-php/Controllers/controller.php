@@ -15,10 +15,10 @@ class controller
     {
         $model_class_name = "Model_" . $this->model_cls;
         require_once("./Models/$model_class_name.php");
-        // get the token and it to parse
         $this->model = new $model_class_name();
         $this->parseAuthentication();
         $this->model->setAccountId($this->account_id);
+        $this->model->setUserId($this->user_id);
     }
 
     public function getPostJsonData()
@@ -28,9 +28,36 @@ class controller
 
     protected function parseAuthentication()
     {
-        // TODO send request to auth service and parse the response
-        $this->account_id = 1;
-        $this->user_id = 1;
+        
+        $token = $this->getPostJsonData()->token;
+        $path = getenv('URL');
+        $url = $path . "getUser";
+        
+        
+            $ch = curl_init();
+            
+            $headers = array(
+                'Accept: application/json',
+                'Content-Type: application/json',
+                "authorization: $token"
+            );
+    
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $user = curl_exec($ch);
+            if($user){
+                $user = json_decode($user);
+                $this->account_id = $user->accountId;
+                $this->user_id = $user->userId;
+            } else {
+                header('HTTP/1.0 401 Unauthorized');
+                exit();
+            }
+    }
+
+    protected function validateAll($data){
+        return true;
     }
 
     

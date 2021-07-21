@@ -121,5 +121,10 @@ app.post('/editOldUser', async function(req, res){
   res.send(response);
 });
 
+app.get('/getUser', function(req, res){
+  const response =  sessionHelper.verifyToken(req.headers.authorization);
+  res.send(response);
+})
+
 
 

@@ -1,13 +1,25 @@
 import axios from 'axios';
 
+
 class CrmApi {
 
     constructor(){
         this.basicUrl = 'http://localhost:9991';
+        axios.interceptors.response.use(
+            undefined, 
+            function(error) {
+                if(error.response.status === 401){
+                    window.location.href = 'http://localhost:3000/login';
+                }
+                return false;
+            }
+          );
     }
 
-    async getAllProjects(isUser){
-        const response = await axios.post(`${this.basicUrl}/projects/getAllProjects/`, {user: isUser, token: localStorage.getItem('jwtToken')});
+
+    async saveImg(data){
+        
+        const response = await axios.post(`${this.basicUrl}/imgs/saveImg/`, data);
 
         if(response){
             return response.data;
@@ -17,10 +29,12 @@ class CrmApi {
         }
     }
 
-    async getAllClients(searchInput=''){
-        const response = await axios.post(`${this.basicUrl}/clients/getAllClients/`, {input: searchInput, token: localStorage.getItem('jwtToken')});
 
-        if(response){
+    async postRequest(url, data={}){
+
+        const response = await axios.post(`${this.basicUrl}${url}`, {data: data, token: localStorage.getItem('jwtToken')});
+            
+        if(response) {
             return response.data;
         }
         else {
@@ -28,16 +42,6 @@ class CrmApi {
         }
     }
 
-    async updateProject(data){
-        const response = await axios.post(`${this.basicUrl}/projects/updateProject/`, {...data, token: localStorage.getItem('jwtToken')});
-
-        if(response){
-            return response.data;
-        }
-        else {
-            return false;
-        }
-    }
 }
 
 export default CrmApi;

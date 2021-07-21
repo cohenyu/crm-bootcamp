@@ -2,7 +2,6 @@
 
 require_once('controller.php');
 
-
 class clients extends controller
 {
 
@@ -22,9 +21,17 @@ class clients extends controller
 
     public function getAllClients()
     {
-        $data = $this->getPostJsonData();
-        $result= $this->model->getAllClients($data->input);
+        $data = $this->getPostJsonData()->data;
+        $result= $this->model->getAllClients($data->input ?? '', $data->limit ?? -1);
         $this->response = $result;
+        return $this->response;
+    }
+
+    public function getClient()
+    {
+        $data = $this->getPostJsonData()->data;
+        $result= $this->model->getClient($data->clientId);
+        $this->response = $result ? $result[0] : false;
         return $this->response;
     }
 

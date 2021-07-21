@@ -7,62 +7,40 @@
 
 
 .submit-button{
-    // text-decoration: none !important;
     display: flex;
-    padding: 5px 20px;
+    padding: 5px 45px;
     font-family: 'Montserrat', sans-serif;
     border-radius: 30px;
     outline: none;
-    align-items: baseline;
+    align-items: center;
 }
 
-/* .submit-button:hover, .submit-button:focus{
-    color: white;
-    background-color: #fa4639;
-    cursor: pointer;
-    border: solid 1px #fe5f55 ;
-    font-size: 16px;
-} */
 
 .main-button {
-    color: #fe5f55;
-    background-color: white;
-    border: solid 1px #fe5f55 ;
-    font-size: 18px;
-}
-
-.main-button:hover {
     color: white;
-    background-color: #fa4639;
-    cursor: pointer;
-}
-
-
-/* .secondary-button {
-    color: #495867;
-    background-color: #bdd5ea;
-    border: none;
+    background-color: #577399;
+    border: solid 1px  #577399;
     font-size: 18px;
+
+    &:hover{
+        color: white;
+        background-color: #495867;
+        cursor: pointer;
+    }
 }
 
-.secondary-button:hover, .secondary-button:focus {
-    color: #577399;
-    background-color: #aacceb;
-    cursor: pointer;
-} */
 
 .secondary-button {
     color: #495867;
     background-color: white;
     border: solid 1px #495867;
     font-size: 18px;
-}
 
-.secondary-button:hover, .secondary-button:focus {
-    color: white;
-    background-color: #577399;
-    border: solid 1px white;
-    cursor: pointer;
+    &:hover {
+        color: white;
+        background-color: #577399;
+        cursor: pointer;
+    }
 }
 
 .spacial-button {
@@ -71,14 +49,29 @@
     background-color: #577399;
     border: solid 1px #bdd5ea ;
     font-size: 18px;
+
+    &:hover{
+        background-color: #bdd5ea;
+        color: #577399;
+        cursor: pointer;
+    }
 }
 
-.spacial-button:hover, .spacial-button:focus {
-    background-color: #bdd5ea;
-    color: #577399;
-    cursor: pointer;
-}
 
 .button-link {
     text-decoration: none;
+}
+
+.form-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.form-action button{
+    font-size: 12px;
+}
+
+.disabled {
+    background-color: rgb(228, 228, 228);
+    border: none;
 }

@@ -8,8 +8,12 @@ header('Content-Type: application/json');
 
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Credentials: true");
-header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
+
+if(file_exists('./env.php')) {
+    include './env.php';
+}
 
 $data = array();
 
@@ -17,6 +21,10 @@ try
 {
         if(isset($_GET["cls"]) && isset($_GET["method"]))
         {
+            if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+                exit();
+            }
+            
             $method = $_GET["method"];
             $cls = $_GET["cls"];
             $key = $_GET["key"] ?? null;

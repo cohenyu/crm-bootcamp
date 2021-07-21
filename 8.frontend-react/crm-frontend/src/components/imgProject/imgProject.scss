@@ -1,0 +1,27 @@
+.project-img {
+    height: 100px;
+    width: 100px;
+    background-size: cover;
+    margin: 8px;
+}
+
+.img-show {
+    float:right;
+    height:auto;
+    height: 500px;
+    width:800px;
+}
+
+.img-wrapper {
+    height:auto;
+    overflow:auto;
+    // height: 70vh;
+    // width: 90vw;
+}
+
+.img-modal {
+    background-color: white;
+    padding: 30px;
+    outline: none;
+    box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px;
+}

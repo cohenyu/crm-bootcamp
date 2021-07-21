@@ -7,7 +7,6 @@ import {
     // BrowserRouter as Router,
     Link,
     useParams,
-    withRouter,
     useHistory
   } from "react-router-dom";
 const authApi = new AuthApi();
@@ -17,13 +16,12 @@ const authApi = new AuthApi();
 function Signup(props) {
 
   const {token} = useParams();
-  // const history = useHistory();
-
+  const history = useHistory();
   const submit = async (formData) => {
 
     console.log(formData);
     let res;
-    if(props.type == 'newUser'){
+    if(props.type === 'newUser'){
       res =  await authApi.editUser({fields: formData, token: token});
     } else {
       res = await authApi.signup(formData);
@@ -31,7 +29,7 @@ function Signup(props) {
     
     if(res.valid){
       console.log("history", props.history);
-      // props.history.push('/home');
+      // history.push('/home');
       window.location.href = 'http://localhost:3000/home';
     } else {
       return res;
@@ -87,7 +85,7 @@ function Signup(props) {
         }
       }
 
-    if(props.type == 'newUser'){
+    if(props.type === 'newUser'){
       delete signup.fields.mail;
       delete signup.fields.business;
     }

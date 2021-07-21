@@ -1,5 +1,15 @@
 .page-description {
     color: gray;
+
+    div{
+        display: flex;
+        flex-direction: column;
+    }
+
+    a{
+        margin-bottom: 8px;
+        
+    }
 }
 
 .page-title {

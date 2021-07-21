@@ -40,6 +40,7 @@ function Table(props) {
         })}
       </tbody>
     </table>
+    {props.data.length === 0 && <div className='empty-msg'><h3>There is nothing to show</h3></div>}
         </div>
     );
 }

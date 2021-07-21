@@ -1,10 +1,7 @@
 .tabs-container {
-    // overflow: hidden;
-    // border: 1px solid #ccc;
-    background-color: #f1f1f1;
 
     button {
-        background-color: inherit;
+        background-color: #ececec;
         float: left;
         border: none;
         outline: none;
@@ -14,14 +11,8 @@
         border: solid 0.2px rgba(182, 182, 182, 0.329);
 
         &:hover {
-            background-color: #e4e4e4;
+            background-color: #d3d3d3;
         }
-
-        // &:focus {
-        //     background-color: #d4e6f7;
-        //     border-bottom: solid 0.2px #d4e6f7;
-            
-        // }
     }
 
     .active-tab {
