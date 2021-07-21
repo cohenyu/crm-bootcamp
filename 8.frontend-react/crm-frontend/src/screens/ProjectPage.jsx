@@ -16,7 +16,7 @@ import {DndProvider} from "react-dnd";
 import DragDrop from '../components/dragDrop/DragDrop';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {useDispatch} from 'react-redux';
-import {start, stop} from '../reduxData/actions'
+import {start, stop} from '../reduxData/actions';
 
 function ProjectPage(props) {
 
@@ -200,6 +200,51 @@ function ProjectPage(props) {
     setAddTask(false);
     }
 
+    const updateTask = async (value, id, mode) => {
+        let set;
+        switch(mode){
+            case 'check':
+                set = {done: value};
+                break;
+            case 'title':
+                set = {description: value};
+                break;
+        }
+        const result =  await crmApi.postRequest("/tasks/updateTask/", {taskId: id, set: set});
+        if(result){
+            console.log("task updated");
+
+        }
+        if(mode == 'check'){
+            const tempTask = [...tasks];
+            for(let task of tasks){
+                if(task.id == id){
+                    task.done = value;
+                }
+            }
+            // setTasks(tempTask);
+        }
+    }
+
+    const removeTask = async (taskId) => {
+        await crmApi.postRequest("/tasks/deleteTask/", {taskId: taskId});
+        const newItems = tasks.filter((item)=>{
+            return item.id != taskId;
+        })
+        setTasks(newItems);
+    }
+
+    const reorderTasks = (result) => {
+        const dataToSent = result.map((item, index)=>{
+            return {taskId: item.id, set: {task_index: index}};
+        })
+        crmApi.postRequest("/tasks/updateTasksIndex/", dataToSent);
+    }
+
+    const getItem = (item) => {
+        return <Task item={item} update={updateTask} remove={removeTask}/>
+    }
+
     const dropdownStatusMap = {...statusMap};
     delete dropdownStatusMap.open;
     return (
@@ -243,9 +288,18 @@ function ProjectPage(props) {
                     <div>
                         <span className='sub-title'>Open Tasks</span>
                         <div className='count-container'>
-                        <span className='counting'>2</span>
+                        <span className='counting'>{tasks.filter((item)=>{return item.done == '0';}).length}</span>
                         </div>
                     </div>
+                    {
+                        currentProject.total_cost && 
+                        <div>
+                        <span className='sub-title'>Total Cost</span>
+                        <div className='count-container'>
+                        <span className='counting'>{currentProject.total_cost}</span>
+                        </div>
+                        </div>
+                    }
                     {currentProject.project_status == statusMap.inProgress.key &&
                     <div className='working-time'>
                         <div className='clock'>
@@ -285,7 +339,7 @@ function ProjectPage(props) {
                             <FontAwesomeIcon  onClick={()=>{setAddTask(false)}} className='button-icon cancel-icon' icon={faTimesCircle} size={'2x'}/>
                         </div>}
                         <DndProvider backend={HTML5Backend}>
-                            <DragDrop tasks={tasks}/>
+                            <DragDrop getItem={getItem} items={tasks} reorder={reorderTasks}/>
                         </DndProvider>
                         </div>
                     </div>

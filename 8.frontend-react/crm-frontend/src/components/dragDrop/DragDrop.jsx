@@ -1,51 +1,41 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Task from '../task/Task';
-import {useDrop} from 'react-dnd';
-import update from 'immutability-helper';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import CrmApi from '../../helpers/CrmApi';
+
 
 function DragDrop(props) {
-    const crmApi = new CrmApi();
 
-    const [tasks, setTasks] = useState([]);
+    const [items, setItems] = useState([]);
 
     useEffect(()=>{
-      
-        const list = props.tasks.sort((firstItem, secItem)=>{
+        const list = props.items.sort((firstItem, secItem)=>{
             return firstItem.index - secItem.index;
         })
-        console.log("new list: ", list);
-        setTasks(list);
+        setItems(list);
         
-    }, [props.tasks])
+    }, [props.items])
 
     const getItemStyle = (isDragging, draggableStyle) => ({
-        // some basic styles to make the items look a bit nicer
         userSelect: "none",
         background: isDragging ? "#e4f2ff" : "white",
         ...draggableStyle
       });
 
-    const removeTask = async (taskId)=>{
-        // const result = crmApi.deleteTask({taskId: taskId});
-        const result = crmApi.postRequest("/tasks/deleteTask/", {taskId: taskId});
-        if(result){
-            const newTasks = tasks.filter((item)=>{
-                return item.id != taskId;
-            })
-            setTasks(newTasks);
-        }
-    }
+    // const removeItem = async (itemId)=>{
+    //     const result = props.remove(itemId);
+    //     if(result){
+    //         const newItems = items.filter((item)=>{
+    //             return item.id != itemId;
+    //         })
+    //         setItems(newItems);
+    //     }
+    // }
 
     const reorder = (list, startIndex, endIndex) => {
         const result = [...list];
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
-        const dataToSent = result.map((item, index)=>{
-            return {taskId: item.id, set: {task_index: index}};
-        })
-        crmApi.postRequest("/tasks/updateTasksIndex/", dataToSent);
+        props.reorder(result);
         return result;
       };
 
@@ -55,17 +45,13 @@ function DragDrop(props) {
           return;
         }
     
-        const items = reorder(
-          tasks,
+        const newItems = reorder(
+          items,
           result.source.index,
           result.destination.index
         );
     
-        setTasks(items);
-    }
-
-    const updateTask = () => {
-
+        setItems(newItems);
     }
 
     const getListStyle = isDraggingOver => ({
@@ -83,7 +69,7 @@ function DragDrop(props) {
                     ref={provided.innerRef}
                     style={getListStyle(snapshot.isDraggingOver)}
                     >
-                    {tasks.map((item, index) => (
+                    {items.map((item, index) => (
                         <Draggable key={item.id} draggableId={item.id} index={index}>
                         {(provided, snapshot) => (
                             <div
@@ -95,7 +81,8 @@ function DragDrop(props) {
                                 provided.draggableProps.style
                               )}
                             >
-                            <Task title={item.title} done={item.done !== "0"} id={item.id} removeTask={removeTask} updateTask={updateTask}/>
+                            {props.getItem(item)}
+                            {/* <Task item={item} update={props.update} remove={removeItem}/> */}
                             </div>
                         )}
                         </Draggable>
@@ -107,7 +94,6 @@ function DragDrop(props) {
 
                </Droppable>
            </DragDropContext>
-           {/* {tasks.map((task, index) => renderTask(task, index))} */}
        </div>
     )
 }
