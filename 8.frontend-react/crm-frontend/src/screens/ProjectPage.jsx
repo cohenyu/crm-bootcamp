@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
 import Header from '../components/header/Header';
-import PageTitle from '../components/pageTitle/PageTitle';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import CrmApi from '../helpers/CrmApi';
 import Timer from '../components/timer/Timer';
@@ -44,6 +43,7 @@ function ProjectPage(props) {
     let newTaskDescription = '';
     const [tasks, setTasks] = useState([]);
     const dispatch = useDispatch();
+    const [openTasks, setOpenTasks] = useState([]);
 
 
     useEffect(() => {
@@ -64,11 +64,10 @@ function ProjectPage(props) {
             if(currentProject){
                 const result = await crmApi.postRequest("/tasks/getAllTasks/", {projectId: currentProject.project_id});
                 if(result){
-                    console.log(result);
                     const tasksList = result.map((item)=>{
                         return {id: item.task_id, index: item.task_index, title: item.description, done: item.done};
                     })
-                    console.log(tasksList)
+                    setOpenTasks(tasksList.filter((item)=>{return item.done == '0';}).length);
                     setTasks(tasksList);
                 }
             }
@@ -125,7 +124,6 @@ function ProjectPage(props) {
     }
 
     const stoptWork = async () => {
-        // const result = await crmApi.stopWorkingTime({workId: workId});
         const result = await crmApi.postRequest("/workingTime/updateWorkingTime/", {workId: workId, set: {stop_time: 'NOW()'}});
         if(result){
             setIsWorking(false);
@@ -193,7 +191,6 @@ function ProjectPage(props) {
     if(newTaskDescription){
         const result = await crmApi.postRequest("/tasks/addTask/", {projectId: currentProject.project_id, description: newTaskDescription, index: tasks.length});
         if(result) {
-            console.log("task added");
             newTaskDescription = '';
         }
     }
@@ -205,25 +202,17 @@ function ProjectPage(props) {
         switch(mode){
             case 'check':
                 set = {done: value};
+                if(value){
+                    setOpenTasks(openTasks -1);
+                } else {
+                    setOpenTasks(openTasks + 1);
+                }
                 break;
             case 'title':
                 set = {description: value};
                 break;
         }
-        const result =  await crmApi.postRequest("/tasks/updateTask/", {taskId: id, set: set});
-        if(result){
-            console.log("task updated");
-
-        }
-        if(mode == 'check'){
-            const tempTask = [...tasks];
-            for(let task of tasks){
-                if(task.id == id){
-                    task.done = value;
-                }
-            }
-            // setTasks(tempTask);
-        }
+        return await crmApi.postRequest("/tasks/updateTask/", {taskId: id, set: set});
     }
 
     const removeTask = async (taskId) => {
@@ -288,7 +277,7 @@ function ProjectPage(props) {
                     <div>
                         <span className='sub-title'>Open Tasks</span>
                         <div className='count-container'>
-                        <span className='counting'>{tasks.filter((item)=>{return item.done == '0';}).length}</span>
+                        <span className='counting'>{openTasks}</span>
                         </div>
                     </div>
                     {

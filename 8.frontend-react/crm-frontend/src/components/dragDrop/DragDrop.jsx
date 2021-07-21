@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import Task from '../task/Task';
+import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 
@@ -20,16 +19,6 @@ function DragDrop(props) {
         background: isDragging ? "#e4f2ff" : "white",
         ...draggableStyle
       });
-
-    // const removeItem = async (itemId)=>{
-    //     const result = props.remove(itemId);
-    //     if(result){
-    //         const newItems = items.filter((item)=>{
-    //             return item.id != itemId;
-    //         })
-    //         setItems(newItems);
-    //     }
-    // }
 
     const reorder = (list, startIndex, endIndex) => {
         const result = [...list];
@@ -82,7 +71,6 @@ function DragDrop(props) {
                               )}
                             >
                             {props.getItem(item)}
-                            {/* <Task item={item} update={props.update} remove={removeItem}/> */}
                             </div>
                         )}
                         </Draggable>
