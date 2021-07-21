@@ -15,7 +15,6 @@ class imgs extends controller
 
     public function saveImg()
     {
-        // move_uploaded_file($_FILES["newFile"]["tmp_name"], "imgs/" . $_FILES["newFile"]["name"]);
         $this->response = $this->model->saveImg();
         return $this->response;
     }

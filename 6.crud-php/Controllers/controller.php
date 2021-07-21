@@ -15,7 +15,6 @@ class controller
     {
         $model_class_name = "Model_" . $this->model_cls;
         require_once("./Models/$model_class_name.php");
-        // get the token and it to parse
         $this->model = new $model_class_name();
         $this->parseAuthentication();
         $this->model->setAccountId($this->account_id);
@@ -31,7 +30,8 @@ class controller
     {
         
         $token = $this->getPostJsonData()->token;
-        $url = "http://host.docker.internal:8005/getUser";
+        $path = getenv('URL');
+        $url = $path . "getUser";
         
         
             $ch = curl_init();

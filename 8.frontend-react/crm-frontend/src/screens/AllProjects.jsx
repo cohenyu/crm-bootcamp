@@ -164,25 +164,44 @@ function AllProjects(props){
         <div className='page-container'>
             <Header/>
             <div className='crm-page'>
-            <PageTitle className='page-title' title={props.mine ? 'My Projects' : 'All Projects'} description='Manage your projects.'/>
-            <div className= {isTableShow ? 'table-actions-box':  'table-actions-box just-one-item'}>
-            {isTableShow && <TabsTable submit={submitTab} status={projectStatus} mode={props.mine ? "myProjects" : "allProjects"}/>}
-            {!props.mine && 
-             <Link className='button-link' to='/addProject'><CrmButton content='Add Project' buttonClass='main-button' icon='plus' isLoading={false} callback={()=> {}}/></Link>
-            }
+              <PageTitle 
+                  className='page-title' 
+                  title={props.mine ? 'My Projects' : 'All Projects'} 
+                  description='Manage your projects.'
+                />
+            <div className = {isTableShow ? 'table-actions-box':  'table-actions-box just-one-item'}>
+              {isTableShow && 
+              <TabsTable 
+                submit={submitTab} 
+                status={projectStatus} 
+                mode={props.mine ? "myProjects" : "allProjects"}
+              />}
+              {!props.mine && 
+              <Link 
+                className='button-link' 
+                to='/addProject'>
+                  <CrmButton 
+                    content='Add Project' 
+                    buttonClass='main-button' 
+                    icon='plus' 
+                    isLoading={false} 
+                    callback={()=> {}}
+                  />
+              </Link>
+              }
             </div>
             { isTableShow ? 
-            <Table columns={columnsData} data={filteredData} clickRow={handleProjectClick}/> : <Calendar/>}
-            
-            {/* <ActionModal title='Are you sure you want delete this item?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/> */}
-            {/* <Modal isOpen={isDeleteModalOpen} ariaHideApp={false} contentLabel='Remove Project' onRequestClose={closeDeleteProjectWindow}  overlayClassName="Overlay" className='modal'>
-                <h2>Are you sure you want delete this item?</h2>
-                <div className='action-buttons-modal'>
-                <CrmButton content='Delete' buttonClass='main-button' isLoading={isLoading} callback={()=> removeItem()}/>
-                <CrmButton content='Cancel' buttonClass='secondary-button' isLoading={isLoading} callback={()=> closeDeleteProjectWindow()}/>
-                </div>
-            </Modal> */}
-            <Modal isOpen={isProjectModalOpen} ariaHideApp={false} contentLabel='Project' onRequestClose={closeProjectWindow}  overlayClassName="Overlay" className='modal'>
+              <Table columns={columnsData} data={filteredData} clickRow={handleProjectClick}/> 
+              : 
+              <Calendar/>
+            }
+            <Modal 
+              isOpen={isProjectModalOpen} 
+              ariaHideApp={false} 
+              contentLabel='Project' 
+              onRequestClose={closeProjectWindow}  
+              overlayClassName="Overlay" 
+              className='modal'>
             <Form 
                     className='form-body'
                     {...modalProjectDetails}

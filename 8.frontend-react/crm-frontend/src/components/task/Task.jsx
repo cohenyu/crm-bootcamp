@@ -25,13 +25,34 @@ function Task(props) {
     return (
         <div className='task'>
             <FontAwesomeIcon icon={faGripVertical} size={'sm'}/>  
-            <div className={check ? 'check' : 'check unchecked'} onClick={()=>{handleCheckTask(!check)}}>{check &&  <FontAwesomeIcon icon={faCheck} size={'sm'}/> }</div> 
+            <div 
+                className={check ? 'check' : 'check unchecked'} 
+                onClick={()=>{handleCheckTask(!check)}}
+            >
+                {check &&  <FontAwesomeIcon icon={faCheck} size={'sm'}/> }
+            </div> 
             {isEditTask ? <input onChange={(e)=>{setTitle(e.target.value)}} value={title} type='text'/>: <span className='title'>{title}</span>}
             <div className='task-actions'>
-            <FontAwesomeIcon onClick={()=>{!isEditTask ? setEditTask(!isEditTask) : setNewTitle()}} className='edit' icon={isEditTask? faCheck : faEdit} size={'1x'}/> 
-            <FontAwesomeIcon onClick={()=>{setIsDeleteModalOpen(true)}} className='trash' icon={faTrashAlt} size={'1x'}/> 
+                <FontAwesomeIcon 
+                    onClick={()=>{!isEditTask ? setEditTask(!isEditTask) : setNewTitle()}} 
+                    className='edit' icon={isEditTask? faCheck : faEdit} 
+                    size={'1x'}
+                /> 
+                <FontAwesomeIcon 
+                    onClick={()=>{setIsDeleteModalOpen(true)}} 
+                    className='trash' 
+                    icon={faTrashAlt} 
+                    size={'1x'}
+                /> 
             </div>
-            <ActionModal title='Are you sure you want delete this task?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={()=>{props.remove(props.item.id); setIsDeleteModalOpen(false)}}/>
+            <ActionModal 
+                title='Are you sure you want delete this task?' 
+                isLoading={false} 
+                ok='Delete' 
+                cancel='Cancel' 
+                onClose={()=> {setIsDeleteModalOpen(false)}} 
+                isOpen={isDeleteModalOpen} 
+                action={()=>{props.remove(props.item.id); setIsDeleteModalOpen(false)}}/>
         </div>
     );
 }
