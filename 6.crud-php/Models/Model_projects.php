@@ -5,6 +5,7 @@ require_once("Model_clients.php");
 require_once(__DIR__ . "/../helpers/mailgunHelper.php");
 require_once("Model_imgs.php");
 require_once("Model_workingTime.php");
+require_once("Model_settings.php");
 
 class Model_projects extends Model
 {
@@ -14,6 +15,7 @@ class Model_projects extends Model
     private $mailHelper;
     private $imgsModel;
     private $workingModel;
+    private $settingsModel;
 
     public function __construct()
     {
@@ -22,7 +24,7 @@ class Model_projects extends Model
         $this->imgsModel = new Model_imgs();
         $this->mailHelper = new mailgunHelper();
         $this->workingModel = new Model_workingTime();
-
+        $this->settingsModel = new Model_settings();
     }
 
     public function addProject($projectDetails)
@@ -88,15 +90,20 @@ class Model_projects extends Model
 
     public function mailToClient($params){
         $projectId = $params->projectId;
-        $costPerHour = 20;
         $from = 'coheen1@gmail.com';
         $to = 'coheen1@gmail.com';
         $project = $this->getAllProjects(["projectId" => $projectId]) ?? false;
         if($project){
             $project = $project[0];
+            $settings = $this->settingsModel->getSettings($project['account_id']) ?? false;
+            if($settings){
+                $hourCost = $settings[0]['hour_cost'];
+            } else {
+                return false;
+            }
             // $to = $project["client_mail"];
             if($project['project_status'] == 'in progress'){
-                $estimatedHours = ((int) $project["estimated_time"]) * $costPerHour;
+                $estimatedHours = ((int) $project["estimated_time"]) * $hourCost;
                 $type = $project["item_type"];
                 $description = $project["description"];
                 
@@ -106,7 +113,7 @@ class Model_projects extends Model
                     "Your project has been accepted!",
                     $this->projectAccepted($type, $description, $estimatedHours));
             } else if($project['project_status'] == 'done'){
-                $totalWorking = intval($this->workingModel->getWorkingTotal($params) ?? 0) / 60 * $costPerHour;
+                $totalCost = intval($this->workingModel->getWorkingTotal($params) ?? 0) / 60 * $hourCost;
                 $imgs = $this->imgsModel->getImgs($projectId);
                 $attachments = [];
                 foreach($imgs as $imgsData){
@@ -118,10 +125,14 @@ class Model_projects extends Model
                     $from, 
                     $to, 
                     "Your project is ready!", 
-                    $this->projectDone($type, $totalWorking),
+                    $this->projectDone($type, $totalCost),
                     $attachments
                 );
-                    
+                $queryData = [
+                    "set" => ["total_cost" => $totalCost],
+                    "where" => ["project_id" => $projectId],
+                ];
+                $this->updateItem($queryData);
             }
         }
         

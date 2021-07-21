@@ -9,16 +9,19 @@ const sqlHelper = new SqlHelper();
 const mailgunHelper = new MailgunHelper();
 const validation = new ValidationHelper();
 
-
 class AuthManager {
 
+    constructor(){
+        this.costPerHour = 14;
+    }
+    
     /**
      * Inserts new user and account to the db.
      * @param {object} fields 
      * @returns jwt token
      */
     async signup(fields){
-        
+       
        let data = validation.validateAll(fields);
         if(!data.valid){
             return data;
@@ -54,6 +57,16 @@ class AuthManager {
             data.serverError = 'serverError';
             return data;
         }
+
+
+        sql = `INSERT INTO settings (account_id, hour_cost) VALUES ('${account_id_value}', '${this.costPerHour}');`;
+        result = await sqlHelper.insert(sql).catch((err)=>{});
+        if(!result){
+            data.serverError = 'serverError';
+            return data;
+        }
+
+        
 
         const user = {userName: fields.name.value,  userId: result.insertId, accountId: account_id_value};
         data.valid = true;
