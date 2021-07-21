@@ -1,60 +1,52 @@
-import Form from '../components/Form';
-import Logo from '../components/Logo';
+import Form from '../components/form/Form';
+import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
-// import '../styles/login.css';
 import '../styles/massageBox.css';
 import {
-    Link, useParams,
+    Link, useParams
   } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
-import Massage from '../components/Massage';
+import Message from '../components/message/Message';
 
 const authApi = new AuthApi();
 
 function ResetPassword(props) {  
-
+      // const history = useHistory();
       const [isPasswordChanged, setPasswordChanged] = useState(false);
       const [isLoading, setIsLoading] = useState(true);
       const [isValidPage, setIsValidPage] = useState(false);
-
       const {mail} = useParams();
-      if(!mail){
-        this.props.history.push('/login');
-      }
 
-      const checkPageRelevance =  async () => {
-        const res = await authApi.checkTokenValidation({mailToken: mail});
-        console.log('res is:', res);
-        return res.valid;
-        console.log("the jwt token is valid? :  ", res.valid);
-      }
-
+      
+      
       useEffect(()=>{
         (async () => {
           const result = await checkPageRelevance();
-          console.log('the result is: ', result);
           if(result) {
-            console.log('set the state of valid page to true');
-           setIsValidPage(true);
+            setIsValidPage(true);
           } 
           setIsLoading(false);
         })();
-        
       }, [])
+      
+      const checkPageRelevance =  async () => {
+        const res = await authApi.checkTokenValidation({mailToken: mail});
+        return res.valid;
+      }
 
       const submit = async (data) => {
         // sending the mail token with the new password
         const res = await authApi.resetPassword({mailToken: mail, fields: data});
         if(res.valid){
-          console.log("password was changed");
           setPasswordChanged(true);
           return null;
         } 
         return res;
       }
 
+
       const reset = {
-        submitFunc: submit,
+        submitHandle: submit,
         type: 'reset',
         title: "Enter a new password",
         buttonTitle:'Change Password',
@@ -105,7 +97,7 @@ function ResetPassword(props) {
                       className='form-body'
                       fields={reset.fields} 
                       title={reset.title}
-                      submitHandle={reset.submitFunc} 
+                      submitHandle={reset.submitHandle} 
                       type={reset.type}
                       errorMap = {reset.errorMap}
                       button={reset.buttonTitle}
@@ -113,7 +105,7 @@ function ResetPassword(props) {
                       passwordError = 'Password must include 1-9 a-z A-Z and at least 8 characters'
                   /> 
                   }
-              </div> : <Massage links={links} massage='This page is no longer available.'/>
+              </div> : <Message links={links} massage='This page is no longer available.'/>
             )}
             
         </div>

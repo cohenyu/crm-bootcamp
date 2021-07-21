@@ -22,14 +22,14 @@
 } */
 
 
-hr {
+/* hr {
     height: 1px;
     background-color: rgba(116, 113, 113, 0.123);
     border: none;
     width: 100%;
     margin-bottom: 15px;
     margin-top: 0;
-}
+} */
 
 
 .form-body {
@@ -40,6 +40,7 @@ hr {
 .linkto {
     color: #495867;
     outline: none;
+    text-decoration: underline;
 }
 
 .linkto:hover {

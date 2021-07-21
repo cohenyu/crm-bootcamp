@@ -1,21 +1,60 @@
 .crm-page {
-    width: 70%;
+    background: #f8f8f8;
+    width: 75%;
     margin: auto;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     padding: 10px 30px;
+    position: relative;
+    left: 70px
+
 }
 
+div {
+    white-space: pre-wrap;
+}
+
+.page-container {
+    min-height: 100vh;
+    background: #f8f8f8;
+    display: flex;
+}
 .status-icon {
     color: #63b67f;
+    margin-left: 20px;
+}
+
+.trash-icon {
+    color: rgba(255, 0, 0, 0.527); 
+}
+
+.edit-icon{
+    color: #8a8a8a;
+}
+
+.download-icon {
+    color: #52719c;
 }
 
 .link-table {
     color: #577399;
 }
 
-.add-user-box {
+.table-actions-box {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.just-one-item {
     justify-content: flex-end;
+    margin-bottom: 5px;
+}
+
+.add-project-container {
+    border: 0.660428px solid #DFE0EB;
+    padding: 30px;
+    background-color: white;
 }
 
 

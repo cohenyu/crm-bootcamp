@@ -1,0 +1,27 @@
+.ReactModalPortal > div {
+    opacity: 1;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #5773995b;
+}
+
+.modal {
+    background-color: white;
+    padding: 30px;
+    outline: none;
+    width: 25%;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+

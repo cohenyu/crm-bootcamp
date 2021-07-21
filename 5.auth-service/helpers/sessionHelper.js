@@ -15,7 +15,8 @@ class SessionHelper {
               return null;
             }
             console.log("verified!");
-            return this.openSessions.has(user.sessionId) ?  this.openSessions.get(user.sessionId) : null;
+            return user;
+            // return this.openSessions.has(user.sessionId) ?  this.openSessions.get(user.sessionId) : null;
           });
         } 
         return null;
@@ -52,15 +53,10 @@ class SessionHelper {
     verifyToken(token){
       return jwt.verify(token, this.accessTokenSecret, (err, result) => {
         if (err){
-          console.log("not verified");
-          console.log("returning null from verify");
           return null;
         }
-        console.log("verified!");
         return result;
       });
-      
-      
     }
 
 }

@@ -1,0 +1,27 @@
+.tabs-container {
+
+    button {
+        background-color: #ececec;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        border: solid 0.2px rgba(182, 182, 182, 0.329);
+
+        &:hover {
+            background-color: #d3d3d3;
+        }
+    }
+
+    .active-tab {
+        background-color: #d4e6f7;
+        border-bottom: solid 0.2px #d4e6f7;
+
+        &:hover {
+            background-color: #d4e6f7 !important;
+        }
+    }
+}
+

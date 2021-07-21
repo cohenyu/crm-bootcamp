@@ -1,0 +1,25 @@
+.search-container .form-input {
+  width: 100%;
+}
+
+.results {
+  position: absolute;
+  padding-left: 0;
+  background: white;
+  opacity: 1;
+  display: block;
+  text-align: left;
+  max-height: 100px;
+  overflow: scroll;
+  width: 25%;
+}
+
+.results .result {
+  border: solid 1px #acacac;
+  border-bottom: none;
+}
+
+.results .result:last-child {
+  border-bottom: solid 1px #acacac;
+}
+/*# sourceMappingURL=search.css.map */

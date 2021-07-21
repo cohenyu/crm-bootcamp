@@ -1,0 +1,48 @@
+.logo-container .logo-text {
+  /* font-size: 3vw; */
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+.logo-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+}
+
+.logo-deco {
+  background-color: #fe5f55;
+  border-radius: 50%;
+}
+
+.large .logo-text {
+  font-size: 65px;
+}
+
+.large .logo-deco {
+  width: 19.5px;
+  height: 19.5px;
+}
+
+.small .logo-text {
+  font-size: 50px;
+}
+
+.small .logo-deco {
+  width: 15px;
+  height: 15px;
+}
+
+.xsmall .logo-text {
+  font-size: 35px;
+}
+
+.xsmall .logo-deco {
+  width: 10.5px;
+  height: 10.5px;
+}
+/*# sourceMappingURL=logo.css.map */

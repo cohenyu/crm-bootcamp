@@ -1,13 +1,9 @@
-import React, {useState} from 'react';
-import AuthApi from '../helpers/authApi';
-import Header from '../components/Header';
-import CrmButton from '../components/CrmButton';
-import PageTitle from '../components/PageTitle';
+import React from 'react';
+import Header from '../components/header/Header';
+import PageTitle from '../components/pageTitle/PageTitle';
 import '../styles/crmPage.css'
 import GroupedBar from '../components/groupedBar/GroupedBar';
 import LineChart from '../components/lineChart/LineChart';
-
-const authApi = new AuthApi();
 
 
 
@@ -15,7 +11,7 @@ function Home(props) {
 
 
     return (
-        <div>
+        <div className='page-container'>
             <Header/>
             <div className='crm-page'>
             <PageTitle className='page-title' title='Home'/>

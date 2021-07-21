@@ -1,13 +1,13 @@
 import React from 'react';
-import Form from '../components/Form';
-import Logo from '../components/Logo';
+import Form from '../components/form/Form';
+import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
 import '../styles/signUp.css';
 import {
     // BrowserRouter as Router,
     Link,
     useParams,
-    withRouter
+    useHistory
   } from "react-router-dom";
 const authApi = new AuthApi();
 
@@ -16,26 +16,28 @@ const authApi = new AuthApi();
 function Signup(props) {
 
   const {token} = useParams();
+  const history = useHistory();
   const submit = async (formData) => {
+
     console.log(formData);
     let res;
-    if(props.type == 'newUser'){
+    if(props.type === 'newUser'){
       res =  await authApi.editUser({fields: formData, token: token});
     } else {
       res = await authApi.signup(formData);
     }
-    console.log(res.valid);
+    
     if(res.valid){
-      console.log("signup is done!!",res.valid);
-      window.location.href = 'http://localhost:3000/home'
-      // props.history.push('/home');
+      console.log("history", props.history);
+      // history.push('/home');
+      window.location.href = 'http://localhost:3000/home';
     } else {
       return res;
     }
   }
 
     const signup = {
-        submitFunc: submit,
+        submitHandle: submit,
         type: 'signup',
         title: "Let's get started!",
         buttonTitle: "Sign Up",
@@ -83,7 +85,7 @@ function Signup(props) {
         }
       }
 
-    if(props.type == 'newUser'){
+    if(props.type === 'newUser'){
       delete signup.fields.mail;
       delete signup.fields.business;
     }
@@ -101,7 +103,7 @@ function Signup(props) {
                 className='form-body'
                 fields={signup.fields} 
                 title={signup.title}
-                submitHandle={signup.submitFunc} 
+                submitHandle={signup.submitHandle} 
                 type={signup.type}
                 errorMap = {signup.errorMap}
                 button={signup.buttonTitle}

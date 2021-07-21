@@ -1,0 +1,25 @@
+.tabs-container {
+  background-color: #f1f1f1;
+}
+
+.tabs-container button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  border: solid 0.2px rgba(182, 182, 182, 0.329);
+}
+
+.tabs-container button:hover {
+  background-color: #ddd;
+}
+
+.tabs-container button:focus {
+  background-color: #d4e6f7;
+  border-bottom: solid 0.2px #d4e6f7;
+}
+/*# sourceMappingURL=tabsTable.css.map */

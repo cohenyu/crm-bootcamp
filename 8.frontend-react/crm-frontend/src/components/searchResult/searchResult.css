@@ -1,0 +1,16 @@
+.result-container {
+  padding: 5px;
+}
+
+.result-container .main-result {
+  font-weight: bold;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.651);
+  padding-bottom: 4px;
+}
+
+.result-container .sub-result {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.541);
+}
+/*# sourceMappingURL=searchResult.css.map */

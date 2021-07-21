@@ -1,0 +1,77 @@
+
+.header-container {
+    * {
+        color: white;
+    }
+
+    border-bottom-right-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    border-top-right-radius: 20px;
+    height: 91%;
+    justify-content: space-between;
+    padding: 40px 0px;
+    background-color: #577399;
+    position: fixed;
+    top: 0px;
+    z-index: 10;
+    align-items: center;
+
+    .is-working {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        position: absolute;
+    }
+
+    .working {
+        background-color: rgb(141, 214, 30);
+    }
+    .not-working {
+        background-color: #fe5f55;
+    }
+}
+
+
+.personal {
+    position: absolute;
+    bottom: 20px;
+    left: 135px;
+    background-color: #577399;
+    display: block;
+    min-width: 160px;
+    text-align: left;
+    border-radius: 12px;
+    box-shadow: 0px 1px 5px -1px rgb(0, 0, 0);
+    padding: 10px 20px;
+
+    & span{
+        padding: 0px 0px;
+        display: block;
+        margin: 10px 0px;
+
+        &:not(:last-child){
+            margin-bottom: 16px;
+        }
+    }
+
+    span:hover {
+        padding-left: 15px;
+        border-left: 2px solid #ffa39c;
+        transition: all 0.5s ease;
+    }
+
+}
+
+
+
+.crm-nav-container {
+    flex: 7;
+}
+
+.nav-logo {
+    cursor: pointer;
+    margin-bottom: 40px;
+    // flex: 1;
+}
+
