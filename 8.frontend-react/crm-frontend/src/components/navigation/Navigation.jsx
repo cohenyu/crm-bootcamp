@@ -14,18 +14,21 @@ function Navigation(props) {
     isInSubMenuRef.current = isInSubMenu;
 
     const handleHoverNav = (index, bool) => {
+        console.log("hover nav");
         const tempHoverList = new Array(props.links.length).fill(false);
         tempHoverList[index] = bool;
         setIsHoverList(tempHoverList);
     };
 
     const handleInSubMenu = (index, bool) => {
-        const tempHoverList = [...isInSubMenu];
+        console.log("hover sub menu");
+        const tempHoverList = [...isInSubMenuRef.current];
         tempHoverList[index] = bool;
         setInSubMenu(tempHoverList);
     };
 
     const handleMouseLeaveNav = (index) => {
+        console.log("leave nav");
         setTimeout(() => {
             if(!isInSubMenuRef.current[index]){
                 handleHoverNav(index, false)
@@ -63,7 +66,8 @@ function Navigation(props) {
             navList.push(<li key={link.title}>
                 <div 
                     onMouseEnter={()=>{handleHoverNav(index, true)}}  
-                    onMouseLeave={handleMouseLeaveNav(index)}>
+                    onMouseLeave={()=>handleMouseLeaveNav(index)}
+                    >
                     <Link 
                         className='nav-link' 
                         key={link.title} 
@@ -74,7 +78,8 @@ function Navigation(props) {
                     <FontAwesomeIcon className='nav-icon' icon={faCaretRight} size='xs'/>
                 </div>
                 {isHoverListRef.current[index] && 
-                <ul onMouseEnter={()=>{handleInSubMenu(index, true)}}  
+                <ul 
+                    onMouseEnter={()=>{handleInSubMenu(index, true)}}  
                     onMouseLeave={()=>{handleMouseLeaveSub(index)}} 
                     className="dropdown">{subLinks}</ul>}
                 </li>);

@@ -58,3 +58,22 @@ div {
 }
 
 
+.chart {
+    border: 0.660428px solid #DFE0EB;
+    border-radius: 5.28342px;
+    padding: 35px;
+    margin: 14px;
+    background-color: white;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+    justify-content: center;
+}
+
+.charts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+

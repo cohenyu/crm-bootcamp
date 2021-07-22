@@ -1,0 +1,15 @@
+.range {
+    margin: 7px;
+    color: rgba(0, 0, 0, 0.685);
+    font-size: 14px;
+
+    &:hover {
+        font-weight: bold;
+        color: #6aa7eecb;
+    }
+
+}
+
+.current {
+    font-weight: bold;
+}

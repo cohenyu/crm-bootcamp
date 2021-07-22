@@ -1,49 +1,36 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Line } from 'react-chartjs-2';
-import './lineChart.scss'
+import './lineChart.scss';
+import ColorsHelper from '../../helpers/colorsHelper';
 
 function LineChart(props){
+  const colors = new ColorsHelper();
+  const [data, setData] = useState({labels: [], datasets:[]});
 
-    const data = {
-        labels: ['1', '2', '3', '4', '5', '6'],
-        datasets: [
-          {
-            label: '# of bla',
-            data: [12, 19, 3, 5, 2, 3],
+  useEffect(()=>{
+    if(props.data){
+      const datasets = [];
+      let index = 0;
+      for(let item in props.data.datasets){
+        const color = colors.getColor(index);
+        datasets.push({
+          label: item,
+            data: props.data.datasets[item],
             fill: false,
-            backgroundColor: 'rgba(153, 102, 255)',
-            borderColor: 'rgba(153, 102, 255, 0.2)',
-          },
-          {
-            label: '# of Vd',
-            data: [10, 4, 1, 7, 8, 16],
-            fill: false,
-            backgroundColor: 'rgba(255, 206, 86)',
-            borderColor: 'rgba(255, 206, 86, 0.2)',
-          },
-          {
-            label: '# of Votes',
-            data: [15, 11, 2, 1, 14, 10],
-            fill: false,
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgba(255, 99, 132, 0.2)',
-          },
-          {
-            label: '# of fdg',
-            data: [12, 17, 10, 4, 6, 1],
-            fill: false,
-            backgroundColor: 'rgba(75, 192, 192)',
-            borderColor: 'rgba(75, 192, 192, 0.2)',
-          },
-          {
-            label: '# of th',
-            data: [2, 13, 4, 8, 17, 18],
-            fill: false,
-            backgroundColor: 'rgba(255, 159, 64)',
-            borderColor:  'rgba(255, 159, 64, 0.2)',
-          },
-        ],
-      };
+            backgroundColor: color.color,
+            borderColor: color.border,
+            borderWidth: 1
+        })
+        index++;
+      }
+      const tempData = {
+        labels: props.data.labels,
+        datasets: datasets
+      }
+      setData(tempData);
+    }
+  }, [props.data]);
+
 
     const options = {
         scales: {

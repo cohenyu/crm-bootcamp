@@ -26,7 +26,7 @@ function Header(props) {
 
     const links = [
         {
-            title: "Home", 
+            title: "Dashboard", 
             url: '/home'
         }, 
         {

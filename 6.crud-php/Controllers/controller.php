@@ -28,7 +28,6 @@ class controller
 
     protected function parseAuthentication()
     {
-        
         $token = $this->getPostJsonData()->token;
         $path = getenv('URL');
         $url = $path . "getUser";
