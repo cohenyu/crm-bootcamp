@@ -40,7 +40,7 @@ const colors = new ColorsHelper();
   };
 
   return (
-      <div className='bar-chart-container'> 
+      <div className='bar-chart-container chart-view'> 
         <div className='header'>
             <h3 className='title'>{props.title}</h3>
         </div>

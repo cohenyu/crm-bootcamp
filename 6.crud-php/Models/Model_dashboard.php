@@ -14,7 +14,7 @@ class Model_dashboard extends Model
     public function projectCostVsEstimated($data)
     {   
         if($data->interval == 'week'){
-            $interval = 6;
+            $interval = 7;
         } else if($data->interval == 'month') {
             $interval = 27;
         } else {
@@ -30,10 +30,11 @@ class Model_dashboard extends Model
                     OR projects.project_status = 'done')
                     AND projects.total_cost IS NOT NULL 
                     AND projects.account_id = $this->account_id 
-                    AND projects.updated > now() - interval $interval day
+                    AND projects.updated >  now() - interval $interval day
                 GROUP BY users.user_id
                 ORDER BY ABS((projects.estimated_time * settings.hour_cost) - projects.total_cost) DESC
                 LIMIT $data->limit;";
+                // exit($query);
 
         return $this->select($query); 
     }
@@ -88,6 +89,26 @@ class Model_dashboard extends Model
         WHERE account_id = $this->account_id
         AND updated > now() - interval $interval day
         GROUP BY project_status
+        ;";
+        return $this->select($query);
+    }
+
+    public function leastRecentlyCreatedProject($data){
+        
+        if($data->interval == 'week'){
+            $interval = 6;
+        } else if($data->interval == 'month') {
+            $interval = 27;
+        } else {
+            $interval = 1;
+        }
+        $query = "SELECT *, ROUND(HOUR(timediff(now(),created)) / 24) as passed_days
+        FROM projects
+        WHERE project_status = 'open'
+        AND created > now() - interval $interval day
+        AND account_id = $this->account_id
+        ORDER BY created
+        limit $data->limit
         ;";
         return $this->select($query);
     }

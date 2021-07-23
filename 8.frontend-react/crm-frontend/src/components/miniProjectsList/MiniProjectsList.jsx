@@ -1,0 +1,118 @@
+import React, { useEffect, useState, useRef } from 'react';
+import './miniProjectsList.scss';
+import Table from '../table/Table';
+import Modal from 'react-modal';
+import Form from '../form/Form';
+import CrmApi from '../../helpers/CrmApi';
+import statusMap from '../../helpers/StatusMap';
+import { useHistory } from 'react-router';
+
+const crmApi = new CrmApi();
+
+function MiniProjectsList(props){
+    const [projects, setProjects] = useState([]);
+    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+    const [modalProjectDetails, setModalProjectDetails] = useState({});
+    const [projectDetails, setProjectDetails] = useState({});
+    const projectDetailsRef = useRef(projectDetails);
+    projectDetailsRef.current = projectDetails;
+  
+    const history = useHistory();
+
+    
+    useEffect(()=>{
+        setProjects(props.projectsList);
+    }, [props.projectsList])
+
+
+    const submitUpdateProject = async (dataToSent) => {
+      const res = await crmApi.postRequest("/projects/updateProject/", {projectId: projectDetailsRef.current.project_id, user: true, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
+      if(res > 0){
+        history.push(`/project/${projectDetailsRef.current.project_id}`);
+      }
+  };
+
+    //  // project modal settings
+     const projectModal = {
+      submitHandle: submitUpdateProject,
+      type: 'project',
+      title: '',
+      text: '',
+      errorMap: {
+        'serverError': 'Try again later',
+        'clientNotExist': 'Client not exist'
+      },
+      button: 'Assign To Me',
+      buttonClass: 'main-button',
+      fields: {
+        hours: {
+          min: 1,
+          text: "Estimated Time (hours)",
+          id: "hours",
+          type: 'number',
+          error: false,
+          mainType: 'number',
+        },
+      }
+    }
+
+     // Get the title and text of the project and show it in the modal
+     const openProjectWindow = ({original}) => {
+      let tempFormDetails  = {...projectModal};
+      tempFormDetails.text = original.description;
+      tempFormDetails.title = original.item_type;
+      setProjectDetails(original)
+      setModalProjectDetails(tempFormDetails);
+      setIsProjectModalOpen(true);
+    };
+
+  // closing the project modal description
+    const closeProjectWindow = ()=>{
+        setIsProjectModalOpen(false);
+    };
+
+    const columns =
+        [
+          {
+            Header: 'Type',
+            accessor: 'item_type', // accessor is the "key" in the data
+    
+          },
+          {
+            Header: 'Deadline',
+            accessor: 'deadline',
+            // Cell: ({value})  => <a className='link-table' href={`mailto:${value}`}>{value}</a>
+          },
+          {
+            Header: 'Passed Days',
+            accessor: 'passed_days',
+            // Cell: ({value})  => <a className='link-table' href={`tel:${value}`}>{value}</a>
+          },
+        ];
+        
+
+      const handleClickRow = (row) => {
+        openProjectWindow(row);
+      }
+
+    return (
+        <div className='projects-container chart-view'>
+            <h3 className='title'>{props.title}</h3>
+            <Table tableClass='projects-table' columns={columns} data={projects} clickRow={handleClickRow}/>
+            <Modal 
+              isOpen={isProjectModalOpen} 
+              ariaHideApp={false} 
+              contentLabel='Project' 
+              onRequestClose={closeProjectWindow}  
+              overlayClassName="Overlay" 
+              className='modal'>
+            <Form 
+                    className='form-body'
+                    {...modalProjectDetails}
+                />
+            </Modal>
+        </div>
+    );
+}
+
+export default MiniProjectsList;

@@ -29,4 +29,9 @@ class dashboard extends controller
         return $this->response;
     }
 
+    public function leastRecentlyCreatedProject(){
+        $this->response = $this->model->leastRecentlyCreatedProject($this->getPostJsonData()->data);
+        return $this->response;
+    }
+
 }

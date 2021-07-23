@@ -100,7 +100,6 @@ function AllProjects(props){
         if(res > 0){
           history.push(`/project/${projectDetailsRef.current.project_id}`);
         }
-        // TODO error
     };
 
     

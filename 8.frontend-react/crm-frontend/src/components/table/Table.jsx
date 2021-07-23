@@ -5,6 +5,7 @@ import './table.scss'
 function Table(props) {
 
     const {columns, data} = props;
+    console.log("data:", data);
     
     const {
         getTableProps,
@@ -16,8 +17,8 @@ function Table(props) {
       
 
     return (
-        <div className='table-container'>
-            <table className='table sticky' id='table' {...getTableProps()}>
+        <div className={'table-container'}>
+            <table className={props.tableClass ? props.tableClass : 'table sticky'} id='table' {...getTableProps()}>
       <thead>
         {headerGroups.map(headerGroup => (
           <tr className='table-header' {...headerGroup.getHeaderGroupProps()}>

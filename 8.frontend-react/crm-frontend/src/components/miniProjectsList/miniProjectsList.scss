@@ -1,0 +1,72 @@
+.projects-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .project{
+        margin: 16px 0px;
+
+        .days {
+            font-size: 24px;
+        }
+    }
+
+    .projects-header {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.568);
+    }
+
+}
+
+
+.projects-container {
+
+    .table-container{
+        width: 100%;
+    }
+
+    .projects-table{
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+
+        td {
+            text-align: center;
+            // background-color: rgba(241, 241, 241, 0.747);
+            background-color: rgba(74, 175, 243, 0.2);
+            padding: 8px;
+        }
+
+        tr {
+            box-shadow: none;
+            border-bottom-left-radius: 12px;
+            border-top-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top-right-radius: 12px;
+            padding-bottom: 40px;
+        }
+
+        .card {
+            &:hover {
+                cursor: pointer;
+                background-color: rgba(54, 162, 235, 0.2);
+                font-weight: bold;
+            }
+            
+        }
+
+
+
+    }
+}
+
+.table-header {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.425);
+    // width: 100%;
+    th{
+        // margin: 0 10px;
+        font-weight: 100 !important;
+    }
+}

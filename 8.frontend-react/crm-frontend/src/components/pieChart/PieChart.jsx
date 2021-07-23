@@ -40,7 +40,7 @@ function PieChart(props){
 
 
     return (
-        <div className='pie-chart-container'>
+        <div className='pie-chart-container chart-view'>
             <div className='header'>
                 <h3 className='title'>{props.title}</h3>
             </div>

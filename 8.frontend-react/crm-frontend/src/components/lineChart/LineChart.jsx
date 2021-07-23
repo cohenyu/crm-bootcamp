@@ -45,7 +45,7 @@ function LineChart(props){
       };
 
     return (
-        <div className='line-chart-container'>
+        <div className='line-chart-container chart-view'>
             <div className='header'>
             <h3 className='title'>{props.title}</h3>
             </div>
