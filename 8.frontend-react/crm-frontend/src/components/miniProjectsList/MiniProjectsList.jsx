@@ -75,18 +75,16 @@ function MiniProjectsList(props){
         [
           {
             Header: 'Type',
-            accessor: 'item_type', // accessor is the "key" in the data
+            accessor: 'item_type', 
     
           },
           {
             Header: 'Deadline',
             accessor: 'deadline',
-            // Cell: ({value})  => <a className='link-table' href={`mailto:${value}`}>{value}</a>
           },
           {
             Header: 'Passed Days',
             accessor: 'passed_days',
-            // Cell: ({value})  => <a className='link-table' href={`tel:${value}`}>{value}</a>
           },
         ];
         

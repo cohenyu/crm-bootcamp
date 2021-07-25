@@ -22,6 +22,10 @@ function Home(props) {
     const [dateMaxWorking, setMaxWorkingDate] = useState("month");
     const [dateLeastRecentlyCreatedProject, setDateLeastRecentlyCreatedProject] = useState("month");
 
+
+    /**
+     * Fetches the average estimated cost and the total cost of the projects in the date range per user. 
+     */
     const fetchCost = () => {
         (async () => {
             const result = await crmApi.postRequest('/dashboard/projectCostVsEstimated/', {interval: dateCost, limit: 5});
@@ -39,6 +43,9 @@ function Home(props) {
           })();
     } 
 
+    /**
+     * Fetches the cost at the first time and then sets an interval to make this happen every 20 seconds 
+     */
     useEffect(()=>{
         fetchCost();
         const interval =  setInterval(fetchCost, 20 * 1000);
@@ -46,6 +53,9 @@ function Home(props) {
     }, [dateCost])
 
 
+     /**
+     * Fetches the sum of each project status in the date range per user. 
+     */
     const fetchStatus = () => {
         (async () => {
             const result = await crmApi.postRequest('/dashboard/getProjectStatusSum/', {interval: dateStatus});
@@ -60,6 +70,10 @@ function Home(props) {
             }
           })();
     }
+
+    /**
+     * Fetches the status at the first time and then sets an interval to make this happen every 20 seconds 
+     */
     useEffect(()=>{
         fetchStatus();
         const interval =  setInterval(fetchStatus, 20 * 1000);
@@ -67,6 +81,9 @@ function Home(props) {
     }, [dateStatus]);
 
 
+    /**
+     * Fetches the 4 users who have the most working hours
+     */
     const FetchMaxWorking = () => {
         (async () => {
             const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMaxWorking, mode: 'max', limit: 4});
@@ -76,6 +93,10 @@ function Home(props) {
             }
           })();
     }
+
+    /**
+     * Fetches the working hours and then sets an interval to make this happen every 20 seconds 
+     */
     useEffect(()=>{
         FetchMaxWorking();
         const interval =  setInterval(FetchMaxWorking, 20 * 1000);
@@ -83,6 +104,9 @@ function Home(props) {
     }, [dateMaxWorking]);
 
 
+    /**
+     * Fetches the 4 users who have the least working hours
+     */
     const fetchMinWorking = () => {
         (async () => {
             const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMinWorking, mode: 'min', limit: 4});
@@ -92,12 +116,20 @@ function Home(props) {
             }
           })();
     }
+
+    /**
+     * Fetches the working hours and then sets an interval to make this happen every 20 seconds 
+     */
     useEffect(()=>{
         fetchMinWorking();
         const interval =  setInterval(fetchMinWorking, 20 * 1000);
         return () => clearInterval(interval);
     }, [dateMinWorking]);
 
+
+    /**
+     * Fetches the 5 projects that were created the longest time ago.
+     */
     const fetchLeastRecentlyProjects = () => {
         (async () => {
             
@@ -108,6 +140,10 @@ function Home(props) {
             }
           })();
     }
+
+    /**
+     * Fetches the project and then sets an interval to make this happen every 20 seconds 
+     */
     useEffect(()=>{
         fetchLeastRecentlyProjects();
         const interval =  setInterval(fetchLeastRecentlyProjects, 20 * 1000);
@@ -152,6 +188,17 @@ function Home(props) {
                     />
                 </div>
                 <div className='chart'>
+                     <DatePicker 
+                        handleClick={(date)=>{handleChangeDate(date, setDateStatus)}} 
+                        current={dateStatus} 
+                        buttons={["day","week", "month"]}
+                     />
+                    <PieChart 
+                        data={statusChartData} 
+                        title='Project status'
+                    />
+                </div>
+                <div className='chart'>
                     <DatePicker 
                         handleClick={(date)=>{handleChangeDate(date, setMaxWorkingDate)}} 
                         current={dateMaxWorking} 
@@ -182,17 +229,6 @@ function Home(props) {
                     <GroupedBar 
                         data={costChartData} 
                         title='Estimated VS Actual Project Average Cost'
-                    />
-                </div>
-                <div className='chart'>
-                     <DatePicker 
-                        handleClick={(date)=>{handleChangeDate(date, setDateStatus)}} 
-                        current={dateStatus} 
-                        buttons={["day","week", "month"]}
-                     />
-                    <PieChart 
-                        data={statusChartData} 
-                        title='Project status'
                     />
                 </div>
             </div>

@@ -17,9 +17,9 @@ class CrmApi {
     }
 
 
-    async saveImg(data){
+    async saveFile(url, data){
         
-        const response = await axios.post(`${this.basicUrl}/imgs/saveImg/`, data);
+        const response = await axios.post(`${this.basicUrl}${url}`, data);
 
         if(response){
             return response.data;

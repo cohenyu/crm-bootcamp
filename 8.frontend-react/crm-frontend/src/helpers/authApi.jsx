@@ -80,14 +80,12 @@ class AuthApi {
     }
 
     async forgotPassword(data){
-        const response = await axios.post(`${this.basicUrl}/forgotPassword`, data);
-        // TODO catch the error and check if response isn't null
+        const response = await axios.post(`${this.basicUrl}/forgotPassword`, data).catch((err)=>{return false});
         return response.data;
     }
 
     async resetPassword(data){
-        const response = await axios.post(`${this.basicUrl}/resetPassword`, data).catch((err)=>{});
-        // TODO catch the error and check if response isn't null
+        const response = await axios.post(`${this.basicUrl}/resetPassword`, data).catch((err)=>{return false});
         return response.data;
     }
 
@@ -96,9 +94,7 @@ class AuthApi {
             headers: {
                 'authorization': data.mailToken
             }
-        }).catch((err)=>{});
-        // TODO catch the error and check if response isn't null
-        console.log("the data from axios id: ", response.data);
+        }).catch((err)=>{return false});
         return response.data;
     }
 

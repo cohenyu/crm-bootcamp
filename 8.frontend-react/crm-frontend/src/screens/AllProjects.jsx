@@ -10,25 +10,19 @@ import '../styles/modal.scss';
 import CrmApi from '../helpers/CrmApi';
 import Header from '../components/header/Header';
 import Table from '../components/table/Table';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import { Link, useHistory } from 'react-router-dom';
 import statusMap from '../helpers/StatusMap';
 import ScrollUp from '../components/scrollUp/ScrollUp';
-import Calendar from '../components/calendar/Calendar';
 
 const crmApi = new CrmApi();
 
 function AllProjects(props){
     let history = useHistory();
-    const [itemToDelete, setItemToDelete] = useState({});
     const [modalProjectDetails, setModalProjectDetails] = useState({});
     const [projectDetails, setProjectDetails] = useState({});
     const projectDetailsRef = useRef(projectDetails);
     projectDetailsRef.current = projectDetails;
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-    const [isTableShow, setITableShow] = useState(true);
     const [data, setData] = useState([]);
     const [projectStatus, setProjectStatus] = useState(props.mine ? statusMap.inProgress.key : statusMap.open.key);
     const [filteredData, setFilteredData] = useState([]);
@@ -52,6 +46,11 @@ function AllProjects(props){
    }
    
 
+   /**
+    * 
+    * @param {project status} status 
+    * @returns the headers of the columns table
+    */
   function getCols(status) {
 
     const newCols = [
@@ -59,7 +58,7 @@ function AllProjects(props){
           Header: 'Assigned User',
           accessor: 'user_name',
       }
-  ]
+    ]
 
     const basicCols = [
       {
@@ -95,6 +94,10 @@ function AllProjects(props){
 }
 
 
+    /**
+     * Sets the assigned user and new status to the project
+     * @param {new details} dataToSent 
+     */
     const submitUpdateProject = async (dataToSent) => {
         const res = await crmApi.postRequest("/projects/updateProject/", {projectId: projectDetailsRef.current.project_id, user: true, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
         if(res > 0){
@@ -142,6 +145,10 @@ function AllProjects(props){
           setIsProjectModalOpen(false);
       };
 
+    /**
+     * Filters the projects by the selected status
+     * @param {project status} status 
+     */
     const submitTab = (status) =>{
         setProjectStatus(status);
         setCols(getCols(status));
@@ -151,6 +158,10 @@ function AllProjects(props){
         setFilteredData(filtered);
     }
 
+    /**
+     * Opens an assignment modal if the project status is open. otherwise, redirects to project page
+     * @param {project details} row 
+     */
     const handleProjectClick = (row) => {
       if(!mineRef.current && projectStatus == statusMap.open.key){
         openProjectWindow(row);
@@ -168,13 +179,12 @@ function AllProjects(props){
                   title={props.mine ? 'My Projects' : 'All Projects'} 
                   description='Manage your projects.'
                 />
-            <div className = {isTableShow ? 'table-actions-box':  'table-actions-box just-one-item'}>
-              {isTableShow && 
+            <div className ='table-actions-box'>
               <TabsTable 
                 submit={submitTab} 
                 status={projectStatus} 
                 mode={props.mine ? "myProjects" : "allProjects"}
-              />}
+              />
               {!props.mine && 
               <Link 
                 className='button-link' 
@@ -189,23 +199,23 @@ function AllProjects(props){
               </Link>
               }
             </div>
-            { isTableShow ? 
-              <Table columns={columnsData} data={filteredData} clickRow={handleProjectClick}/> 
-              : 
-              <Calendar/>
-            }
-            <Modal 
-              isOpen={isProjectModalOpen} 
-              ariaHideApp={false} 
-              contentLabel='Project' 
-              onRequestClose={closeProjectWindow}  
-              overlayClassName="Overlay" 
-              className='modal'>
-            <Form 
-                    className='form-body'
-                    {...modalProjectDetails}
-                />
-            </Modal>
+              <Table 
+                  columns={columnsData} 
+                  data={filteredData} 
+                  clickRow={handleProjectClick}
+              /> 
+              <Modal 
+                isOpen={isProjectModalOpen} 
+                ariaHideApp={false} 
+                contentLabel='Project' 
+                onRequestClose={closeProjectWindow}  
+                overlayClassName="Overlay" 
+                className='modal'>
+              <Form 
+                      className='form-body'
+                      {...modalProjectDetails}
+                  />
+              </Modal>
             <ScrollUp/>
             </div>
         </div>

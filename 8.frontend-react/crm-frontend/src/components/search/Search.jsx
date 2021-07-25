@@ -7,6 +7,10 @@ function Search(props) {
     const [input, setInput] = useState('');
     const [resultsList, setResultList] = useState([]);
 
+    /**
+     * Gets all result according to the input
+     * @param {the search input} input 
+     */
     const updateInput = async (input) => {
         let tempList = [];
         if(input !== ''){
@@ -16,6 +20,10 @@ function Search(props) {
         setInput(input);
     }
 
+    /**
+     * Sets the selected item
+     * @param {selects item} data 
+     */
     const updateChoice = (data) => {
         setResultList([]);
         setInput('');
@@ -26,10 +34,10 @@ function Search(props) {
     return (
         <div className='search-container' >
         <input className='form-input'
-        key="search"
-        value={input}
-        placeholder={props.text}
-        onChange={(e) => updateInput(e.target.value)}
+            key="search"
+            value={input}
+            placeholder={props.text}
+            onChange={(e) => updateInput(e.target.value)}
         />
         <div className='results'>
         { 
@@ -40,7 +48,6 @@ function Search(props) {
                 updateChoice(props.mapFunc(data));
                 }}>
                 {index != 0 && <hr/>}
-                {/* <SearchResult {...props.mapFunc(data)}/> */}
                 <SearchResult {...props.mapFunc(data)}/>
 	        </div>	
     	   )	

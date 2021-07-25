@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons'
+import {faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { Link } from "react-router-dom";
 import './navigation.scss';
 
@@ -14,21 +14,18 @@ function Navigation(props) {
     isInSubMenuRef.current = isInSubMenu;
 
     const handleHoverNav = (index, bool) => {
-        console.log("hover nav");
         const tempHoverList = new Array(props.links.length).fill(false);
         tempHoverList[index] = bool;
         setIsHoverList(tempHoverList);
     };
 
     const handleInSubMenu = (index, bool) => {
-        console.log("hover sub menu");
         const tempHoverList = [...isInSubMenuRef.current];
         tempHoverList[index] = bool;
         setInSubMenu(tempHoverList);
     };
 
     const handleMouseLeaveNav = (index) => {
-        console.log("leave nav");
         setTimeout(() => {
             if(!isInSubMenuRef.current[index]){
                 handleHoverNav(index, false)
