@@ -20,6 +20,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+import ChatScreen from './screens/ChatScreen'
 // const axios = require('axios');
 
 const authApi = new AuthApi();
@@ -112,6 +113,9 @@ function App() {
             isConnect ?
                 <Team /> : <Redirect to="/login" /> 
             }
+        </Route>
+        <Route exact path="/chat">
+            <ChatScreen/>
         </Route>
       </Switch>
     </div>

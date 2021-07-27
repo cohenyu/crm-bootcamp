@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body {margin: 0; padding-bottom: 3rem; background-color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      #form { height: 3rem; background: rgba(0, 0, 0, 0.15); padding: 0.25rem; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      #chat-bottom {height: 5rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; flex-direction: column; justify-content: flex-end;}
+      #messages {list-style-type: none; margin: 0; padding: 0; padding-bottom: 30px; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #msg-box{
+        font-size: 15px;
+        color: gray;
+        padding: 5px 10px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <ul id="messages"></ul>
+    <div id='chat-bottom'>
+      <div id='msg-box'><span></span></div>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" />
+      <button>Send</button>
+    </form>
+    </div>
+  
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+function  createCrmMsg(msg, messages){
+  var item = document.createElement("li");
+        item.textContent = msg;
+        item.style.margin = '5px';
+        item.style.marginLeft = '16%';
+        item.style.background = 'rgb(224 224 224)';
+        item.style.borderRadius = '12px';
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+const socket = io();
+
+      const room = Date.now() + Math.random();
+      socket.emit("create client room", room);
+      let messages = document.getElementById("messages");
+      createCrmMsg("Enter your mail please", messages);
+      let form = document.getElementById("form");
+      let input = document.getElementById("input");
+      var msgBox = document.getElementById('msg-box');
+      var timeout = undefined;
+      var mail = '';
+      var fullName = '';
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+          if (input.value) {
+          socket.emit("client message", {
+            room: room,
+            from: "lead",
+            msgValue: input.value,
+          });
+          input.value = "";
+        }
+      });
+
+      input.addEventListener('keyup', ()=>{
+          socket.emit("client typing", {
+            isTyping: input.value.length > 0,
+            room: room
+          });
+          clearTimeout(timeout);
+          timeout = setTimeout(()=>{
+            socket.emit("client typing", {
+            isTyping: false,
+            room: room
+          });
+          }, 1000)
+      })
+
+      socket.on("client message", function (msg) {
+
+        var item = document.createElement("li");
+        item.textContent = msg.msgValue;
+        item.style.margin = '5px';
+        item.style.marginRight = '16%';
+        item.style.background = '#c7e0e4';
+        item.style.borderRadius = '12px';
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+
+        if(mail == ''){
+          mail = msg.msgValue;
+          createCrmMsg("Enter your name please", messages);
+        } else if(fullName == ''){
+          fullName = msg.msgValue;
+          socket.emit('join crm to client', {room: room, mail: mail, name: fullName})
+        }
+      });
+
+
+      socket.on("crm message", function (msg) {
+        var item = document.createElement("li");
+        item.textContent = msg.msgValue;
+        item.style.margin = '5px';
+        item.style.marginLeft = '16%';
+        item.style.background = 'rgb(224 224 224)';
+        item.style.borderRadius = '12px';
+
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+
+        socket.on("crm typing", function (data) {
+        const {isTyping} = data;
+
+        if (!isTyping) {
+            msgBox.innerHTML = "";
+            return;
+        }
+        msgBox.innerHTML = 'typing...';
+        });
+
+    </script>
+  </body>
+</html>

@@ -10,6 +10,7 @@ var error_map = {
  * Validate the form fields and send the lead to the server.
  */
 function ListenToRequest(){
+    
     const form = document.querySelector('#form');
     form.addEventListener('submit', function(e){
         e.preventDefault();
@@ -23,6 +24,7 @@ function ListenToRequest(){
         const name = form.elements.name.value;
         const mail = form.elements.mail.value;
         const phone = form.elements.phone.value;
+
 
         // sending the form fields to the server
         axios.post('http://rgb.com:8004', {
@@ -47,9 +49,29 @@ function ListenToRequest(){
         .catch(function (error) {
             console.log(error);
         });
-
+        
     });
+
+    const openChat = document.getElementById('open-chat');
+         console.log("here");
+         openChat.addEventListener("click", function(e){
+             console.log("in here");
+             console.log(e);
+             e.target.style.display = 'none';
+             const chat = document.querySelector('#chat');
+             chat.style.display = 'block';
+         });
+
+    const exitChat = document.getElementById("exit-chat");
+    exitChat.addEventListener("click", function(e){
+        const chat = document.querySelector('#chat');
+        chat.style.display = 'none';
+        const openChat = document.querySelector('#open-chat');
+        openChat.style.display = 'flex';
+    })
 }
+
+
 
 /**
  * Sets the style and text of the error span.
@@ -64,6 +86,8 @@ function updateError(errorKey){
         errorElement.style.margin = "10px 0";
     }
 }
+
+
 
 /**
  * Validates all the form's fields.
