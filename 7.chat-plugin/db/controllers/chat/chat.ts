@@ -116,7 +116,7 @@ router.get("/:mail", async (req, res) => {
     try{
       const id = req.params.id;
       // make the sort work
-      const resp = await Room.find({accountID: parseInt(id)}, 'name mail roomID read',{ $sort: {'updatedAt': -1}});
+      const resp = await Room.find({accountID: parseInt(id)}, 'name mail roomID read updatedAt').sort({updatedAt: -1});
   
       res.status(200).json(resp);
     }

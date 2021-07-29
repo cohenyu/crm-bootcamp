@@ -16,6 +16,23 @@
         color: gray;
         padding: 5px 10px;
       }
+      .client-msg {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .client-date {
+        font-size: 10px;
+      }
+
+      .crm-msg {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .crm-date {
+        font-size: 10px;
+      }
     </style>
   </head>
   <body>
@@ -31,9 +48,42 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
+
+const isToday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+}
+
+const isYesterday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() + 1 == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+}
+
+function dateFormate(date){
+  date = new Date(date);
+  if(isToday(date)){
+    return 'Today ' +  date.getHours() + ":"  
+                + date.getMinutes();
+  } 
+  if(isYesterday(date)){
+    return 'Yesterday ' +  date.getHours() + ":"  
+                + date.getMinutes();
+  }
+  return date.getDate() + "/"
+                + (date.getMonth()+1)  + "/" 
+                + date.getFullYear() + "   "  
+                + date.getHours() + ":"  
+                + date.getMinutes();
+}
+
+
 function  createCrmMsg(msg, date, messages){
     var item = document.createElement("li");
-    item.innerHTML = `<span>${msg}</span><span>${date}</span>`;
+    item.innerHTML = `<span class='crm-msg'>${msg}</span><span class='crm-date'>${dateFormate(date)}</span>`;
     item.style.margin = '5px';
     item.style.marginLeft = '16%';
     item.style.background = 'rgb(224 224 224)';
@@ -44,7 +94,7 @@ function  createCrmMsg(msg, date, messages){
 
 function createClientMsg(msg, date, messages){
     var item = document.createElement("li");
-    item.innerHTML = `<span>${msg}</span><span>${date}</span>`;
+    item.innerHTML = `<span class='client-msg'>${msg}</span><span class='client-date'>${dateFormate(date)}</span>`;
     item.style.margin = '5px';
     item.style.marginRight = '16%';
     item.style.background = '#c7e0e4';
@@ -52,7 +102,6 @@ function createClientMsg(msg, date, messages){
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
 }
-
 
 
       const socket = io();

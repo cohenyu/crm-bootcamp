@@ -7,6 +7,11 @@ import Chat from '../components/chat/Chat';
 
 function ChatScreen(props) {
 
+    window.onmessage = function(e) {
+        console.log(e.data);
+        
+    };
+
     return (
         <div>
             <Header/>
