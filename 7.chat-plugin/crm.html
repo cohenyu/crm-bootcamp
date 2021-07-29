@@ -38,6 +38,7 @@
         border-radius: 8px;
       }
       #room-container{
+        overflow: scroll;
         width: 30%;
         background: white;
         margin-right: 9px;
@@ -62,6 +63,11 @@
 
       #rooms > li:hover {
         background-color: #fbfbfb !important;
+      }
+
+      #rooms > li:focus {
+        background: rgb(243, 243, 243);
+        box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px;
       }
 
       .title {
@@ -104,25 +110,56 @@
     </div>
   </div>
     <script src="/socket.io/socket.io.js"></script>
-
     <script>
+
 
 function showCurrentRoomMsg(){
         messages.innerHTML = '';
+        console.log("showing the msgs of room: ", currentRoom);
+        console.log(roomsData[currentRoom]);
         for(let msgData of roomsData[currentRoom].msgs){
           if(msgData.client){
-            createClientMsg(msgData.msg);
+            createClientMsg(msgData.msg, msgData.datetime);
           } else {
-            createCrmMsg(msgData.msg);
+            createCrmMsg(msgData.msg, msgData.datetime);
           }
         }
-        // window.scrollTo(0, document.body.scrollHeight);
         messages.scroll(0 , 0);
       }
   
-  function createClientMsg(msg){
+  function showRoom(room, name, mail, read){
     var item = document.createElement("li");
-          item.textContent = msg;
+    item.tabIndex = '1';
+    item.data = {room: room, name: name, mail: mail}
+    item.innerHTML = `<div>
+                    <span class='client-name'>${name}</span>
+                    <span class='client-mail'>${mail}</span>
+                    </div>
+                    <div class='unread'></div>`;
+    
+    if(read){
+      item.lastChild.style.display = 'none';
+    } else  {
+      item.firstChild.style.fontWeight = 'bold';
+    }
+    
+    item.addEventListener('click', async function(e){
+      roomsList = rooms.children;
+      currentRoom = room;
+      room = room;
+      item.firstChild.style.fontWeight = '300';
+      item.lastChild.style.display = 'none';
+      showCurrentRoomMsg();
+      form.style.display = "flex";
+      socket.emit("room clicked", currentRoom);
+    })
+    rooms.appendChild(item);
+  }
+
+  function createClientMsg(msg, date){
+    console.log("date is: ", date);
+    var item = document.createElement("li");
+          item.innerHTML = `<span>${msg}</span><span>${date}</span>`;
           item.style.margin = '5px';
           item.style.marginLeft = '16%';
           item.style.background = 'rgb(79 122 181 / 41%)';
@@ -131,9 +168,9 @@ function showCurrentRoomMsg(){
     messages.scroll(0 , 2000);
   }
 
-  function createCrmMsg(msg){
+  function createCrmMsg(msg, date){
     var item = document.createElement("li");
-        item.textContent = msg;
+        item.innerHTML = `<span>${msg}</span><span>${date}</span>`;
         item.style.margin = '5px';
         item.style.marginRight = '16%';
         item.style.border = 'solid 1px #b7c8e1';
@@ -161,60 +198,62 @@ const socket = io();
             room: room,
             from: "crm",
             msgValue: input.value,
+            datetime: new Date()
           });
           input.value = "";
         }
       });
 
+      socket.on('rooms list', function(data){
+        data.forEach(item => {
+          roomsData[item.roomID] = {name: item.name, mail: item.mail, room: item.roomID, read: item.read, msgs: []};
+          showRoom(item.roomID, item.name, item.mail, item.read);
+        });
+      })
+
+      socket.on('room msgs', function(data){
+        console.log("printing the msgs");
+        if(data.msgs){
+          roomsData[data.room].msgs = data.msgs;
+          data.msgs.forEach(msg => {
+            if(msg.client){
+              createClientMsg(msg.msg, msg.datetime)
+            } else {
+              createCrmMsg(msg.msg, msg.datetime);
+            }
+          });
+        }
+      
+      });
+
       socket.on("new room", function (data) {
+        console.log("crm wants to join to room:", data);
+        room = data.room;
         socket.emit("join", data.room);      
-        roomsData[data.room] = {name: data.name, mail: data.mail, msgs: []};
+        roomsData[data.room] = {name: data.name, mail: data.mail, room: data.room, read: false, msgs: []};
       });
 
       socket.on("crm message", function (msg) {
-        roomsData[msg.room].msgs.push({msg: msg.msgValue, client: false});
-        createCrmMsg(msg.msgValue);
-        window.scrollTo(0, document.body.scrollHeight);
+        roomsData[msg.room].msgs.push({msg: msg.msgValue, client: false, datetime: msg.datetime});
+        createCrmMsg(msg.msgValue, msg.datetime);
+        // window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on("client message", function (msg) {
-        if(roomsData[msg.room].msgs.length == 0){
-          var item = document.createElement("li");
-          item.data = {room: msg.room, name: roomsData[msg.room].name, mail: roomsData[msg.room].mail}
-          item.innerHTML = `<div>
-                          <span class='client-name'>${roomsData[msg.room].name}</span>
-                          <span class='client-mail'>${roomsData[msg.room].mail}</span>
-                          </div>
-                          <div class='unread'></div>`;
-          item.firstChild.style.fontWeight = 'bold';
-          // item.textContent =  roomsData[msg.room].name;
-          console.log("the current room is: ", room);
-          item.addEventListener('click', function(e){
-            roomsList = rooms.children;
-          for(let li of roomsList){
-            if(li.data.room != msg.room){
-              li.style.background = 'none';
-              li.style.boxShadow = 'none';
-            }
-          }
-
-            currentRoom = msg.room;
-            room = msg.room;
-            item.style.background = 'rgb(243 243 243)';
-            item.style.boxShadow = 'rgb(0 0 0 / 16%) 0px 1px 4px';
-            item.firstChild.style.fontWeight = '300';
-            item.lastChild.style.display = 'none';
-            showCurrentRoomMsg();
-            form.style.display = "flex";
-          })
-          rooms.appendChild(item);
+        console.log("whatttt ",msg);
+        console.log("client msg");
+        console.log("the room is: ", roomsData[msg.room]);
+        if(!roomsData[msg.room]){
+          console.log("room not exist");
+          showRoom(msg.room, roomsData[msg.room].name, roomsData[msg.room].mail, false);
         } 
 
-        roomsData[msg.room].msgs.push({msg: msg.msgValue, client: true});
+        console.log("room exist");
+        roomsData[msg.room].msgs.push({msg: msg.msgValue, client: true, datetime: msg.datetime});
 
         if(currentRoom == msg.room){
           room = msg.room;
-          createClientMsg(msg.msgValue)
+          createClientMsg(msg.msgValue, msg.datetime)
         }  else {
           roomsList = rooms.children;
           for(let li of roomsList){
@@ -225,6 +264,7 @@ const socket = io();
               li.lastChild.style.display = 'flex';
             }
           }
+          socket.emit("unread msg", room);
         }
       
       });
