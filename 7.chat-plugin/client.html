@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body {margin: 0; padding-bottom: 3rem; background-color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      #form { height: 3rem; background: rgba(0, 0, 0, 0.15); padding: 0.25rem; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      #chat-bottom {height: 5rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; flex-direction: column; justify-content: flex-end;}
+      #messages {list-style-type: none; margin: 0; padding: 0; padding-bottom: 30px; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #msg-box{
+        font-size: 15px;
+        color: gray;
+        padding: 5px 10px;
+      }
+      .client-msg {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .client-date {
+        font-size: 10px;
+      }
+
+      .crm-msg {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .crm-date {
+        font-size: 10px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <ul id="messages"></ul>
+    <div id='chat-bottom'>
+      <div id='msg-box'><span></span></div>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" />
+      <button>Send</button>
+    </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+
+const isToday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+}
+
+const isYesterday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() + 1 == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+}
+
+function dateFormate(date){
+  date = new Date(date);
+  if(isToday(date)){
+    return 'Today ' +  date.getHours() + ":"  
+                + date.getMinutes();
+  } 
+  if(isYesterday(date)){
+    return 'Yesterday ' +  date.getHours() + ":"  
+                + date.getMinutes();
+  }
+  return date.getDate() + "/"
+                + (date.getMonth()+1)  + "/" 
+                + date.getFullYear() + "   "  
+                + date.getHours() + ":"  
+                + date.getMinutes();
+}
+
+
+function  createCrmMsg(msg, date, messages){
+    var item = document.createElement("li");
+    item.innerHTML = `<span class='crm-msg'>${msg}</span><span class='crm-date'>${dateFormate(date)}</span>`;
+    item.style.margin = '5px';
+    item.style.marginLeft = '16%';
+    item.style.background = 'rgb(224 224 224)';
+    item.style.borderRadius = '12px';
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function createClientMsg(msg, date, messages){
+    var item = document.createElement("li");
+    item.innerHTML = `<span class='client-msg'>${msg}</span><span class='client-date'>${dateFormate(date)}</span>`;
+    item.style.margin = '5px';
+    item.style.marginRight = '16%';
+    item.style.background = '#c7e0e4';
+    item.style.borderRadius = '12px';
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+
+      const socket = io();
+      let messages = document.getElementById("messages");
+      let form = document.getElementById("form");
+      let input = document.getElementById("input");
+      var msgBox = document.getElementById('msg-box');
+      var timeout = undefined;
+      var mail = '';
+      var fullName = '';
+
+      let room;
+      if(window.localStorage.getItem('room') == null){
+         room = Date.now() + Math.random();
+         createCrmMsg("Enter your mail please", new Date(), messages);
+         socket.emit("create client room", room);
+      } else {
+        room = parseFloat(window.localStorage.getItem('room'));
+        socket.emit("create client room", room);
+        socket.emit('client exist', room);
+      }
+
+      form.addEventListener("submit", function (e) {
+        console.log("client submit");
+        e.preventDefault();
+          if (input.value) {
+          socket.emit("client message", {
+            room: room,
+            from: "lead",
+            msgValue: input.value,
+            datetime: new Date(),
+            save: mail && fullName ,
+            mail: mail
+          });
+          input.value = "";
+        }
+        console.log("submitted: ", {
+            room: room,
+            from: "lead",
+            msgValue: input.value,
+            datetime: new Date(),
+            save: mail && fullName ,
+            mail: mail
+          })
+      });
+
+      input.addEventListener('keyup', ()=>{
+          socket.emit("client typing", {
+            isTyping: input.value.length > 0,
+            room: room
+          });
+          clearTimeout(timeout);
+          timeout = setTimeout(()=>{
+            socket.emit("client typing", {
+            isTyping: false,
+            room: room,
+          });
+          }, 1000)
+      })
+
+      socket.on("client message", function (msg) {
+        createClientMsg(msg.msgValue, msg.datetime, messages);
+
+        if(mail == ''){
+          mail = msg.msgValue;
+          createCrmMsg("Enter your name please", new Date(),messages);
+        } else if(fullName == ''){
+          fullName = msg.msgValue;
+          localStorage.setItem('room', room);
+          socket.emit('join crm to client', {room: room, mail: mail, name: fullName})
+        } 
+
+      });
+
+      socket.on('client data', function(data){
+        fullName = data.name;
+        mail = data.mail;
+        data.msgs.forEach(element => {
+          if(element.client){
+            createClientMsg(element.msg, element.datetime, messages);
+          } else {
+            createCrmMsg(element.msg, element.datetime, messages);
+          }
+        });
+      })
+
+
+      socket.on("crm message", function (msg) {
+        var item = document.createElement("li");
+        item.innerHTML = `<span>${msg.msgValue}</span><span>${msg.datetime}</span>`;
+        item.style.margin = '5px';
+        item.style.marginLeft = '16%';
+        item.style.background = 'rgb(224 224 224)';
+        item.style.borderRadius = '12px';
+
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+
+        socket.on("crm typing", function (data) {
+        const {isTyping} = data;
+
+        if (!isTyping) {
+            msgBox.innerHTML = "";
+            return;
+        }
+        msgBox.innerHTML = 'typing...';
+        });
+
+    </script>
+  </body>
+</html>
