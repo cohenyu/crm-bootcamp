@@ -142,10 +142,11 @@ function showCurrentRoomMsg(){
     }
     
     item.addEventListener('click', async function(e){
+      console.log("current: ", currentRoom);
+      console.log("room ", room );
       if(room != currentRoom){
         roomsList = rooms.children;
         currentRoom = room;
-        room = room;
         currentMailRoom = mail;
         for(let li of roomsList){
           li.style.background =  'none';
@@ -171,7 +172,7 @@ function showCurrentRoomMsg(){
           item.style.background = 'rgb(79 122 181 / 41%)';
           item.style.borderRadius = '12px';
           messages.appendChild(item);
-    messages.scroll(0 , 2000);
+    messages.scroll(0 , 10000000);
   }
 
   function createCrmMsg(msg, date){
@@ -182,7 +183,7 @@ function showCurrentRoomMsg(){
         item.style.border = 'solid 1px #b7c8e1';
         item.style.borderRadius = '12px';
         messages.appendChild(item);
-        messages.scroll(0 , 2000);
+        messages.scroll(0 , 100000000);
   }
 
 const socket = io();
@@ -202,7 +203,7 @@ const socket = io();
         e.preventDefault();
         if (input.value) {
           socket.emit("crm message", {
-            room: room,
+            room: currentRoom,
             from: "crm",
             msgValue: input.value,
             datetime: new Date(),
@@ -250,7 +251,6 @@ const socket = io();
         console.log("crm msg: ", msg);
         roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: false, datetime: msg.datetime});
         createCrmMsg(msg.msgValue, msg.datetime);
-        // window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on("client message", function (msg) {
@@ -288,16 +288,16 @@ const socket = io();
       });
 
       input.addEventListener('keyup', ()=>{
-        console.log("typing in room: ", room);
+        console.log("typing in room: ", currentRoom);
           socket.emit("crm typing", {
             isTyping: input.value.length > 0,
-            room: room
+            room: currentRoom
           });
           clearTimeout(timeout);
           timeout = setTimeout(()=>{
             socket.emit("crm typing", {
             isTyping: false,
-            room: room
+            room: currentRoom
           });
           }, 1000)
       })
