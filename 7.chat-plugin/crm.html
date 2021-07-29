@@ -66,8 +66,8 @@
       }
 
       #rooms > li:focus {
-        background: rgb(243, 243, 243);
-        box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px;
+        /* background: rgb(243, 243, 243);
+        box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px; */
       }
 
       .title {
@@ -115,16 +115,14 @@
 
 function showCurrentRoomMsg(){
         messages.innerHTML = '';
-        console.log("showing the msgs of room: ", currentRoom);
-        console.log(roomsData[currentRoom]);
-        for(let msgData of roomsData[currentRoom].msgs){
+        for(let msgData of roomsData[currentMailRoom].msgs){
           if(msgData.client){
             createClientMsg(msgData.msg, msgData.datetime);
           } else {
             createCrmMsg(msgData.msg, msgData.datetime);
           }
         }
-        messages.scroll(0 , 0);
+        messages.scroll(0 , 20000);
       }
   
   function showRoom(room, name, mail, read){
@@ -144,20 +142,28 @@ function showCurrentRoomMsg(){
     }
     
     item.addEventListener('click', async function(e){
-      roomsList = rooms.children;
-      currentRoom = room;
-      room = room;
-      item.firstChild.style.fontWeight = '300';
-      item.lastChild.style.display = 'none';
-      showCurrentRoomMsg();
-      form.style.display = "flex";
-      socket.emit("room clicked", currentRoom);
+      if(room != currentRoom){
+        roomsList = rooms.children;
+        currentRoom = room;
+        room = room;
+        currentMailRoom = mail;
+        for(let li of roomsList){
+          li.style.background =  'none';
+          li.style.boxShadow =  'none';
+        };
+        item.firstChild.style.fontWeight = '400';
+        item.lastChild.style.display = 'none';
+        item.style.background =  'rgb(243, 243, 243)';
+        item.style.boxShadow =  'rgb(0 0 0 / 16%) 0px 1px 4px';
+        showCurrentRoomMsg();
+        form.style.display = "flex";
+        socket.emit("room clicked", {mail: currentMailRoom, msgs: roomsData[currentMailRoom].msgs.length > 1});
+      }
     })
     rooms.appendChild(item);
   }
 
   function createClientMsg(msg, date){
-    console.log("date is: ", date);
     var item = document.createElement("li");
           item.innerHTML = `<span>${msg}</span><span>${date}</span>`;
           item.style.margin = '5px';
@@ -190,6 +196,7 @@ const socket = io();
       var timeout = undefined;
       let roomsData = {};
       let currentRoom;
+      let currentMailRoom;
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -198,7 +205,8 @@ const socket = io();
             room: room,
             from: "crm",
             msgValue: input.value,
-            datetime: new Date()
+            datetime: new Date(),
+            mail: currentMailRoom
           });
           input.value = "";
         }
@@ -206,7 +214,7 @@ const socket = io();
 
       socket.on('rooms list', function(data){
         data.forEach(item => {
-          roomsData[item.roomID] = {name: item.name, mail: item.mail, room: item.roomID, read: item.read, msgs: []};
+          roomsData[item.mail] = {name: item.name, mail: item.mail, room: item.roomID, read: item.read, msgs: [], created: true};
           showRoom(item.roomID, item.name, item.mail, item.read);
         });
       })
@@ -227,37 +235,47 @@ const socket = io();
       });
 
       socket.on("new room", function (data) {
-        console.log("crm wants to join to room:", data);
         room = data.room;
-        socket.emit("join", data.room);      
-        roomsData[data.room] = {name: data.name, mail: data.mail, room: data.room, read: false, msgs: []};
+        socket.emit("join", data.room); 
+        if(!roomsData[data.mail]){
+          console.log("creating new room");
+          roomsData[data.mail] = {name: data.name, mail: data.mail, room: data.room, read: false, msgs: []};
+        } else {
+          roomsData[data.mail].room = data.room;
+        }
       });
 
       socket.on("crm message", function (msg) {
-        roomsData[msg.room].msgs.push({msg: msg.msgValue, client: false, datetime: msg.datetime});
+        console.log("got a msg!!!!!!");
+        console.log("crm msg: ", msg);
+        roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: false, datetime: msg.datetime});
         createCrmMsg(msg.msgValue, msg.datetime);
         // window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on("client message", function (msg) {
-        console.log("whatttt ",msg);
-        console.log("client msg");
-        console.log("the room is: ", roomsData[msg.room]);
-        if(!roomsData[msg.room]){
-          console.log("room not exist");
-          showRoom(msg.room, roomsData[msg.room].name, roomsData[msg.room].mail, false);
-        } 
+        console.log("got a msg!!!!!!");
 
-        console.log("room exist");
-        roomsData[msg.room].msgs.push({msg: msg.msgValue, client: true, datetime: msg.datetime});
+        if(!roomsData[msg.mail].created){
+          if(!roomsData[msg.mail].msgs.length){
+            showRoom(msg.room, roomsData[msg.mail].name, msg.mail, false);
+            roomsData[msg.mail].created = false;
+          } else {
+            roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: true, datetime: msg.datetime, room: msg.room});
+          }
+        } else {
+          roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: true, datetime: msg.datetime, room: msg.room});
+        }
+
 
         if(currentRoom == msg.room){
           room = msg.room;
           createClientMsg(msg.msgValue, msg.datetime)
         }  else {
+          console.log("searching for the client");
           roomsList = rooms.children;
           for(let li of roomsList){
-            if(li.data.room == msg.room){
+            if(li.data.mail == msg.mail){
               rooms.removeChild(li);
               rooms.insertBefore(li, rooms.firstChild);
               li.firstChild.style.fontWeight = 'bold';
@@ -306,19 +324,4 @@ const socket = io();
   </body>
 </html>
 
-<!-- if(mail == ''){
-  // validate mail
-  mail = input.value;
-  socket.emit("client message", {
-    room: room,
-    from: "lead",
-    msgValue: input.value,
-  });
-  input.value = "";
-  createCrmMsg("Enter your name please", messages);
-} else if(name = ''){
-  name = input.value;
-  input.value = "";
-  socket.emit("join crm to client", {room: room, name: fullName, mail: mail});
-}  -->
 

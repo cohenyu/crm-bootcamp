@@ -6,7 +6,7 @@ class MongoHelper {
     }
 
     async getRequest(url) {
-
+        console.log("the url is: ", url);
         try {
             var response = await axios.get(`${this.basicUrl}${url}`);
         } catch (error) {

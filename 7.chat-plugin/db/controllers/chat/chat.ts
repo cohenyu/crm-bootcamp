@@ -90,6 +90,28 @@ router.get("/:mail", async (req, res) => {
  * @return {msgs}
  * Endpoint : GET http://localhost:<port>/chat/<id>
  */
+ router.get("/getClientByRoom/:room", async (req, res) => {
+   console.log("im hereeeeee");
+  try{
+    const room = req.params.room;
+    console.log("the room is: ", room);
+    const resp = await Room.findOne({roomID: room});
+
+    res.status(200).json(resp);
+  }
+  catch(err){
+     res.status(400).json(err);
+     console.log(err);
+
+}
+});
+
+/**
+ * Get a specific rule
+ * @param {objectId} id 
+ * @return {msgs}
+ * Endpoint : GET http://localhost:<port>/chat/<id>
+ */
  router.get("/getAllRooms/:id", async (req, res) => {
     try{
       const id = req.params.id;
@@ -111,10 +133,10 @@ router.get("/:mail", async (req, res) => {
  * @return {msgs}
  * Endpoint : GET http://localhost:<port>/chat/<id>
  */
- router.get("/getMsgs/:id", async (req, res) => {
+ router.get("/getMsgs/:mail", async (req, res) => {
     try{
-      const roomID = req.params.id;
-      const resp = await Room.findOne({roomID: roomID}, 'msgs');
+      const mail = req.params.mail;
+      const resp = await Room.findOne({mail: mail}, 'msgs');
   
       res.status(200).json(resp);
     }
@@ -133,11 +155,11 @@ router.get("/:mail", async (req, res) => {
  * @return {Notification}
  * Endpoint : PUT http://localhost:<port>/chat/<id>
  */
-router.put("/addMsg/:id", async (req, res) => {
+router.put("/addMsg/:mail", async (req, res) => {
   try{
-    const roomID = req.params.id;
+    const mail = req.params.mail;
     const msg = req.body;
-    const resp = await Room.updateOne({ roomID: roomID }, { $push: {msgs: msg} });
+    const resp = await Room.updateOne({ mail: mail }, { $push: {msgs: msg} });
     res.status(200).json(resp);
   }
   catch(err){
@@ -174,12 +196,11 @@ router.put("/addMsg/:id", async (req, res) => {
  * @return {Notification}
  * Endpoint : PUT http://localhost:<port>/chat/<id>
  */
- router.put("/set/:room", async (req, res) => {
+ router.put("/set/:mail", async (req, res) => {
   try{
-    const room = req.params.room;
-    console.log(req.body);
+    const mail = req.params.mail;
     const dataToSet = req.body;
-    const resp = await Room.updateOne({ roomID: room }, dataToSet);
+    const resp = await Room.updateOne({ mail: mail }, dataToSet);
     res.status(200).json(resp);
   }
   catch(err){
