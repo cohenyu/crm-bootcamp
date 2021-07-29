@@ -19,6 +19,14 @@ class clients extends controller
         return $this->response;
     }
 
+    public function addChatClient()
+    {
+        
+        $data = $this->getPostJsonData()->data;
+        $this->response = $this->model->addClient($data->name, $data->mail, $data->phone);
+        return $this->response;
+    }
+
     public function getAllClients()
     {
         $data = $this->getPostJsonData()->data;

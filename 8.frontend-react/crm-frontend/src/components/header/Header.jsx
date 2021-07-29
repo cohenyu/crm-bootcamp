@@ -51,8 +51,8 @@ function Header(props) {
             url: '/team'
         }, 
         {
-            title: "Finance", 
-            url: '/7'
+            title: "Chat", 
+            url: '/chat'
         }, 
         {
             title: "Settings", 

@@ -190,15 +190,7 @@ function createClientMsg(msg, date, messages){
 
 
       socket.on("crm message", function (msg) {
-        var item = document.createElement("li");
-        item.innerHTML = `<span>${msg.msgValue}</span><span>${msg.datetime}</span>`;
-        item.style.margin = '5px';
-        item.style.marginLeft = '16%';
-        item.style.background = 'rgb(224 224 224)';
-        item.style.borderRadius = '12px';
-
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+        createCrmMsg(msg.msgValue, msg.datetime, messages);
       });
 
 

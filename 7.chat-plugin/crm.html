@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Socket.IO chat</title>
     <style>
-      body {height: 95vh; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: row; overflow-x: hidden; padding: 14px; background: #f3f3f3;}
+      body {height: 95vh; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: row; overflow-x: hidden; padding: 14px;}
       #form { 
         height: 3rem; 
         background: rgba(0, 0, 0, 0.15); 
@@ -18,9 +18,9 @@
       }
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
       #input:focus { outline: none; }
-      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      #form > button { background: #577399; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 18px; outline: none; color: #fff; }
       #chat-bottom {height: 5rem; width: 100%; display: flex; flex-direction: column; justify-content: flex-end; bottom: 0; position: absolute;}
-      #messages { overflow: scroll; list-style-type: none; margin: 0; padding: 0; padding-bottom: 68px;}
+      #messages { flex: 9; overflow: scroll; list-style-type: none; margin: 0; padding: 0; padding-bottom: 68px;}
       #messages > li { padding: 0.5rem 1rem; overflow-wrap: break-word; }
       #msg-box{
         font-size: 15px;
@@ -37,6 +37,7 @@
         position: relative;
         background: white;
         border-radius: 8px;
+        border: 0.660428px solid #DFE0EB;
       }
       #room-container{
         overflow: scroll;
@@ -45,6 +46,7 @@
         margin-right: 9px;
         padding: 10px;
         border-radius: 8px;
+        border: 0.660428px solid #DFE0EB;
       }
       #rooms > li {
         overflow-wrap: break-word;
@@ -113,6 +115,7 @@
         border: solid 0.5px #577399;
         color: #577399;
         cursor: pointer;
+        background: white;
       }
 
       #add-client:hover {
@@ -125,7 +128,6 @@
         padding: 14px;
         display: flex;
         justify-content: space-between;
-        background: #f3f3f3;
       }
 
       #client-name {
@@ -348,8 +350,6 @@ function addClient(name, mail, phone){
       });
 
       socket.on("crm message", function (msg) {
-        console.log("got a msg!!!!!!");
-        console.log("crm msg: ", msg);
         roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: false, datetime: msg.datetime});
         createCrmMsg(msg.msgValue, msg.datetime);
       });
@@ -359,6 +359,7 @@ function addClient(name, mail, phone){
 
         if(roomsData[msg.mail] && roomsData[msg.mail].waitingForTel){
           console.log("here wating for tel");
+          roomsData[msg.mail].waitingForTel = false;
           roomsData[msg.mail].phone = msg.msgValue;
           addClient(roomsData[msg.mail].name, roomsData[msg.mail].mail, roomsData[msg.mail].phone );
         }
