@@ -24,9 +24,19 @@ function MiniProjectsList(props){
         setProjects(props.projectsList);
     }, [props.projectsList])
 
+    const getUpdateDetails = (details) => {
+      return {
+        projectId: projectDetailsRef.current.project_id, 
+        user: true, 
+        set: {
+                project_status: statusMap.inProgress.key, 
+                estimated_time: details.hours.value
+              }
+        }
+    }
 
     const submitUpdateProject = async (dataToSent) => {
-      const res = await crmApi.postRequest("/projects/updateProject/", {projectId: projectDetailsRef.current.project_id, user: true, set:{project_status: statusMap.inProgress.key, estimated_time: dataToSent.hours.value}});
+      const res = await crmApi.postRequest("/projects/updateProject/", getUpdateDetails(dataToSent));
       if(res > 0){
         history.push(`/project/${projectDetailsRef.current.project_id}`);
       }
@@ -56,7 +66,7 @@ function MiniProjectsList(props){
       }
     }
 
-     // Get the title and text of the project and show it in the modal
+     // Getting the title and text of the project to show them in the modal
      const openProjectWindow = ({original}) => {
       let tempFormDetails  = {...projectModal};
       tempFormDetails.text = original.description;

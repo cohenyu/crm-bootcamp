@@ -11,7 +11,11 @@ function DatePicker(props) {
         const buttons = [];
         for(let date of props.buttons){
             buttons.push(
-                <span key={date} onClick={()=>{props.handleClick(date)}} className={props.current == date ? 'range current': 'range'}>{date}</span>
+                <span 
+                    key={date} 
+                    onClick={()=>{props.handleClick(date)}} 
+                    className={props.current == date ? 'range current': 'range'}>{date}
+                </span>
             )
         }
         setDates(buttons);

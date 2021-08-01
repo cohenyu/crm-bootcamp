@@ -5,7 +5,6 @@ import './table.scss'
 function Table(props) {
 
     const {columns, data} = props;
-    console.log("data:", data);
     
     const {
         getTableProps,
