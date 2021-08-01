@@ -9,7 +9,11 @@ function ChatScreen(props) {
     const crmApi = new CrmApi();
     window.onmessage = async function(e) {
         if(e.data.name && e.data.mail && e.data.phone){
-            const response = await crmApi.postRequest('/clients/addClient/', {name: e.data.name, mail: e.data.mail, phone: e.data.phone});
+            const response = await crmApi.postRequest('/clients/addClient/', {
+                                                                                name: e.data.name, 
+                                                                                mail: e.data.mail, 
+                                                                                phone: e.data.phone
+                                                                            });
         }
     };
 
