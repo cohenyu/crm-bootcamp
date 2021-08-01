@@ -32,7 +32,11 @@ io.on('connection', (socket) => {
         socket.join(room);
         io.sockets.to(room).emit('rooms list', result);
         result.forEach(element => {
-            io.sockets.to('crm').emit('new room', {room: element.roomID, name: element.name, mail: element.mail});
+            io.sockets.to('crm').emit('new room', {
+                                                    room: element.roomID, 
+                                                    name: element.name, 
+                                                    mail: element.mail
+                                                });
         });
     });
 
@@ -45,7 +49,12 @@ io.on('connection', (socket) => {
         if(result){
             await mongoHelper.putRequest(`/setRoom/${result.mail}`, {roomID: data.room});
         } else {
-            await mongoHelper.postRequest(``, {roomID: data.room, name: data.name, mail: data.mail, accountID: 1});
+            await mongoHelper.postRequest(``, {
+                                                roomID: data.room, 
+                                                name: data.name, 
+                                                mail: data.mail, 
+                                                accountID: 1
+                                            });
         }
         io.sockets.to('crm').emit('new room', data);
     })
@@ -58,7 +67,11 @@ io.on('connection', (socket) => {
 
     socket.on('client message', msg => {
         if(msg.save){
-            mongoHelper.putRequest(`/addMsg/${msg.mail}`, {msg: msg.msgValue, client: true, datetime: msg.datetime});
+            mongoHelper.putRequest(`/addMsg/${msg.mail}`, {
+                                                            msg: msg.msgValue, 
+                                                            client: true, 
+                                                            datetime: msg.datetime
+                                                        });
             mongoHelper.putRequest(`/set/${msg.mail}`, {read: false});
         }
         io.sockets.in(msg.room).emit('client message', msg);
