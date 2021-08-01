@@ -33,7 +33,6 @@ class CrmApi {
     async postRequest(url, data={}){
 
         const response = await axios.post(`${this.basicUrl}${url}`, {data: data, token: localStorage.getItem('jwtToken')}).catch(e => {
-            console.log("error")
         });
             
         if(response) {

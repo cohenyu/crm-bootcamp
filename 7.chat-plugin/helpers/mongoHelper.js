@@ -6,11 +6,9 @@ class MongoHelper {
     }
 
     async getRequest(url) {
-        console.log("the url is: ", url);
         try {
             var response = await axios.get(`${this.basicUrl}${url}`);
         } catch (error) {
-            console.log("error to post request with: ", url);
             return null;
         }
         
@@ -24,7 +22,6 @@ class MongoHelper {
         try{
             var response = await axios.post(`${this.basicUrl}${url}`, data);
         } catch (error){
-            console.log("error to post request with: ", url, data);
             return null;
         }
         
@@ -38,7 +35,6 @@ class MongoHelper {
         try{
             var response = await axios.put(`${this.basicUrl}${url}`, data);
         } catch (error) {
-            console.log("error to post request with: ", url, data);
             return null;
         }
         

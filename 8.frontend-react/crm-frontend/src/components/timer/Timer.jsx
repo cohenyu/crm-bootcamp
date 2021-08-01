@@ -16,7 +16,6 @@ const Timer = (props) => {
       return new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5])); 
     }
     useEffect(()=>{
-        console.log("starting time ",props.startingTime);
         if(props.run){
             if(props.startingTime){
               const now = new Date();

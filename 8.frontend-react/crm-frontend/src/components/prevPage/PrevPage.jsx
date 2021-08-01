@@ -5,7 +5,6 @@ import {useHistory } from 'react-router-dom';
 function PrevPage(props) {
 
     let history = useHistory();
-    console.log(history);
     return (
         <div>
             <div  className='linkto' onClick={history.goBack}>

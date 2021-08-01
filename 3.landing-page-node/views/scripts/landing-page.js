@@ -33,7 +33,6 @@ function ListenToRequest(){
         phone: phone
         },)
         .then(function (response) {
-            console.log(response);
             var validData = response.data;
             // checking if was success in the server side
             if(!validData.valid){
@@ -53,10 +52,7 @@ function ListenToRequest(){
     });
 
     const openChat = document.getElementById('open-chat');
-         console.log("here");
          openChat.addEventListener("click", function(e){
-             console.log("in here");
-             console.log(e);
              e.target.style.display = 'none';
              const chat = document.querySelector('#chat');
              chat.style.display = 'block';

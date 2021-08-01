@@ -114,7 +114,6 @@ class AuthApi {
     }
 
     async deleteUser(data){
-        console.log("removing: ", data);
         const response = await axios.post(`${this.basicUrl}/removeUser`, data)
         if(response){
             return response.data;

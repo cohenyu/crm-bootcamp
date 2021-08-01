@@ -10,7 +10,6 @@ function ChatScreen(props) {
     window.onmessage = async function(e) {
         if(e.data.name && e.data.mail && e.data.phone){
             const response = await crmApi.postRequest('/clients/addClient/', {name: e.data.name, mail: e.data.mail, phone: e.data.phone});
-            console.log("response is: ", response);
         }
     };
 

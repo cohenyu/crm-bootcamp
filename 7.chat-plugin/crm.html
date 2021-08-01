@@ -222,8 +222,6 @@ function showCurrentRoomMsg(){
     }
     
     item.addEventListener('click', async function(e){
-      console.log("current: ", currentRoom);
-      console.log("room ", room );
       if(room != currentRoom){
         roomsList = rooms.children;
         currentRoom = room;
@@ -292,10 +290,6 @@ const socket = io();
             datetime: new Date(),
             mail: currentMailRoom
           });
-  // const clientData = roomsData[currentMailRoom];
-  // console.log(clientData);
-  
-  // window.top.postMessage('hello', '*');
 }
 
 function addClient(name, mail, phone){  
@@ -324,7 +318,6 @@ function addClient(name, mail, phone){
       })
 
       socket.on('room msgs', function(data){
-        console.log("printing the msgs");
         if(data.msgs){
           roomsData[data.room].msgs = data.msgs;
           data.msgs.forEach(msg => {
@@ -342,7 +335,6 @@ function addClient(name, mail, phone){
         room = data.room;
         socket.emit("join", data.room); 
         if(!roomsData[data.mail]){
-          console.log("creating new room");
           roomsData[data.mail] = {name: data.name, mail: data.mail, room: data.room, read: false, msgs: []};
         } else {
           roomsData[data.mail].room = data.room;
@@ -355,10 +347,8 @@ function addClient(name, mail, phone){
       });
 
       socket.on("client message", function (msg) {
-        console.log("got a msg!!!!!!");
 
         if(roomsData[msg.mail] && roomsData[msg.mail].waitingForTel){
-          console.log("here wating for tel");
           roomsData[msg.mail].waitingForTel = false;
           roomsData[msg.mail].phone = msg.msgValue;
           addClient(roomsData[msg.mail].name, roomsData[msg.mail].mail, roomsData[msg.mail].phone );
@@ -381,7 +371,6 @@ function addClient(name, mail, phone){
           socket.emit("read msg", msg.mail);
           createClientMsg(msg.msgValue, msg.datetime)
         }  else {
-          console.log("searching for the client");
           roomsList = rooms.children;
           for(let li of roomsList){
             if(li.data.mail == msg.mail){
@@ -397,7 +386,6 @@ function addClient(name, mail, phone){
       });
 
       input.addEventListener('keyup', ()=>{
-        console.log("typing in room: ", currentRoom);
           socket.emit("crm typing", {
             isTyping: input.value.length > 0,
             room: currentRoom

@@ -91,10 +91,8 @@ router.get("/:mail", async (req, res) => {
  * Endpoint : GET http://localhost:<port>/chat/<id>
  */
  router.get("/getClientByRoom/:room", async (req, res) => {
-   console.log("im hereeeeee");
   try{
     const room = req.params.room;
-    console.log("the room is: ", room);
     const resp = await Room.findOne({roomID: room});
 
     res.status(200).json(resp);

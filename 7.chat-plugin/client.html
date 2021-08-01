@@ -115,12 +115,10 @@ function createClientMsg(msg, date, messages){
 
       let room;
       if(window.localStorage.getItem('room') == null){
-        console.log("creating new client");
          room = Date.now() + Math.random();
          createCrmMsg("Enter your mail please", new Date(), messages);
          socket.emit("create client room", room);
       } else {
-        console.log("connecting old client");
         room = parseFloat(window.localStorage.getItem('room'));
         socket.emit("create client room", room);
         socket.emit('client exist', room);
@@ -130,7 +128,6 @@ function createClientMsg(msg, date, messages){
 
 
       form.addEventListener("submit", function (e) {
-        console.log("client submit");
         e.preventDefault();
           if (input.value) {
           socket.emit("client message", {
@@ -143,14 +140,6 @@ function createClientMsg(msg, date, messages){
           });
           input.value = "";
         }
-        console.log("submitted: ", {
-            room: room,
-            from: "lead",
-            msgValue: input.value,
-            datetime: new Date(),
-            save: mail && fullName ,
-            mail: mail
-          })
       });
 
       input.addEventListener('keyup', ()=>{

@@ -41,7 +41,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join crm to client', async function(data){
-        console.log("join crm to client in room: ", data.room);
         const result = await mongoHelper.getRequest(`/${data.mail}`);
         if(result){
             await mongoHelper.putRequest(`/setRoom/${result.mail}`, {roomID: data.room});
@@ -99,7 +98,6 @@ io.on('connection', (socket) => {
 
     socket.on("client exist", async (room) => {
         const response = await mongoHelper.getRequest(`/getClientByRoom/${room}`);
-        console.log("the response is: ", response);
         io.sockets.in(room).emit('client data', response);
     })
 

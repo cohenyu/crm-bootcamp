@@ -168,8 +168,6 @@ class UsersManager {
                     `You have received an invitation to join RGB! <br/> <a href=${`${process.env.URL}/newUser/${mailToken}`}>Click to sign up.</a>`);
                 data.user = {user_mail: userMail, user_id: result.insertId};
             } catch {
-                console.log(data);
-                console.log("imm here");
                 data.serverError = "serverError";
             }
 
@@ -177,7 +175,6 @@ class UsersManager {
         } else {
             data.serverError = "serverError";
         }
-        console.log(data);
         return data;  
     }
 

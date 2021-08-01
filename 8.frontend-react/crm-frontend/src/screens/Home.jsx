@@ -132,10 +132,8 @@ function Home(props) {
      */
     const fetchLeastRecentlyProjects = () => {
         (async () => {
-            
             const result = await crmApi.postRequest('/dashboard/leastRecentlyCreatedProject/', {interval: dateLeastRecentlyCreatedProject, limit: 5});
             if(result){
-                console.log(result);
                 setLeastRecentlyCreatedProjects(result);
             }
           })();
