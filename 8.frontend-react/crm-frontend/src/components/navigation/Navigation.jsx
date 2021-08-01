@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons'
+import {faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { Link } from "react-router-dom";
 import './navigation.scss';
 
@@ -20,7 +20,7 @@ function Navigation(props) {
     };
 
     const handleInSubMenu = (index, bool) => {
-        const tempHoverList = [...isInSubMenu];
+        const tempHoverList = [...isInSubMenuRef.current];
         tempHoverList[index] = bool;
         setInSubMenu(tempHoverList);
     };
@@ -63,7 +63,8 @@ function Navigation(props) {
             navList.push(<li key={link.title}>
                 <div 
                     onMouseEnter={()=>{handleHoverNav(index, true)}}  
-                    onMouseLeave={handleMouseLeaveNav(index)}>
+                    onMouseLeave={()=>handleMouseLeaveNav(index)}
+                    >
                     <Link 
                         className='nav-link' 
                         key={link.title} 
@@ -74,7 +75,8 @@ function Navigation(props) {
                     <FontAwesomeIcon className='nav-icon' icon={faCaretRight} size='xs'/>
                 </div>
                 {isHoverListRef.current[index] && 
-                <ul onMouseEnter={()=>{handleInSubMenu(index, true)}}  
+                <ul 
+                    onMouseEnter={()=>{handleInSubMenu(index, true)}}  
                     onMouseLeave={()=>{handleMouseLeaveSub(index)}} 
                     className="dropdown">{subLinks}</ul>}
                 </li>);

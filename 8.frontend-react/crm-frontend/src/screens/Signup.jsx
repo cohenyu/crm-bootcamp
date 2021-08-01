@@ -4,10 +4,8 @@ import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
 import '../styles/signUp.css';
 import {
-    // BrowserRouter as Router,
     Link,
     useParams,
-    useHistory
   } from "react-router-dom";
 const authApi = new AuthApi();
 
@@ -16,10 +14,13 @@ const authApi = new AuthApi();
 function Signup(props) {
 
   const {token} = useParams();
-  const history = useHistory();
-  const submit = async (formData) => {
 
-    console.log(formData);
+/**
+ * Sends request to add user or to sign up new one
+ * @param {Fields values} formData 
+ * @returns the response from the server if the values aren't valid
+ */
+  const submit = async (formData) => {
     let res;
     if(props.type === 'newUser'){
       res =  await authApi.editUser({fields: formData, token: token});
@@ -27,9 +28,8 @@ function Signup(props) {
       res = await authApi.signup(formData);
     }
     
+    // Move to home page
     if(res.valid){
-      console.log("history", props.history);
-      // history.push('/home');
       window.location.href = 'http://localhost:3000/home';
     } else {
       return res;
@@ -85,32 +85,38 @@ function Signup(props) {
         }
       }
 
+      // These fields are already known.
     if(props.type === 'newUser'){
       delete signup.fields.mail;
       delete signup.fields.business;
     }
-    
 
     return (
       <div className='wrapper-container'>
         <div className='wrapper'>
             <div className='text-container'> 
-            <Logo size='large'/>
+              <Logo size='large'/>
               <h2>Be the best graphic designer you can</h2>
             </div>
             <div className='form-container'>
                 <Form 
-                className='form-body'
-                fields={signup.fields} 
-                title={signup.title}
-                submitHandle={signup.submitHandle} 
-                type={signup.type}
-                errorMap = {signup.errorMap}
-                button={signup.buttonTitle}
-                buttonClass={signup.buttonClass}
-                passwordError = 'Password must include 1-9 a-z A-Z and at least 8 characters'
+                  className='form-body'
+                  fields={signup.fields} 
+                  title={signup.title}
+                  submitHandle={signup.submitHandle} 
+                  type={signup.type}
+                  errorMap = {signup.errorMap}
+                  button={signup.buttonTitle}
+                  buttonClass={signup.buttonClass}
+                  passwordError = 'Password must include 1-9 a-z A-Z and at least 8 characters'
                 />
-                {props.type !== 'newUser' && <div><Link className='linkto' to="/login">I already have an account</Link></div>}
+                {props.type !== 'newUser' && 
+                  <div>
+                    <Link 
+                        className='linkto' 
+                        to="/login">I already have an account
+                    </Link>
+                  </div>}
             </div>
         </div>
       </div>

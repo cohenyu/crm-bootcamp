@@ -1,0 +1,27 @@
+.range {
+    margin: 7px;
+    color: rgba(0, 0, 0, 0.527);
+    font-size: 12px;
+
+    &:hover {
+        font-weight: bold;
+        color: #6aa7eecb;
+        cursor: pointer;
+    }
+
+}
+
+.current {
+    font-weight: bold;
+    color: black;
+
+    &:hover{
+        color: black;
+        cursor: text;
+    }
+}
+
+
+.dates-container {
+    width: 100%;
+}

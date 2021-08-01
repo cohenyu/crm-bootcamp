@@ -155,7 +155,7 @@ function ProjectPage(props) {
           );
 
         
-        await crmApi.saveImg(formData);
+        await crmApi.saveFile('/imgs/saveImg/', formData);
         const result = await crmApi.postRequest("/imgs/addImg/", {img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
         setImgUploaded(!imgUploaded);
         console.log(result);

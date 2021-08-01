@@ -26,7 +26,7 @@ function Header(props) {
 
     const links = [
         {
-            title: "Home", 
+            title: "Dashboard", 
             url: '/home'
         }, 
         {
@@ -69,6 +69,7 @@ function Header(props) {
         })();
     }, []);
 
+
     const logoutFunc = async ()=>{
         await authApi.logout();
         dispatch(changedIsLogged());        
@@ -81,15 +82,27 @@ function Header(props) {
             </div>
             <div className='crm-nav-container'>
                 <Navigation links={links}/>
+            </div>
+            <div 
+                className='nav-wrapper' 
+                onMouseEnter={()=>{setIsHoverPersonal(true)}}  
+                onMouseLeave={()=>{setTimeout(()=>{if(!inPersonalRef.current){setIsHoverPersonal(false)};}, 700)}} >
+                <div className={`is-working ${working !== 0 ? 'working' : 'not-working'}`}></div>
+                <FontAwesomeIcon 
+                    className='nav-icon'  
+                    icon={faUserCircle} 
+                    size='2x'
+                />
+            </div>
+            {isHoverPersonal && 
+                <div 
+                    className='personal' 
+                    onMouseEnter={()=>{setInPersonal(true)}}  
+                    onMouseLeave={()=>{setInPersonal(false);setIsHoverPersonal(false);}}
+                >
+                    <span>Personal Settings</span>
+                    <span onClick={logoutFunc}>Logout</span>
                 </div>
-            <div className='nav-wrapper' onMouseEnter={()=>{setIsHoverPersonal(true)}}  onMouseLeave={()=>{setTimeout(()=>{if(!inPersonalRef.current){setIsHoverPersonal(false)};}, 700)}} >
-            <div className={`is-working ${working !== 0 ? 'working' : 'not-working'}`}></div>
-            <FontAwesomeIcon className='nav-icon'  icon={faUserCircle} size='2x'/>
-            </div>
-            {isHoverPersonal && <div className='personal' onMouseEnter={()=>{setInPersonal(true)}}  onMouseLeave={()=>{setInPersonal(false);setIsHoverPersonal(false);; console.log("leave from personal")}}>
-                <span>Personal Settings</span>
-                <span onClick={logoutFunc}>Logout</span>
-            </div>
             }
         </div>
     );

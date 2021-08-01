@@ -30,18 +30,23 @@ function Team(props){
     dataRef.current = data;
 
 
+    // Fetches the users
     useEffect(()=>{
       (async () => {
-        console.log('execute get users');
        const result = await getUsersList();
-       console.log(result);
-       setData(result);
+       if(result){
+         setData(result);
+       }
       })();
     }, [])
     
+    /**
+     * Sends request to add new user
+     * @param {user details} dataToSent 
+     * @returns the result from the server if the values aren't valid
+     */
     const submit = async (dataToSent) => {
         const res = await authApi.newUser(dataToSent);
-        console.log("result:", res);
         if(res.valid){
           const newData = [...data];
           const userDetails = res.user;
@@ -54,7 +59,10 @@ function Team(props){
         }
     };
 
-    
+    /**
+     * @param {Users list} table 
+     * @returns The users list with a status - pending / active
+     */
     function tableParser(table){
       if(table){
         const parseResult = table.map(item => {
@@ -69,6 +77,10 @@ function Team(props){
       return null;
     }
 
+    /**
+     * Fetches the users list
+     * @returns Users
+     */
     const getUsersList = async () => {
       let result = await authApi.getUsers();
       if(result && result.valid){
@@ -77,45 +89,56 @@ function Team(props){
       }
    };
    
-   
-   const onRemoveItem = (value) => {
-     setItemToDelete(value);
+   /**
+    * Opens the delete modal
+    * @param {item to remove} item 
+    */
+   const onRemoveItem = (item) => {
+     setItemToDelete(item);
      openDeleteUserWindow();
    }
    
+   /**
+    * Removes the item from users list
+    */
    const removeItem = () => {
     authApi.deleteUser(itemToDelete);
-    console.log("item to delete", itemToDelete);
     let newData = dataRef.current.filter((item)=>{
-      console.log(itemToDelete.user_id,"is equal?", item.user_id);
       return itemToDelete.user_id !== item.user_id;
     })
     closeDeleteUserWindow();
     setData(newData);
    }
   
-    const downloadCsv =  async (row) => {
-      const img = await crmApi.postRequest("/workingTime/exportWorkingTimeToCsv/", {userId: row.user_id, userName: row.user_name});
-      if(img){
-        fileDownload(img, `${row.user_name}.csv`);
-      }
+  /**
+  * Fetches the working hours csv file of the given user
+  * @param {user details} row 
+  */
+  const downloadCsv =  async (row) => {
+    const img = await crmApi.postRequest("/workingTime/exportWorkingTimeToCsv/", {userId: row.user_id, userName: row.user_name});
+    if(img){
+      fileDownload(img, `${row.user_name}.csv`);
     }
+  }
   
+
    const columns = React.useMemo(
     () => [
       {
         Header: 'Full Name',
-        accessor: 'user_name', // accessor is the "key" in the data
+        accessor: 'user_name', 
 
       },
       {
         Header: 'Mail',
         accessor: 'user_mail',
+        // Add a link to send a mail
         Cell: ({value})  => <a className='link-table' href={`mailto:${value}`}>{value}</a>
       },
       {
         Header: 'Phone',
         accessor: 'user_phone',
+        // Add link to make a phone call
         Cell: ({value})  => <a className='link-table' href={`tel:${value}`}>{value}</a>
       },
       {
@@ -128,30 +151,48 @@ function Team(props){
 
         Cell: (value)=> (
           <div className='action-icons'>
-            <span style={{cursor:'pointer'}}
-                onClick={() => {
-                    onRemoveItem(value.cell.row.original);
-                  }}>
-                  <FontAwesomeIcon className='trash-icon' icon={faTrash} size='sm'/>
+            {/* Remove action */}
+            <span 
+              style={{cursor:'pointer'}}
+              onClick={() => {
+                onRemoveItem(value.cell.row.original);
+              }}>
+              <FontAwesomeIcon 
+                className='trash-icon' 
+                icon={faTrash} 
+                size='sm'
+              />
+            {/* Edit action */}
           </span> 
-          {value.cell.row.original.user_name && <span style={{cursor:'pointer'}}
-                onClick={() => {
-                  setItemToEdit(value.cell.row.original);
-                  openEditUserWindow();
-                  }}>
-                  <FontAwesomeIcon className='edit-icon' icon={faEdit} size='sm'/>
-          </span> }
-          <span style={{cursor:'pointer'}}
-                onClick={ () => {
-                     downloadCsv(value.cell.row.original);
-                  }}>
-                  <FontAwesomeIcon className='download-icon' icon={faDownload} size='sm'/>
+          {value.cell.row.original.user_name && 
+            <span style={{cursor:'pointer'}}
+                  onClick={() => {
+                    setItemToEdit(value.cell.row.original);
+                    openEditUserWindow();
+                    }}>
+                    <FontAwesomeIcon 
+                      className='edit-icon' 
+                      icon={faEdit} 
+                      size='sm'
+                    />
+            </span> 
+          }
+          {/* Download csv file action */}
+          <span 
+              style={{cursor:'pointer'}}
+              onClick={ () => {
+                    downloadCsv(value.cell.row.original);
+                }}>
+                <FontAwesomeIcon 
+                  className='download-icon' 
+                  icon={faDownload} 
+                  size='sm'
+                />
           </span> 
           </div>
           
         )
       },
-
     ],
     []
   )
@@ -178,9 +219,7 @@ function Team(props){
 
     const submitEditUser = async (formFieldsData) => {
         const res = await authApi.editOldUser({fields: formFieldsData, userId: itemToEdit.user_id});
-        console.log(res.valid);
         if(res.valid){
-
           let newData = dataRef.current.map((item)=>{
             if(item.user_id === itemToEdit.user_id){
               item.user_name = formFieldsData.name.value;
@@ -189,8 +228,6 @@ function Team(props){
             }
             return item;
           })
-          console.log(newData);
-          
           setData(newData);
           closeEditUserWindow();
         } else {
@@ -235,8 +272,6 @@ function Team(props){
       }
     }
 
-
-
     const openAddUserWindow = ()=>{
         setIsModalOpen(true);
     };
@@ -255,7 +290,6 @@ function Team(props){
 
     const openEditUserWindow = ()=>{
       setIsEditModalOpen(true);
-      console.log('item ', itemToEdit);
     };
 
     const closeEditUserWindow = ()=>{
@@ -267,32 +301,64 @@ function Team(props){
         <div className='page-container'>
             <Header/>
             <div className='crm-page'>
-            <PageTitle className='page-title' title='Team' description='Manage your team.'/>
-            <div className='table-actions-box just-one-item'>
-            <CrmButton content='Add User' buttonClass='main-button' icon='plus' isLoading={isLoading} callback={()=> openAddUserWindow()}/>
-            </div>
-            <Table columns={columns} data={data}/>
-            <Modal isOpen={isModalOpen} ariaHideApp={false} contentLabel='Add User' onRequestClose={closeAddUserWindow}  overlayClassName="Overlay" className='modal'>
+              <PageTitle 
+                  className='page-title' 
+                  title='Team' 
+                  description='Manage your team.'
+              />
+              <div className='table-actions-box just-one-item'>
+                <CrmButton 
+                    content='Add User' 
+                    buttonClass='main-button' 
+                    icon='plus' 
+                    isLoading={isLoading} 
+                    callback={()=> openAddUserWindow()}
+                />
+              </div>
+              <Table columns={columns} data={data}/>
+              <Modal 
+                isOpen={isModalOpen} 
+                ariaHideApp={false} 
+                contentLabel='Add User' 
+                onRequestClose={closeAddUserWindow}  
+                overlayClassName="Overlay" 
+                className='modal'
+                >
+                  <Form 
+                      className='form-body'
+                      fields={addUserForm.fields} 
+                      title={addUserForm.title}
+                      type={addUserForm.type}
+                      errorMap={addUserForm.errorMap}
+                      button= {addUserForm.buttonTitle}
+                      buttonClass={addUserForm.buttonClass}
+                      submitHandle={addUserForm.submitHandle} 
+                  />
+              </Modal>
+              <ActionModal 
+                  title='Are you sure you want delete this user?' 
+                  isLoading={false} 
+                  ok='Delete' 
+                  cancel='Cancel' 
+                  onClose={()=> {setIsDeleteModalOpen(false)}} 
+                  isOpen={isDeleteModalOpen} 
+                  action={removeItem}
+              />
+              <Modal 
+                  isOpen={isEditModalOpen} 
+                  ariaHideApp={false} 
+                  contentLabel='Edit User' 
+                  onRequestClose={closeEditUserWindow}  
+                  overlayClassName="Overlay" 
+                  className='modal'
+              >
                 <Form 
-                    className='form-body'
-                    fields={addUserForm.fields} 
-                    title={addUserForm.title}
-                    type={addUserForm.type}
-                    errorMap={addUserForm.errorMap}
-                    button= {addUserForm.buttonTitle}
-                    buttonClass={addUserForm.buttonClass}
-                    submitHandle={addUserForm.submitHandle} 
-                />
-            </Modal>
-            <ActionModal title='Are you sure you want delete this user?' isLoading={false} ok='Delete' cancel='Cancel' onClose={()=> {setIsDeleteModalOpen(false)}} isOpen={isDeleteModalOpen} action={removeItem}/>
-            <Modal isOpen={isEditModalOpen} ariaHideApp={false} contentLabel='Edit User' onRequestClose={closeEditUserWindow}  overlayClassName="Overlay" className='modal'>
-            <Form 
-                    className='form-body'
-                    button= {editUserForm.buttonTitle}
-                    submitHandle={editUserForm.submitHandle} 
-                    {...editUserForm}
-                />
-            </Modal>
+                        className='form-body'
+                        button= {editUserForm.buttonTitle}
+                        submitHandle={editUserForm.submitHandle} 
+                        {...editUserForm}
+                    />
+              </Modal>
             </div>
         </div>
     );
