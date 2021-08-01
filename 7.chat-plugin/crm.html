@@ -378,6 +378,7 @@ function addClient(name, mail, phone){
 
         if(currentRoom == msg.room){
           room = msg.room;
+          socket.emit("read msg", msg.mail);
           createClientMsg(msg.msgValue, msg.datetime)
         }  else {
           console.log("searching for the client");
@@ -407,7 +408,7 @@ function addClient(name, mail, phone){
             isTyping: false,
             room: currentRoom
           });
-          }, 1000)
+          }, 3000)
       })
 
 
@@ -423,9 +424,6 @@ function addClient(name, mail, phone){
             
           }
         });
-        
-
-
 
 
     </script>

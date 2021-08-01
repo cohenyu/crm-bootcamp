@@ -115,14 +115,19 @@ function createClientMsg(msg, date, messages){
 
       let room;
       if(window.localStorage.getItem('room') == null){
+        console.log("creating new client");
          room = Date.now() + Math.random();
          createCrmMsg("Enter your mail please", new Date(), messages);
          socket.emit("create client room", room);
       } else {
+        console.log("connecting old client");
         room = parseFloat(window.localStorage.getItem('room'));
         socket.emit("create client room", room);
         socket.emit('client exist', room);
       }
+
+      messages.scroll(0, 10000000);
+
 
       form.addEventListener("submit", function (e) {
         console.log("client submit");
@@ -159,7 +164,7 @@ function createClientMsg(msg, date, messages){
             isTyping: false,
             room: room,
           });
-          }, 1000)
+          }, 3000)
       })
 
       socket.on("client message", function (msg) {
@@ -186,11 +191,14 @@ function createClientMsg(msg, date, messages){
             createCrmMsg(element.msg, element.datetime, messages);
           }
         });
+        window.scrollTo(0, document.body.scrollHeight);
+        messages.scrollTo(0,  messages.scrollHeight);
       })
 
 
       socket.on("crm message", function (msg) {
         createCrmMsg(msg.msgValue, msg.datetime, messages);
+        socket.emit("msg read", {mail: mail, room: room});
       });
 
 

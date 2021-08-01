@@ -60,6 +60,7 @@ io.on('connection', (socket) => {
     socket.on('client message', msg => {
         if(msg.save){
             mongoHelper.putRequest(`/addMsg/${msg.mail}`, {msg: msg.msgValue, client: true, datetime: msg.datetime});
+            mongoHelper.putRequest(`/set/${msg.mail}`, {read: false});
         }
         io.sockets.in(msg.room).emit('client message', msg);
     });
@@ -88,6 +89,10 @@ io.on('connection', (socket) => {
         
     })
 
+    socket.on("read msg", async (mail) => {
+        await mongoHelper.putRequest(`/set/${mail}`, {read: true});
+    })
+
     socket.on("unread msg", async (mail) => {
         await mongoHelper.putRequest(`/set/${mail}`, {read: false});
     })
@@ -97,6 +102,7 @@ io.on('connection', (socket) => {
         console.log("the response is: ", response);
         io.sockets.in(room).emit('client data', response);
     })
+
 });
 
 

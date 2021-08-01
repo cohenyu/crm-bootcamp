@@ -8,9 +8,8 @@ import CrmApi from '../helpers/CrmApi';
 function ChatScreen(props) {
     const crmApi = new CrmApi();
     window.onmessage = async function(e) {
-        console.log(e.data);
         if(e.data.name && e.data.mail && e.data.phone){
-            const response = await crmApi.postRequest('/clients/addChatClient/', {name: e.data.name, mail: e.data.mail, phone: e.data.phone, account_id: 1});
+            const response = await crmApi.postRequest('/clients/addClient/', {name: e.data.name, mail: e.data.mail, phone: e.data.phone});
             console.log("response is: ", response);
         }
     };
