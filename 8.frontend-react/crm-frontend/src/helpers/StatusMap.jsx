@@ -1,5 +1,4 @@
 var statusMap = {
-    // open: {key:'open', title:"Open"},
     open: {key: 'open', title: 'Open'},
     inProgress: {key: 'in progress', title: 'In Progress'},
     done: {key: 'done', title: 'Done'},

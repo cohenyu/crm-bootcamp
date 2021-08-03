@@ -1,12 +1,9 @@
 import Form from '../components/form/Form';
 import Logo from '../components/logo/Logo';
 import AuthApi from '../helpers/authApi';
-// import '../styles/massageBox.css';
 import '../styles/massageBox.css';
-import {
-    Link,
-  } from "react-router-dom";
-  import React, { useState} from 'react';
+import { Link } from "react-router-dom";
+import React, { useState} from 'react';
 
 const authApi = new AuthApi();
 
@@ -14,11 +11,14 @@ function ForgotPassword(props) {
 
       const [isFormSubmitted, setFormSubmitted] = useState(false);
 
+      /**
+       * Sends request to reset the password
+       * @param {mail} data 
+       * @returns the response if the mail is invalid
+       */
       const submit = async (data) => {
         const res = await authApi.forgotPassword(data);
-        console.log(res.valid);
         if(res.valid){
-          console.log("valid!");
           setFormSubmitted(true);
         } else {
           return res;
@@ -48,29 +48,46 @@ function ForgotPassword(props) {
       var formClasses = 'form-container login small';
     
 
+    /**
+     * @returns the content of the page, depending on whether the form was submitted successfully.
+     */
+    const getPageContent = ()=>{
+      if(isFormSubmitted){
+        return <div className='successful-operation'>
+                <h2>Link to reset your password sent to your mail!</h2>
+                <Link 
+                    className='linkto' 
+                    to="/login">Go to login
+                </Link>
+              </div>
+      } else {
+        return <div className='form-box'>
+                  <Form 
+                      className='form-body'
+                      button= {forgot.buttonTitle}
+                      {...forgot}
+                  />
+                  <div className='links'>
+                      <Link 
+                          className='linkto' 
+                          to="/signup">Create new account
+                      </Link>
+                      <Link 
+                          className='linkto' 
+                          to="/login">Back to login
+                      </Link>
+                  </div>
+              </div>
+      }
+    }
+
     return (
         <div className='box-wrapper'>
             <div className='logo'> 
                 <Logo size='small'/>
             </div>
             <div className={formClasses}>
-              {isFormSubmitted ? 
-              <div className='successful-operation'>
-              <h2>Link to reset your password sent to your mail!</h2>
-              <Link className='linkto' to="/login">Go to login</Link>
-            </div>
-              : <div className='form-box'>
-              <Form 
-                  className='form-body'
-                 button= {forgot.buttonTitle}
-                  {...forgot}
-              />
-              <div className='links'>
-                  <Link className='linkto' to="/signup">Create new account</Link>
-                  <Link className='linkto' to="/login">Back to login</Link>
-              </div>
-              </div>
-              }
+                {getPageContent()}
             </div>
         </div>
     );

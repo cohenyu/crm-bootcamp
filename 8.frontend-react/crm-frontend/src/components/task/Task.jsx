@@ -1,5 +1,5 @@
 
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import './task.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGripVertical, faCheck, faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
@@ -10,6 +10,7 @@ function Task(props) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditTask, setEditTask] = useState(false);
     const [title, setTitle] = useState(props.item.title);
+
 
     const handleCheckTask =  async (value)=> {
         props.update(value, props.item.id, 'check');
@@ -24,14 +25,17 @@ function Task(props) {
 
     return (
         <div className='task'>
-            <FontAwesomeIcon icon={faGripVertical} size={'sm'}/>  
+            <FontAwesomeIcon 
+                icon={faGripVertical} 
+                size={'sm'}
+            />  
             <div 
                 className={check ? 'check' : 'check unchecked'} 
                 onClick={()=>{handleCheckTask(!check)}}
             >
                 {check &&  <FontAwesomeIcon icon={faCheck} size={'sm'}/> }
             </div> 
-            {isEditTask ? <input onChange={(e)=>{setTitle(e.target.value)}} value={title} type='text'/>: <span className='title'>{title}</span>}
+            {isEditTask ? <input onChange={(e)=>{setTitle(e.target.value)}} value={title} type='text'/> : <span className='title'>{title}</span>}
             <div className='task-actions'>
                 <FontAwesomeIcon 
                     onClick={()=>{!isEditTask ? setEditTask(!isEditTask) : setNewTitle()}} 

@@ -16,8 +16,11 @@ function Table(props) {
       
 
     return (
-        <div className='table-container'>
-            <table className='table sticky' id='table' {...getTableProps()}>
+        <div className={'table-container'}>
+            <table 
+              className={props.tableClass ? props.tableClass : 'table sticky'} 
+              id='table' 
+              {...getTableProps()}>
       <thead>
         {headerGroups.map(headerGroup => (
           <tr className='table-header' {...headerGroup.getHeaderGroupProps()}>
@@ -31,7 +34,9 @@ function Table(props) {
         {rows.map((row, i) => {
           prepareRow(row);
           return (
-            <tr onClick={()=>{props.clickRow && props.clickRow(row)}} className='card' {...row.getRowProps()}>
+            <tr 
+              onClick={()=>{props.clickRow && props.clickRow(row)}} 
+              className='card' {...row.getRowProps()}>
               {row.cells.map(cell => {
                 return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
               })}
@@ -40,7 +45,10 @@ function Table(props) {
         })}
       </tbody>
     </table>
-    {props.data.length === 0 && <div className='empty-msg'><h3>There is nothing to show</h3></div>}
+    {props.data.length === 0 && 
+          <div className='empty-msg'>
+              <h3>There is nothing to show</h3>
+          </div>}
         </div>
     );
 }
