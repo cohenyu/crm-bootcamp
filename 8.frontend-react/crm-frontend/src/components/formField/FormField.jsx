@@ -15,7 +15,7 @@ function FormField(props) {
             placeholder={props.text} 
             onChange={props.callback}/> 
         } else {
-            <input disabled={props.isDisabled} 
+            return <input disabled={props.isDisabled} 
             className='form-input' min={props.min} 
             id={props.id} type={props.type} 
             value={props.value} 

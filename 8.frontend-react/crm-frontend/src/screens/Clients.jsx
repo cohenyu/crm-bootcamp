@@ -31,7 +31,6 @@ function Clients(props){
       }
     };
 
-    console.log("after effect");
     
   
    const columns = React.useMemo(
