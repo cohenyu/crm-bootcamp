@@ -72,7 +72,8 @@ function Header(props) {
 
     const logoutFunc = async ()=>{
         await authApi.logout();
-        dispatch(changedIsLogged());        
+        dispatch(changedIsLogged());  
+        window.setUserDetails();      
     }
 
     return (

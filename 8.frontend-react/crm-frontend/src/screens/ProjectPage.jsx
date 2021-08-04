@@ -304,7 +304,7 @@ function ProjectPage(props) {
                 </div>
                 <div className='main-project-content'>
                     <div className='first-group'>
-                        <div>
+                        <div className='description-area'>
                             <div className='action-title'>                    
                                 <h4>Description</h4>
                                 <FontAwesomeIcon className='button-icon' onClick={()=>{setIsEditDescription(true)}} icon={faEdit} size={'1x'}/>
@@ -314,7 +314,7 @@ function ProjectPage(props) {
                         <textarea rows='8' onChange={((e)=>{tempDescription = e.target.value})} defaultValue={currentProject.description}></textarea> 
                         <CrmButton content={'Save'} buttonClass='secondary-button' containerClass= {'form-action'} callback={()=> {submitUpdateDescription(tempDescription)}}/>
                         </div>
-                        : <div>{currentProject.description}</div>}
+                        : <div >{currentProject.description}</div>}
                         </div>
                         <div className='tasks'>
                         <div className='action-title'>
@@ -333,20 +333,20 @@ function ProjectPage(props) {
                         </div>
                     </div>
                     <div className='second-group'>
-                        <div>
+                        <div className='client-details'> 
                             <h4>Client</h4>
                             <span>{currentProject.client_name}</span>
                             <span><a href={`mailto:${currentProject.client_mail}`}>{currentProject.client_mail}</a></span>
                             <span><a href={`tel:${currentProject.client_phone}`}>{currentProject.client_phone}</a></span>
                         </div>
-                        <div>
+                        <div className='assigned-user'>
                             <h4>Assigned Teammate</h4>
                             <div>
                             <FontAwesomeIcon className='icon' icon={faUserCircle} size={'lg'}/>
                             <span>{currentProject.user_name}</span>
                             </div>
                         </div>
-                        <div>
+                        <div className='attachments'>
                         <div className='action-title'>
                         <h4>Attachments</h4>
                         <input type='file'  accept="image/png, image/jpeg"  onChange={onFileChange} id='file' ref={inputFile} style={{display: 'none'}}/>

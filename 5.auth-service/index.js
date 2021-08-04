@@ -126,5 +126,12 @@ app.get('/getUser', function(req, res){
   res.send(response);
 })
 
+app.post('/sendMsgs', async function(req, res){
+  console.log('got the mission to send mails');
+  const response = await usersManager.sendMsgs(req.body);
+  res.send(response);
+})
+
+
 
 

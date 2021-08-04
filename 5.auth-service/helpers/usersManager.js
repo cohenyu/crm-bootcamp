@@ -3,7 +3,10 @@ import MailgunHelper from './mailgunHelper.js'
 import ValidationHelper from './validationHelper.js';
 import SqlHelper from './sqlHelper.js';
 import md5 from 'md5';
+import redis from 'redis';
 
+
+var publisher = redis.createClient();
 const sessionHelper = new SessionHelper();
 const sqlHelper = new SqlHelper();
 const mailgunHelper = new MailgunHelper();
@@ -110,7 +113,6 @@ class UsersManager {
         } else {
             data.usersList = result;
         }
-
         return data;
     }
 
@@ -188,26 +190,52 @@ class UsersManager {
      * @returns 
      */
    async editOldUser(fields, userId){
-    let data = {valid: false, errors: [], serverError: ''};
+        let data = {valid: false, errors: [], serverError: ''};
 
-    // fields validations
-    data =  validation.validateAll(fields);
-    if(!data.valid){
-        res.send(data);
-        return;
-    }
-    
-    // insert the account to the db
-    let sql = `UPDATE users SET user_name = '${fields.name.value}', user_mail = '${fields.mail.value}', user_phone = '${fields.phone.value}' WHERE user_id = ${userId};`;
-    let result = await sqlHelper.update(sql).catch((err)=>{});
-    if(!result){
-        data.serverError = 'serverError';
+        // fields validations
+        data =  validation.validateAll(fields);
+        if(!data.valid){
+            res.send(data);
+            return;
+        }
+        
+        // insert the account to the db
+        let sql = `UPDATE users SET user_name = '${fields.name.value}', user_mail = '${fields.mail.value}', user_phone = '${fields.phone.value}' WHERE user_id = ${userId};`;
+        let result = await sqlHelper.update(sql).catch((err)=>{});
+        if(!result){
+            data.serverError = 'serverError';
+            return data;
+        }
+
+        data.valid = true;
         return data;
     }
 
-    data.valid = true;
-    return data;
-}
+    async sendMsgs(body){
+        if(body.type == 'sms'){
+            console.log("publish mail");
+            const {usersList, subject, content} = body;
+            const phones = [];
+            for(let user in usersList){
+                phones.push(usersList[user].user_phone);
+            }
+            publisher.publish('sendSMS', JSON.stringify({usersList: phones, content: content}), function () {
+                console.log('success');
+            });
+        } else {
+            console.log("publish mail");
+            const {usersList, subject, content} = body;
+            const mails = [];
+            for(let user in usersList){
+                mails.push(usersList[user].user_mail);
+            }
+            publisher.publish('sendMails', JSON.stringify({usersList: mails, subject: subject, content: content}), function () {
+                console.log('success');
+            });
+        }
+        
+        return true;
+    }
 
 } 
 

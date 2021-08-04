@@ -32,6 +32,21 @@ class AuthApi {
         }
     }
 
+    async getAuth(){
+        const response = await axios.get(`${this.basicUrl}/getUser`, 
+        {
+            headers: {
+                'authorization': localStorage.getItem('jwtToken')
+            }
+        })
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
     async signin(data) {
         const response = await axios.post(`${this.basicUrl}/login`, data);
         
@@ -126,6 +141,12 @@ class AuthApi {
 
     async editOldUser(data){
         const response = await axios.post(`${this.basicUrl}/editOldUser`, data);
+        return response ? response.data : null;
+    }
+
+    async sendMsgs(data){
+        console.log('send axios to send mails');
+        const response = await axios.post(`${this.basicUrl}/sendMsgs`, data);
         return response ? response.data : null;
     }
 }

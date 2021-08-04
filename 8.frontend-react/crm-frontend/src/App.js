@@ -34,9 +34,11 @@ function App() {
     useEffect(() => {
       async function checkConnection() {
         if(localStorage.getItem('jwtToken')){
-          const isUserAuthenticated = await authApi.ping();
-          if(isUserAuthenticated){
+          const UserAuthenticated = await authApi.getAuth();
+          if(UserAuthenticated){
+            console.log("user is connect!!!!!!!!!!!!!!!!!!");
             dispatch(changedIsLogged());
+            window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
           }
         } 
         setLoading(false);

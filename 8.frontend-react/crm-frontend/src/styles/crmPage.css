@@ -46,6 +46,14 @@ div {
     align-items: center;
 }
 
+.table-actions-box > *:not(:last-child){
+    margin-right: 10px;
+}
+
+.action-icons {
+    display: flex;
+}
+
 .just-one-item {
     justify-content: flex-end;
     margin-bottom: 5px;
