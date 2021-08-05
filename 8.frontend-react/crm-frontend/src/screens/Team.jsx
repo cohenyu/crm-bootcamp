@@ -14,7 +14,9 @@ import { faCheck, faTrash , faEdit, faDownload} from '@fortawesome/free-solid-sv
 import ActionModal from '../components/actionModal/ActionModal';
 import CrmApi from '../helpers/CrmApi';
 import fileDownload from 'js-file-download';
+import socketIOClient from "socket.io-client";
 
+const ENDPOINT = "http://localhost:2200";
 
 const authApi = new AuthApi();
 const crmApi = new CrmApi();
@@ -34,17 +36,32 @@ function Team(props){
     const [data, setData] = useState([]);
     const dataRef = useRef(data);
     dataRef.current = data;
+    const [sentList, setSentList] = useState({});
+    const sentListRef = useRef(sentList);
+    sentListRef.current = sentList;
+
 
 
     // Fetches the users
     useEffect(()=>{
       (async () => {
        const result = await getUsersList();
+
        if(result){
          setData(result);
        }
       })();
-    }, [])
+
+      const socket = socketIOClient(ENDPOINT);
+      socket.on("sent", data => {
+        console.log("got a sent from socket", data);
+        const tempSentList = {...sentListRef.current};
+        tempSentList[data] = true;
+        setSentList(tempSentList);
+      });
+    }, []);
+
+
     
     /**
      * Sends request to add new user
@@ -216,6 +233,11 @@ function Team(props){
           />
       </span>
       }
+      {/* sent msg signal */}
+        {
+        (sentListRef.current[value.cell.row.original.user_phone] ||  sentListRef.current[value.cell.row.original.user_mail])
+        && <span className='sent'>SENT</span>
+        }
           </div>
           
         )

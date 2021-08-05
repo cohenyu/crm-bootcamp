@@ -52,6 +52,7 @@ div {
 
 .action-icons {
     display: flex;
+    align-items: center;
 }
 
 .just-one-item {
@@ -63,6 +64,13 @@ div {
     border: 0.660428px solid #DFE0EB;
     padding: 30px;
     background-color: white;
+}
+
+.sent {
+    text-align: center;
+    color: #63b67f;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 
