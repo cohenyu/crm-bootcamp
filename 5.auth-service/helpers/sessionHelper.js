@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
+import RedisHelper from './redisHelper.js';
 class SessionHelper {
     
     constructor(){
         this.openSessions = new Map();
-        this.sessionCounter = 0;
+        this.sessionCounter = 1;
         this.accessTokenSecret = 'nkjnnj5j6jkbHBVjhuyg6tgbj';
+        this.sessions =  new RedisHelper();
     }
 
     verifySession(accessToken){
@@ -15,8 +17,7 @@ class SessionHelper {
               return null;
             }
             console.log("verified!");
-            return user;
-            // return this.openSessions.has(user.sessionId) ?  this.openSessions.get(user.sessionId) : null;
+            return this.sessions.get(user.sessionId) ?  user : false;
           });
         } 
         return null;
@@ -24,6 +25,7 @@ class SessionHelper {
 
     createSession (user){
         user.sessionId = this.sessionCounter;
+        this.sessions.set(this.sessionCounter, user);
         this.openSessions.set(this.sessionCounter++, user);
         const token = jwt.sign(user, this.accessTokenSecret, {
           "algorithm": "HS256",

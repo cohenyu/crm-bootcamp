@@ -104,6 +104,7 @@ app.post('/editUser', async function(req, res){
 });
 
 app.get('/getUsers', authMiddleware, async function(req, res){
+  console.log("session found! you can get the user");
   const response =  await usersManager.getUsers(req.user);
   res.send(response);
 
