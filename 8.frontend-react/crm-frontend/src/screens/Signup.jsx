@@ -36,7 +36,6 @@ function Signup(props) {
     if(res.valid){
       const UserAuthenticated = await authApi.getAuth();
           if(UserAuthenticated){
-            console.log("user is connect!!!!!!!!!!!!!!!!!!");
             window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
           }
       dispatch(changedIsLogged());

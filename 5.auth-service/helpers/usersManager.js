@@ -35,7 +35,12 @@ class UsersManager {
             const {accountId, userId} = tokenBody;
             
             // insert the account to the db
-            let sql = `UPDATE users SET user_name = '${fields.name.value}', user_password = '${this.encodePassword(fields.password.value)}', user_phone = '${fields.phone.value}' WHERE user_id = ${userId};`;
+            let sql = `UPDATE users SET 
+                                        user_name = '${fields.name.value}', 
+                                        user_password = '${this.encodePassword(fields.password.value)}', 
+                                        user_phone = '${fields.phone.value}' 
+                                    WHERE 
+                                        user_id = ${userId};`;
             let result = await sqlHelper.update(sql).catch((err)=>{});
             if(!result){
                 data.serverError = 'serverError';
@@ -61,7 +66,11 @@ class UsersManager {
             } catch {}
 
             // userMail
-            const user = {userName: fields.name.value,  userId: userId, accountId: accountId };
+            const user = {
+                            userName: fields.name.value,  
+                            userId: userId, 
+                            accountId: accountId 
+            };
             data.valid = true;
             data.accessToken = sessionHelper.createSession(user);
             data.user_name = result.user_name;
@@ -158,7 +167,11 @@ class UsersManager {
             }
             
             // Encoding the mail address and the account id 
-            const mailToken = sessionHelper.createToken({userMail: userMail, accountId: tokenBody.accountId, userId: result.insertId}, 86400 * 10);
+            const mailToken = sessionHelper.createToken({
+                                                        userMail: userMail, 
+                                                        accountId: tokenBody.accountId, 
+                                                        userId: result.insertId
+                                                    }, 86400 * 10);
             // send the invite mail to the user
             // TODO replace my mail with userMail
             try {
@@ -170,8 +183,6 @@ class UsersManager {
                     `You have received an invitation to join RGB! <br/> <a href=${`${process.env.URL}/newUser/${mailToken}`}>Click to sign up.</a>`);
                 data.user = {user_mail: userMail, user_id: result.insertId};
             } catch {
-                console.log(data);
-                console.log("imm here");
                 data.serverError = "serverError";
             }
 
@@ -179,7 +190,6 @@ class UsersManager {
         } else {
             data.serverError = "serverError";
         }
-        console.log(data);
         return data;  
     }
 
@@ -200,7 +210,13 @@ class UsersManager {
         }
         
         // insert the account to the db
-        let sql = `UPDATE users SET user_name = '${fields.name.value}', user_mail = '${fields.mail.value}', user_phone = '${fields.phone.value}' WHERE user_id = ${userId};`;
+        let sql = `UPDATE users SET 
+                                    user_name = '${fields.name.value}', 
+                                    user_mail = '${fields.mail.value}', 
+                                    user_phone = '${fields.phone.value}' 
+                                WHERE 
+                                    user_id = ${userId};`;
+
         let result = await sqlHelper.update(sql).catch((err)=>{});
         if(!result){
             data.serverError = 'serverError';
@@ -211,24 +227,32 @@ class UsersManager {
         return data;
     }
 
+    /**
+     * Publish to send sms / mail according to the parameters.
+     * @param {msgs data} body 
+     */
     async sendMsgs(body){
         if(body.type == 'sms'){
-            console.log("publish mail");
-            const {usersList, subject, content} = body;
+            const {usersList, content} = body;
+
+            // Build phones list
             const phones = [];
             for(let user in usersList){
                 phones.push(usersList[user].user_phone);
             }
+
             publisher.publish('sendSMS', JSON.stringify({usersList: phones, content: content}), function () {
                 console.log('success');
             });
         } else {
-            console.log("publish mail");
             const {usersList, subject, content} = body;
+
+            // Build mails list
             const mails = [];
             for(let user in usersList){
                 mails.push(usersList[user].user_mail);
             }
+            
             publisher.publish('sendMails', JSON.stringify({usersList: mails, subject: subject, content: content}), function () {
                 console.log('success');
             });

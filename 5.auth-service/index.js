@@ -39,8 +39,8 @@ app.post('/login', async function (req, res) {
 /**
  * Checks the user is logged in and deletes his session.
  */
-app.post('/logout', function (req, res) {
-  const response  = authManager.logout(req.headers.authorization);
+app.post('/logout', authMiddleware, function (req, res) {
+  const response  = authManager.logout(req.user);
   res.send(response);
 });
 
@@ -57,11 +57,13 @@ function authMiddleware(req, res, next){
     req.user = userData;
     next()
   } else {
-      // TODO return something else
       return res.send(false);
   }
 }
 
+/**
+ * Validates the given token
+ */
 app.get('/tokenValidation',  function(req, res){
   res.send(authManager.tokenValidation(req.headers.authorization));
 });
@@ -90,45 +92,59 @@ app.post('/resetPassword', async function(req, res){
   res.send(response);
 });
 
-
-app.post('/addUser', async function(req, res){
+/**
+ * Add new user to the account
+ */
+app.post('/addUser', authMiddleware,  async function(req, res){
   const response = await usersManager.addUser(req.body.fields, req.body.token);
   res.send(response);
 });
 
-
-app.post('/editUser', async function(req, res){
+/**
+ * Edit new user details.
+ */
+app.post('/editUser', authMiddleware,  async function(req, res){
   const {fields, token} = req.body;
   const response = await usersManager.editNewUser(fields, token);
   res.send(response);
 });
 
+/**
+ * Returns all the users of the account
+ */
 app.get('/getUsers', authMiddleware, async function(req, res){
-  console.log("session found! you can get the user");
   const response =  await usersManager.getUsers(req.user);
   res.send(response);
-
 });
 
-
-app.post('/removeUser', async function(req, res){
+/**
+ * Remove user from the account
+ */
+app.post('/removeUser', authMiddleware, async function(req, res){
   const response = await usersManager.removeUser(req.body);
   res.send(response);
 });
 
-app.post('/editOldUser', async function(req, res){
+/**
+ * Edit old user details
+ */
+app.post('/editOldUser', authMiddleware, async function(req, res){
   const {fields, userId} = req.body;
   const response = await usersManager.editOldUser(fields, userId);
   res.send(response);
 });
 
-app.get('/getUser', function(req, res){
-  const response =  sessionHelper.verifyToken(req.headers.authorization);
-  res.send(response);
+/**
+ * Returns user details from the token body
+ */
+app.get('/getUser', authMiddleware, function(req, res){
+  res.send(req.user);
 })
 
-app.post('/sendMsgs', async function(req, res){
-  console.log('got the mission to send mails');
+/**
+ * Calls to send msgs
+ */
+app.post('/sendMsgs', authMiddleware, async function(req, res){
   const response = await usersManager.sendMsgs(req.body);
   res.send(response);
 })

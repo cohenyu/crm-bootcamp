@@ -145,7 +145,6 @@ class AuthApi {
     }
 
     async sendMsgs(data){
-        console.log('send axios to send mails');
         const response = await axios.post(`${this.basicUrl}/sendMsgs`, data);
         return response ? response.data : null;
     }

@@ -54,7 +54,6 @@ function Team(props){
 
       const socket = socketIOClient(ENDPOINT);
       socket.on("sent", data => {
-        console.log("got a sent from socket", data);
         const tempSentList = {...sentListRef.current};
         tempSentList[data] = true;
         setSentList(tempSentList);
@@ -322,9 +321,7 @@ function Team(props){
     }
 
     const submitSendMail = async (formFieldsData) => {
-      console.log("send mail to ", checkedUsers, formFieldsData);
       const result = await authApi.sendMsgs({type: 'mail', usersList: checkedUsers, subject: formFieldsData.subject.value, content: formFieldsData.content.value});
-      console.log("result from send mail is: ", result);
       if(result){
         closeSendMailModel();
       }

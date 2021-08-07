@@ -15,8 +15,8 @@ class MailgunHelper {
           subject: subject,
           html: html,
         };
-        // Sending the data to the specify mail
         
+        // Sending the data to the specify mail
         return new Promise((resolve, reject)=>{
           mailGun.messages().send(data, function (err, body) {
             if (err) {

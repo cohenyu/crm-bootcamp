@@ -6,7 +6,6 @@ import twilio from 'twilio';
 class CommunicationHelper {
 
     async sendMail(from, to, subject, html){
-      console.log(process.env.API_KEY);
         const mailGun = new MailGun({
           apiKey: process.env.API_KEY,
           domain: process.env.DOMAIN,
@@ -35,7 +34,6 @@ class CommunicationHelper {
       async sendSMS(content, to){
           const accountSid = process.env.ACCOUNT_SID;
           const authToken = process.env.ACCOUNT_TOKEN; 
-          console.log(accountSid, authToken, process.env.API_KEY);
           const client = new twilio(accountSid, authToken);
           
           return await client.messages

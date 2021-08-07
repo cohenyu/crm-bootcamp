@@ -19,11 +19,16 @@ app.listen(process.env.PORT, () => {
   console.log(`Server running at http://localhost:${process.env.PORT}/`);
 });
 
-
+/**
+ * Returns the handlers file
+ */
 app.get('/',(req, res) => {
     res.sendFile(__dirname + '/handlers.js');
-  });
+});
 
+/**
+ * Publish to save the events list
+ */
 app.post('/saveEvents',(req, res) => {
 
   publisher.publish('events', JSON.stringify(req.body.events), function () {

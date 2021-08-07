@@ -32,13 +32,17 @@ function App() {
   const isLogged = useSelector(state => state.isLogged);
 
     useEffect(() => {
+      // checking if the user is already Logged in
       async function checkConnection() {
         if(localStorage.getItem('jwtToken')){
           const UserAuthenticated = await authApi.getAuth();
           if(UserAuthenticated){
-            console.log("user is connect!!!!!!!!!!!!!!!!!!");
             dispatch(changedIsLogged());
-            window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
+            try {
+              window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
+            } catch (error) {
+              console.log("forgot to start event listener service (9)");
+            }
           }
         } 
         setLoading(false);
@@ -53,6 +57,10 @@ function App() {
 
   const loader = <Loading color="#fe5f55" width={100} height={100}/>
   
+  /**
+   * Define all the routes that a logged in user can access.
+   * @returns the route's switch
+   */
   const loggedInRoutes = () => {
     return (
       <Switch>
@@ -95,6 +103,10 @@ function App() {
     );
   }
 
+  /**
+   * Define all the routes that a logged out user can access.
+   * @returns the route's switch
+   */
   const loggedOutRoutes = () => {
     return (
       <Switch>
@@ -125,6 +137,7 @@ function App() {
     );
   }
 
+  // Displays the loading animation
   if (isLoading) return <div className="App">{loader}</div>;
 
   return (

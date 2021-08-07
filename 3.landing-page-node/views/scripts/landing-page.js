@@ -31,7 +31,6 @@ function ListenToRequest(){
         phone: phone
         },)
         .then(function (response) {
-            console.log(response);
             var validData = response.data;
             // checking if was success in the server side
             if(!validData.valid){

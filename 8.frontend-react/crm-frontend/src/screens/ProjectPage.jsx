@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import Header from '../components/header/Header';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import CrmApi from '../helpers/CrmApi';
 import Timer from '../components/timer/Timer';
 import CrmButton from '../components/crmButton/CrmButton';
@@ -50,7 +50,6 @@ function ProjectPage(props) {
         (async () => {
             const result = await crmApi.postRequest('/projects/getProject/', {projectId: projectId});
             if(result){
-                console.log(result);
                 setCurrentProject(result);
                 calculateDays(result.deadline);
             } else {
@@ -158,7 +157,6 @@ function ProjectPage(props) {
         await crmApi.saveFile('/imgs/saveImg/', formData);
         const result = await crmApi.postRequest("/imgs/addImg/", {img_url: selectedFile.name, clientId: currentProject.client_id, projectId: currentProject.project_id});
         setImgUploaded(!imgUploaded);
-        console.log(result);
     }
 
     const getImgs = () => {
