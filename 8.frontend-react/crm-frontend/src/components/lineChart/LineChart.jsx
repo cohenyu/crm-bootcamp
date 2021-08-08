@@ -7,28 +7,32 @@ function LineChart(props){
   const colors = new ColorsHelper();
   const [data, setData] = useState({labels: [], datasets:[]});
 
-  useEffect(()=>{
-    if(props.data){
-      const datasets = [];
-      let index = 0;
-      for(let item in props.data.datasets){
-        const color = colors.getColor(index);
-        datasets.push({
-          label: item,
-            data: props.data.datasets[item],
-            fill: false,
-            backgroundColor: color.color,
-            borderColor: color.border,
-            borderWidth: 1
-        })
-        index++;
-      }
-      const tempData = {
-        labels: props.data.labels,
-        datasets: datasets
-      }
-      setData(tempData);
+const buildChartData = () => {
+  if(props.data){
+    const datasets = [];
+    let index = 0;
+    for(let item in props.data.datasets){
+      const color = colors.getColor(index);
+      datasets.push({
+        label: item,
+          data: props.data.datasets[item],
+          fill: false,
+          backgroundColor: color.color,
+          borderColor: color.border,
+          borderWidth: 1
+      })
+      index++;
     }
+    const tempData = {
+      labels: props.data.labels,
+      datasets: datasets
+    }
+    setData(tempData);
+  }
+}
+
+  useEffect(()=>{
+    buildChartData();
   }, [props.data]);
 
 

@@ -26,21 +26,19 @@ function Home(props) {
     /**
      * Fetches the average estimated cost and the total cost of the projects in the date range per user. 
      */
-    const fetchCost = () => {
-        (async () => {
-            const result = await crmApi.postRequest('/dashboard/projectCostVsEstimated/', {interval: dateCost, limit: 5});
-            if(result){
-                const labels = [];
-                const estimated = {label: 'Estimated Cost', data: []};
-                const actual = {label: 'Actual cost', data: []};
-                for(let item of result){
-                    labels.push(item.user_name);
-                    estimated.data.push(item.estimated_cost);
-                    actual.data.push(item.total_cost);
-                }
-                setCostChartData({labels: labels, datasets: [estimated, actual]})
+    const fetchCost = async () => {
+        const result = await crmApi.postRequest('/dashboard/projectCostVsEstimated/', {interval: dateCost, limit: 5});
+        if(result){
+            const labels = [];
+            const estimated = {label: 'Estimated Cost', data: []};
+            const actual = {label: 'Actual cost', data: []};
+            for(let item of result){
+                labels.push(item.user_name);
+                estimated.data.push(item.estimated_cost);
+                actual.data.push(item.total_cost);
             }
-          })();
+            setCostChartData({labels: labels, datasets: [estimated, actual]})
+        }
     } 
 
     /**
@@ -56,19 +54,18 @@ function Home(props) {
      /**
      * Fetches the sum of each project status in the date range per user. 
      */
-    const fetchStatus = () => {
-        (async () => {
-            const result = await crmApi.postRequest('/dashboard/getProjectStatusSum/', {interval: dateStatus});
-            if(result){
-                const labels = [];
-                const data = [];
-                for(let item of result){
-                    labels.push(item.project_status);
-                    data.push(item.count)
-                }
-                setStatusChartData({labels: labels, values: data})
+    const fetchStatus = async () => {
+  
+        const result = await crmApi.postRequest('/dashboard/getProjectStatusSum/', {interval: dateStatus});
+        if(result){
+            const labels = [];
+            const data = [];
+            for(let item of result){
+                labels.push(item.project_status);
+                data.push(item.count)
             }
-          })();
+            setStatusChartData({labels: labels, values: data})
+        }
     }
 
     /**
@@ -84,14 +81,13 @@ function Home(props) {
     /**
      * Fetches the 4 users who have the most working hours
      */
-    const FetchMaxWorking = () => {
-        (async () => {
-            const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMaxWorking, mode: 'max', limit: 4});
-            if(result){
-                const preparedData = prepareLineChartData(result);
-                setMaxWorkingHours(preparedData);
-            }
-          })();
+    const FetchMaxWorking = async () => {
+
+        const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMaxWorking, mode: 'max', limit: 4});
+        if(result){
+            const preparedData = prepareLineChartData(result);
+            setMaxWorkingHours(preparedData);
+        }
     }
 
     /**
@@ -107,14 +103,13 @@ function Home(props) {
     /**
      * Fetches the 4 users who have the least working hours
      */
-    const fetchMinWorking = () => {
-        (async () => {
-            const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMinWorking, mode: 'min', limit: 4});
-            if(result){
-                const preparedData = prepareLineChartData(result);
-                setMinWorkingHours(preparedData);
-            }
-          })();
+    const fetchMinWorking = async () => {
+      
+        const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMinWorking, mode: 'min', limit: 4});
+        if(result){
+            const preparedData = prepareLineChartData(result);
+            setMinWorkingHours(preparedData);
+        }
     }
 
     /**
@@ -130,13 +125,12 @@ function Home(props) {
     /**
      * Fetches the 5 projects that were created the longest time ago.
      */
-    const fetchLeastRecentlyProjects = () => {
-        (async () => {
-            const result = await crmApi.postRequest('/dashboard/leastRecentlyCreatedProject/', {interval: dateLeastRecentlyCreatedProject, limit: 5});
-            if(result){
-                setLeastRecentlyCreatedProjects(result);
-            }
-          })();
+    const fetchLeastRecentlyProjects = async () => {
+        const result = await crmApi.postRequest('/dashboard/leastRecentlyCreatedProject/', {interval: dateLeastRecentlyCreatedProject, limit: 5});
+        if(result){
+            console.log(result);
+            setLeastRecentlyCreatedProjects(result);
+        }
     }
 
     /**
