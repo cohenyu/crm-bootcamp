@@ -52,19 +52,24 @@ function ListenToRequest(){
     });
 
     const openChat = document.getElementById('open-chat');
-         openChat.addEventListener("click", function(e){
-             e.target.style.display = 'none';
-             const chat = document.querySelector('#chat');
-             chat.style.display = 'block';
-         });
+    if(openChat){
+        openChat.addEventListener("click", function(e){
+            e.target.style.display = 'none';
+            const chat = document.querySelector('#chat');
+            chat.style.display = 'block';
+        });
+    }
+         
 
     const exitChat = document.getElementById("exit-chat");
-    exitChat.addEventListener("click", function(e){
-        const chat = document.querySelector('#chat');
-        chat.style.display = 'none';
-        const openChat = document.querySelector('#open-chat');
-        openChat.style.display = 'flex';
-    })
+    if(exitChat){
+        exitChat.addEventListener("click", function(e){
+            const chat = document.querySelector('#chat');
+            chat.style.display = 'none';
+            const openChat = document.querySelector('#open-chat');
+            openChat.style.display = 'flex';
+        })
+    }
 }
 
 
@@ -75,11 +80,13 @@ function ListenToRequest(){
  */
 function updateError(errorKey){
     var errorElement = document.getElementById(errorKey);
-    errorElement.textContent = error_map[errorKey];
-    errorElement.style.display = 'inline';
-    errorElement.style.color = "red";
-    if(errorKey == "error-server"){
-        errorElement.style.margin = "10px 0";
+    if(errorElement){
+        errorElement.textContent = error_map[errorKey];
+        errorElement.style.display = 'inline';
+        errorElement.style.color = "red";
+        if(errorKey == "error-server"){
+            errorElement.style.margin = "10px 0";
+        }
     }
 }
 
@@ -92,19 +99,23 @@ function updateError(errorKey){
 function validation(){
     var isValid = true;
     const form = document.querySelector('#form');
-    if(!isValidateField(form.elements.name, validateName, 'error-name')){
-        isValid = false;
-    }
+    if(form){
+        if(!isValidateField(form.elements.name, validateName, 'error-name')){
+            isValid = false;
+        }
+        
+        if(!isValidateField(form.elements.mail, validateMail, 'error-mail')){
+            isValid = false;
+        }
+        
+        if(!isValidateField(form.elements.phone, validatePhone, 'error-phone')){
+            isValid = false;
+        }
     
-    if(!isValidateField(form.elements.mail, validateMail, 'error-mail')){
-        isValid = false;
+        return isValid;
     }
+    return false;
     
-    if(!isValidateField(form.elements.phone, validatePhone, 'error-phone')){
-        isValid = false;
-    }
-
-    return isValid;
 }
 
 
@@ -158,7 +169,9 @@ function cancelError(element){
     } else if (elementName == 'phone'){
         error  = document.getElementById('error-phone');
     }
-    error.style.display = 'none';
+    if(error){
+        error.style.display = 'none';
+    }
 }
 
 
