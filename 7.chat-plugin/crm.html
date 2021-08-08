@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Socket.IO chat</title>
+    <style>
+      body {
+        height: 95vh; 
+        margin: 0; 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        display: flex; 
+        flex-direction: row; 
+        overflow-x: hidden; 
+        padding: 14px;
+      }
+
+      #form { 
+        height: 3rem; 
+        background: rgba(0, 0, 0, 0.15); 
+        padding: 0.25rem; 
+        display: flex; 
+        box-sizing: border-box; 
+        backdrop-filter: blur(10px); 
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+        display: none;
+      }
+
+      #input { 
+        border: none; 
+        padding: 0 1rem; 
+        flex-grow: 1; 
+        border-radius: 2rem; 
+        margin: 0.25rem; 
+      }
+
+      #input:focus { outline: none; }
+
+      #form > button { 
+        background: #577399; 
+        border: none; 
+        padding: 0 1rem; 
+        margin: 0.25rem; 
+        border-radius: 18px; 
+        outline: none; 
+        color: #fff; 
+      }
+
+      #chat-bottom {
+        height: 5rem; 
+        width: 100%; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: flex-end; 
+        bottom: 0; 
+        position: absolute;
+      }
+
+      #messages { 
+        flex: 9; 
+        overflow: scroll; 
+        list-style-type: none; 
+        margin: 0; 
+        padding: 0; 
+        padding-bottom: 68px;
+      }
+
+      #messages > li { 
+        padding: 0.5rem 1rem; 
+        overflow-wrap: break-word; 
+      }
+
+      #msg-box{
+        font-size: 15px;
+        color: gray;
+        padding: 5px 10px;
+        height: 18px;
+      }
+
+      #bottom {
+        flex: 2;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        background: white;
+        border-radius: 8px;
+        border: 0.660428px solid #DFE0EB;
+      }
+
+      #room-container{
+        overflow: scroll;
+        width: 30%;
+        background: white;
+        margin-right: 9px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 0.660428px solid #DFE0EB;
+      }
+
+      #rooms > li {
+        overflow-wrap: break-word;
+        padding: 10px 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      #rooms{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        margin-top: 15px;
+      }
+
+      #rooms > li:hover {
+        background-color: #fbfbfb !important;
+      }
+
+
+      .title {
+        font-size: 20px;
+      }
+
+      .client-mail {
+        font-size: 11px;
+        font-weight: 300;
+        color: #000000b5;
+      }
+
+      .client-name {
+        display: block;
+      }
+
+      .unread {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        background: #f55f55;
+      }
+
+      .client-msg {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .client-date {
+        font-size: 10px;
+      }
+
+      .crm-msg {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .crm-date {
+        font-size: 10px;
+      }
+
+      #add-client {
+        display: none;
+        padding: 7px;
+        border-radius: 16px;
+        border: solid 0.5px #577399;
+        color: #577399;
+        cursor: pointer;
+        background: white;
+      }
+
+      #add-client:hover {
+        background-color: #577399;
+        color: white;
+      }
+
+      .chat-header {
+        display: none;
+        padding: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      #client-name {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div id='room-container'>
+      <span class='title'>Clients</span>
+      <ul id="rooms"></ul>
+    </div>
+    <div id='bottom'>
+      <div class='chat-header'>
+        <span id='client-name'>Start To Chat</span>
+        <span id='client-name'></span>
+        <button onclick="sendAddClient()" id='add-client' type="button">Add as new client</button>
+      </div>
+    <ul id="messages"></ul>
+    <div id='chat-bottom'>
+      <span id='msg-box'></span>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" />
+      <button>Send</button>
+    </form>
+    </div>
+  </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+
+
+const isToday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+}
+
+const isYesterday = (someDate) => {
+  const today = new Date()
+  return someDate.getDate() + 1 == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+}
+
+function dateFormate(date){
+  date = new Date(date);
+  if(isToday(date)){
+    return 'Today ' +  date.getHours() + ":"  
+                + date.getMinutes();
+  } 
+  if(isYesterday(date)){
+    return 'Yesterday ' +  date.getHours() + ":"  
+                + date.getMinutes();
+  }
+  return date.getDate() + "/"
+                + (date.getMonth()+1)  + "/" 
+                + date.getFullYear() + "   "  
+                + date.getHours() + ":"  
+                + date.getMinutes();
+}
+
+function showCurrentRoomMsg(){
+        messages.innerHTML = '';
+        for(let msgData of roomsData[currentMailRoom].msgs){
+          if(msgData.client){
+            createClientMsg(msgData.msg, msgData.datetime);
+          } else {
+            createCrmMsg(msgData.msg, msgData.datetime);
+          }
+        }
+        messages.scroll(0 , 20000);
+      }
+  
+  function showRoom(room, name, mail, read){
+    var item = document.createElement("li");
+    item.tabIndex = '1';
+    item.data = {room: room, name: name, mail: mail}
+    item.innerHTML = `<div>
+                    <span class='client-name'>${name}</span>
+                    <span class='client-mail'>${mail}</span>
+                    </div>
+                    <div class='unread'></div>`;
+    
+    if(read){
+      item.lastChild.style.display = 'none';
+    } else  {
+      item.firstChild.style.fontWeight = 'bold';
+    }
+    
+    item.addEventListener('click', async function(e){
+      if(room != currentRoom){
+        roomsList = rooms.children;
+        currentRoom = room;
+        currentMailRoom = mail;
+        for(let li of roomsList){
+          li.style.background =  'none';
+          li.style.boxShadow =  'none';
+        };
+        var clientName = document.getElementById('client-name');
+        clientName.innerText = name;
+        var addClient = document.getElementById('add-client');
+        addClient.style.display = 'block';
+        item.firstChild.style.fontWeight = '400';
+        item.lastChild.style.display = 'none';
+        item.style.background =  'rgb(243, 243, 243)';
+        item.style.boxShadow =  'rgb(0 0 0 / 16%) 0px 1px 4px';
+        showCurrentRoomMsg();
+        form.style.display = "flex";
+        socket.emit("room clicked", {
+                                      mail: currentMailRoom, 
+                                      msgs: roomsData[currentMailRoom].msgs.length > 1
+                                    });
+      }
+    })
+    rooms.appendChild(item);
+  }
+
+  function createClientMsg(msg, date){
+    var item = document.createElement("li");
+          item.innerHTML = `<span class='client-msg'>${msg}</span>
+                            <span class='client-date'>${dateFormate(date)}</span>`;
+          item.style.margin = '5px';
+          item.style.marginLeft = '16%';
+          item.style.background = 'rgb(79 122 181 / 41%)';
+          item.style.borderRadius = '12px';
+          messages.appendChild(item);
+    messages.scroll(0 , 10000000);
+  }
+
+  function createCrmMsg(msg, date){
+    var item = document.createElement("li");
+        item.innerHTML = `<span class='crm-msg'>${msg}</span>
+                          <span class='crm-date'>${dateFormate(date)}</span>`;
+        item.style.margin = '5px';
+        item.style.marginRight = '16%';
+        item.style.border = 'solid 1px #b7c8e1';
+        item.style.borderRadius = '12px';
+        messages.appendChild(item);
+        messages.scroll(0 , 100000000);
+  }
+
+const socket = io();
+      socket.emit("create crm room", "crm");
+      let room = "";
+      let messages = document.getElementById("messages");
+      let rooms = document.getElementById("rooms");
+      let form = document.getElementById("form");
+      let input = document.getElementById("input");
+      var msgBox = document.getElementById('msg-box');
+      var timeout = undefined;
+      let roomsData = {};
+      let currentRoom;
+      let currentMailRoom;
+      
+  function sendAddClient(){
+    roomsData[currentMailRoom].waitingForTel = true;
+    socket.emit("crm message", {
+            room: currentRoom,
+            from: "crm",
+            msgValue: 'please write your phone number',
+            datetime: new Date(),
+            mail: currentMailRoom
+          });
+}
+
+function addClient(name, mail, phone){  
+  window.top.postMessage({name: name, mail:mail, phone: phone}, '*');
+}
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("crm message", {
+            room: currentRoom,
+            from: "crm",
+            msgValue: input.value,
+            datetime: new Date(),
+            mail: currentMailRoom
+          });
+          input.value = "";
+        }
+      });
+
+      socket.on('rooms list', function(data){
+        data.forEach(item => {
+          roomsData[item.mail] = {
+                                    name: item.name, 
+                                    mail: item.mail, 
+                                    room: item.roomID, 
+                                    read: item.read, 
+                                    msgs: [], 
+                                    created: true
+                                };
+          showRoom(item.roomID, item.name, item.mail, item.read);
+        });
+      })
+
+      socket.on('room msgs', function(data){
+        if(data.msgs){
+          roomsData[data.room].msgs = data.msgs;
+          data.msgs.forEach(msg => {
+            if(msg.client){
+              createClientMsg(msg.msg, msg.datetime)
+            } else {
+              createCrmMsg(msg.msg, msg.datetime);
+            }
+          });
+        }
+      
+      });
+
+      socket.on("new room", function (data) {
+        room = data.room;
+        socket.emit("join", data.room); 
+        if(!roomsData[data.mail]){
+          roomsData[data.mail] = {name: data.name, mail: data.mail, room: data.room, read: false, msgs: []};
+        } else {
+          roomsData[data.mail].room = data.room;
+        }
+      });
+
+      socket.on("crm message", function (msg) {
+        roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: false, datetime: msg.datetime});
+        createCrmMsg(msg.msgValue, msg.datetime);
+      });
+
+      socket.on("client message", function (msg) {
+
+        if(roomsData[msg.mail] && roomsData[msg.mail].waitingForTel){
+          roomsData[msg.mail].waitingForTel = false;
+          roomsData[msg.mail].phone = msg.msgValue;
+          addClient(roomsData[msg.mail].name, roomsData[msg.mail].mail, roomsData[msg.mail].phone );
+        }
+
+        if(!roomsData[msg.mail].created){
+          if(!roomsData[msg.mail].msgs.length){
+            showRoom(msg.room, roomsData[msg.mail].name, msg.mail, false);
+            roomsData[msg.mail].created = false;
+          } else {
+            roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: true, datetime: msg.datetime, room: msg.room});
+          }
+        } else {
+          roomsData[msg.mail].msgs.push({msg: msg.msgValue, client: true, datetime: msg.datetime, room: msg.room});
+        }
+
+
+        if(currentRoom == msg.room){
+          room = msg.room;
+          socket.emit("read msg", msg.mail);
+          createClientMsg(msg.msgValue, msg.datetime)
+        }  else {
+          roomsList = rooms.children;
+          for(let li of roomsList){
+            if(li.data.mail == msg.mail){
+              rooms.removeChild(li);
+              rooms.insertBefore(li, rooms.firstChild);
+              li.firstChild.style.fontWeight = 'bold';
+              li.lastChild.style.display = 'flex';
+            }
+          }
+          socket.emit("unread msg", msg.mail);
+        }
+      
+      });
+
+      input.addEventListener('keyup', ()=>{
+          socket.emit("crm typing", {
+            isTyping: input.value.length > 0,
+            room: currentRoom
+          });
+          clearTimeout(timeout);
+          timeout = setTimeout(()=>{
+            socket.emit("crm typing", {
+            isTyping: false,
+            room: currentRoom
+          });
+          }, 3000)
+      })
+
+
+        socket.on("client typing", function (data) {
+          if(data.room == currentRoom){
+            const { isTyping} = data;
+
+            if (!isTyping) {
+                msgBox.innerHTML = "";
+                return;
+            }
+            msgBox.innerHTML = 'typing...';
+            
+          }
+        });
+
+
+    </script>
+  </body>
+</html>
+
+

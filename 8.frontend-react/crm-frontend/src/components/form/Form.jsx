@@ -54,7 +54,6 @@ function Form(props) {
                 fieldsTmp[key].error = false;
             }
         }
-        console.log(validationRes);
         if(!validationRes){
             setFields(fieldsTmp);
             return;

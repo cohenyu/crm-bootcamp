@@ -91,24 +91,20 @@ class AuthManager {
         
         var sql = `SELECT * FROM users WHERE user_mail = '${fields.mail.value}' AND user_password = '${this.encodePassword(fields.password.value)}' ;`;
         let result = await sqlHelper.select(sql).catch((err)=>{});
-        console.log('result: ', result);
         if(!result){
             data.serverError = "serverError";
             return data;
         };
 
         if(result.length == 0){
-            console.log("hello");
             data.serverError = 'IncorrectMailOrPassword';
             return data;
         }
-        console.log("user is good");
         let userResult = result[0];     
         const user = {userName: userResult.user_name,  userId: userResult.user_id, accountId: userResult.account_id};
         data.valid = true; 
         data.user_name = userResult.user_name;
         data.accessToken = sessionHelper.createSession(user);
-        console.log('returning ', data);
         return data;
     }
 

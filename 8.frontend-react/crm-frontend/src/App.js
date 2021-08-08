@@ -23,6 +23,8 @@ import ProjectPage from './screens/ProjectPage';
 import ClientPage from './screens/ClientPage';
 import {useSelector, useDispatch} from 'react-redux';
 import {changedIsLogged} from './reduxData/actions';
+import ChatScreen from './screens/ChatScreen'
+// const axios = require('axios');
 
 const authApi = new AuthApi();
 function App() {
@@ -85,6 +87,10 @@ function App() {
             <Route 
               exact path="/client/:clientId"
               component={ClientPage}
+            />,
+            <Route 
+              exact path="/chat"
+              component={ChatScreen}
             />,
             <Route >
               <Redirect to="/home"/>

@@ -12,13 +12,7 @@ function getLeads(orderType=null, searchVal=null){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         insertLeads(response.data.leads);
-        // if(orderType){
-        //     insertLeads(response.data.leads);
-        // } else {
-        //     insertLeads(response.data.leads);
-        // }
     })
     .catch(function (error) {
         console.log(error);

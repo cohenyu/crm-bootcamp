@@ -10,6 +10,7 @@ var error_map = {
  * Validate the form fields and send the lead to the server.
  */
 function ListenToRequest(){
+    
     const form = document.querySelector('#form');
     form.addEventListener('submit', function(e){
         e.preventDefault();
@@ -24,6 +25,7 @@ function ListenToRequest(){
         const mail = form.elements.mail.value;
         const phone = form.elements.phone.value;
 
+
         // sending the form fields to the server
         axios.post('http://rgb.com:8004', {
         fullName: name,
@@ -31,7 +33,6 @@ function ListenToRequest(){
         phone: phone
         },)
         .then(function (response) {
-            console.log(response);
             var validData = response.data;
             // checking if was success in the server side
             if(!validData.valid){
@@ -47,9 +48,31 @@ function ListenToRequest(){
         .catch(function (error) {
             console.log(error);
         });
-
+        
     });
+
+    const openChat = document.getElementById('open-chat');
+    if(openChat){
+        openChat.addEventListener("click", function(e){
+            e.target.style.display = 'none';
+            const chat = document.querySelector('#chat');
+            chat.style.display = 'block';
+        });
+    }
+         
+
+    const exitChat = document.getElementById("exit-chat");
+    if(exitChat){
+        exitChat.addEventListener("click", function(e){
+            const chat = document.querySelector('#chat');
+            chat.style.display = 'none';
+            const openChat = document.querySelector('#open-chat');
+            openChat.style.display = 'flex';
+        })
+    }
 }
+
+
 
 /**
  * Sets the style and text of the error span.
@@ -57,13 +80,17 @@ function ListenToRequest(){
  */
 function updateError(errorKey){
     var errorElement = document.getElementById(errorKey);
-    errorElement.textContent = error_map[errorKey];
-    errorElement.style.display = 'inline';
-    errorElement.style.color = "red";
-    if(errorKey == "error-server"){
-        errorElement.style.margin = "10px 0";
+    if(errorElement){
+        errorElement.textContent = error_map[errorKey];
+        errorElement.style.display = 'inline';
+        errorElement.style.color = "red";
+        if(errorKey == "error-server"){
+            errorElement.style.margin = "10px 0";
+        }
     }
 }
+
+
 
 /**
  * Validates all the form's fields.
@@ -72,19 +99,23 @@ function updateError(errorKey){
 function validation(){
     var isValid = true;
     const form = document.querySelector('#form');
-    if(!isValidateField(form.elements.name, validateName, 'error-name')){
-        isValid = false;
-    }
+    if(form){
+        if(!isValidateField(form.elements.name, validateName, 'error-name')){
+            isValid = false;
+        }
+        
+        if(!isValidateField(form.elements.mail, validateMail, 'error-mail')){
+            isValid = false;
+        }
+        
+        if(!isValidateField(form.elements.phone, validatePhone, 'error-phone')){
+            isValid = false;
+        }
     
-    if(!isValidateField(form.elements.mail, validateMail, 'error-mail')){
-        isValid = false;
+        return isValid;
     }
+    return false;
     
-    if(!isValidateField(form.elements.phone, validatePhone, 'error-phone')){
-        isValid = false;
-    }
-
-    return isValid;
 }
 
 
@@ -138,7 +169,9 @@ function cancelError(element){
     } else if (elementName == 'phone'){
         error  = document.getElementById('error-phone');
     }
-    error.style.display = 'none';
+    if(error){
+        error.style.display = 'none';
+    }
 }
 
 
