@@ -6,8 +6,7 @@ import {
   TextInput,
   Button,
 } from 'react-native';
-// import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-// import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+
 
 function AppButton(props) {
    

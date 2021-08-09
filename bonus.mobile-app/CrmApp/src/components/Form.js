@@ -18,6 +18,11 @@ function Form(props) {
    const [fields, setFields] = useState(props.fields);
    const [mainError, setMainError] = useState('');
 
+   /**
+    * Sets the value to the given key
+    * @param {string} key - field name
+    * @param {string} value - field value
+    */
    const setValue = (key, value) => {
         const fieldsTemp = {...fields};
         fieldsTemp[key].value = value;
@@ -32,10 +37,14 @@ function Form(props) {
         formFields.push(comp);
     }
 
+
     const validate = () => {
         return true;
     }
 
+    /**
+     * Submits the form
+     */
     const submit = async () => {
         // validation
         let isAllValid = true;

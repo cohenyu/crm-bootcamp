@@ -9,7 +9,6 @@ export const goToAuth = () => Navigation.setRoot({
             {
               component: {
                 name: 'SignIn',
-                options:{headerShown: false}
               }
             }
         ],

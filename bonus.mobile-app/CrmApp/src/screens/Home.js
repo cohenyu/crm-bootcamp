@@ -11,45 +11,64 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { USER_KEY } from '../config'
 
 export default class Home extends React.Component {
-  static get options() {
+  static options() {
     return {
       topBar: {
-        title: {
-          text: 'Home'
+        background: {
+          color: '#577399'
+        },
+        backButton: {
+          color: '#f7f7ff'
         },
       }
-    };
-  }
-  logout = async () => {
-    try {
-      await AsyncStorage.removeItem(USER_KEY)
-      goToAuth()
-    } catch (err) {
-      console.log('error signing out...: ', err)
     }
   }
+
+  // logout = async () => {
+  //   try {
+  //     await AsyncStorage.removeItem(USER_KEY)
+  //     goToAuth()
+  //   } catch (err) {
+  //     console.log('error signing out...: ', err)
+  //   }
+  // }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>Hello from Home screen.</Text>
-        <Button
+        <Text>Home screen.</Text>
+        {/* <Button
           onPress={this.logout}
           title="Sign Out"
-        />
-        {/* <Button
+        /> */}
+        <Button
           onPress={() => {
             Navigation.push(this.props.componentId, {
               component: {
-                name: 'Screen2',
+                name: 'Projects',
               }
             });
           }}
-          title="View next screen"
-        /> */}
+          title="My Projects"
+        />
       </View>
     )
   }
 }
+
+
+// Home.options = {
+//   topBar: {
+//     // visible: false,
+//     // title: {
+//     //   text: 'Home',
+//     //   color: 'white'
+//     // },
+//     background: {
+//       color: '#577399'
+//     }
+//   }
+// }
 
 const styles = StyleSheet.create({
   container: {

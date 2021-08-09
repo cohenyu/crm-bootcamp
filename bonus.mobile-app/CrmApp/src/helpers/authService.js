@@ -10,6 +10,11 @@ class AuthService {
     }
 
 
+    /**
+     * Sends request to login the user
+     * @param {object} data - user details
+     * @returns response data if the request succeed, false otherwise
+     */
     async login(data){
 
         const response = await axios.post(`${this.basicUrl}/login`, data).catch(e => {console.log(e);
@@ -27,6 +32,10 @@ class AuthService {
         }
     }
 
+    /**
+     * Sends request to get user details by the jwt token
+     * @returns response's data if the request succeed and the token has verified, false otherwise
+     */
     async getUser(){
         let user = await AsyncStorage.getItem(USER_KEY);
 

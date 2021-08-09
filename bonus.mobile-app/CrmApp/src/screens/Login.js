@@ -16,23 +16,17 @@ import AuthService from '../helpers/authService';
 
 
 function SignIn(props) {
-  const [userMail, setUserMail] = useState('');
-  const [password, setPassword] = useState('');
+
   const authService = new AuthService();
-  // const customStyle1 = isActive ? {...styles.input,...styles.inputFocus}: styles.input;
-  // const customStyle2 = isActive ? {...styles.input,...styles.inputFocus}: styles.input;
 
-  useEffect(()=>{
-   
-  }, [])
-  const onChangeText = (setFunc, value) => {
-    setFunc(value);
-  };
-
+  /**
+   * Submits the form details to login the app
+   * @param {object} data - form fields type and value
+   * @returns errors list if at least one field is invalid
+   */
   const submit = async (data) => {
     console.log('login');
     try {
-       // login with provider
        const response = await authService.login(data);
 
        if(response.valid){
@@ -81,13 +75,6 @@ const styles = StyleSheet.create({
 SignIn.options = {
   topBar: {
     visible: false,
-    // title: {
-    //   text: 'Home',
-    //   color: 'white'
-    // },
-    // background: {
-    //   color: '#4d089a'
-    // }
   }
 }
 
