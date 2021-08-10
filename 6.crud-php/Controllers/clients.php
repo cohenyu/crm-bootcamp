@@ -14,8 +14,8 @@ class clients extends controller
 
     public function addClient()
     {
-        $data = $this->getPostJsonData();
-        $this->response = $this->model->addClient($data->name, $this->account_id , $data->mail, $data->phone);
+        $data = $this->getPostJsonData()->data;
+        $this->response = $this->model->addClient($data->name, $data->mail, $data->phone);
         return $this->response;
     }
 
