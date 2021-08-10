@@ -183,8 +183,7 @@ function Team(props){
                             }
                           }
                       />
-                  </span> : null
-                  
+                  </span> : null          
         
       },
       {

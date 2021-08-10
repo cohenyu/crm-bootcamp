@@ -67,7 +67,6 @@ class SessionHelper {
      * @param {user data object} userData 
      */
     deleteSession(userData){
-      console.log("deleting session");
       this.sessions.delete(userData.sessionId);
     }
 
