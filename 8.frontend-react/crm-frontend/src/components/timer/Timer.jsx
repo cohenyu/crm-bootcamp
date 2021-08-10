@@ -1,5 +1,4 @@
 import React,{ useState, useRef, useEffect } from 'react';
-import CrmButton from '../crmButton/CrmButton';
 import './timer.scss'
 
 const Timer = (props) => {

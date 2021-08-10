@@ -3,7 +3,10 @@ import MailgunHelper from './mailgunHelper.js'
 import ValidationHelper from './validationHelper.js';
 import SqlHelper from './sqlHelper.js';
 import md5 from 'md5';
+import redis from 'redis';
 
+
+var publisher = redis.createClient();
 const sessionHelper = new SessionHelper();
 const sqlHelper = new SqlHelper();
 const mailgunHelper = new MailgunHelper();
@@ -32,7 +35,12 @@ class UsersManager {
             const {accountId, userId} = tokenBody;
             
             // insert the account to the db
-            let sql = `UPDATE users SET user_name = '${fields.name.value}', user_password = '${this.encodePassword(fields.password.value)}', user_phone = '${fields.phone.value}' WHERE user_id = ${userId};`;
+            let sql = `UPDATE users SET 
+                                        user_name = '${fields.name.value}', 
+                                        user_password = '${this.encodePassword(fields.password.value)}', 
+                                        user_phone = '${fields.phone.value}' 
+                                    WHERE 
+                                        user_id = ${userId};`;
             let result = await sqlHelper.update(sql).catch((err)=>{});
             if(!result){
                 data.serverError = 'serverError';
@@ -58,7 +66,11 @@ class UsersManager {
             } catch {}
 
             // userMail
-            const user = {userName: fields.name.value,  userId: userId, accountId: accountId };
+            const user = {
+                            userName: fields.name.value,  
+                            userId: userId, 
+                            accountId: accountId 
+            };
             data.valid = true;
             data.accessToken = sessionHelper.createSession(user);
             data.user_name = result.user_name;
@@ -110,7 +122,6 @@ class UsersManager {
         } else {
             data.usersList = result;
         }
-
         return data;
     }
 
@@ -156,7 +167,11 @@ class UsersManager {
             }
             
             // Encoding the mail address and the account id 
-            const mailToken = sessionHelper.createToken({userMail: userMail, accountId: tokenBody.accountId, userId: result.insertId}, 86400 * 10);
+            const mailToken = sessionHelper.createToken({
+                                                        userMail: userMail, 
+                                                        accountId: tokenBody.accountId, 
+                                                        userId: result.insertId
+                                                    }, 86400 * 10);
             // send the invite mail to the user
             // TODO replace my mail with userMail
             try {
@@ -185,26 +200,67 @@ class UsersManager {
      * @returns 
      */
    async editOldUser(fields, userId){
-    let data = {valid: false, errors: [], serverError: ''};
+        let data = {valid: false, errors: [], serverError: ''};
 
-    // fields validations
-    data =  validation.validateAll(fields);
-    if(!data.valid){
-        res.send(data);
-        return;
-    }
-    
-    // insert the account to the db
-    let sql = `UPDATE users SET user_name = '${fields.name.value}', user_mail = '${fields.mail.value}', user_phone = '${fields.phone.value}' WHERE user_id = ${userId};`;
-    let result = await sqlHelper.update(sql).catch((err)=>{});
-    if(!result){
-        data.serverError = 'serverError';
+        // fields validations
+        data =  validation.validateAll(fields);
+        if(!data.valid){
+            res.send(data);
+            return;
+        }
+        
+        // insert the account to the db
+        let sql = `UPDATE users SET 
+                                    user_name = '${fields.name.value}', 
+                                    user_mail = '${fields.mail.value}', 
+                                    user_phone = '${fields.phone.value}' 
+                                WHERE 
+                                    user_id = ${userId};`;
+
+        let result = await sqlHelper.update(sql).catch((err)=>{});
+        if(!result){
+            data.serverError = 'serverError';
+            return data;
+        }
+
+        data.valid = true;
         return data;
     }
 
-    data.valid = true;
-    return data;
-}
+    /**
+     * Publish to send sms / mail according to the parameters.
+     * @param {msgs data} body 
+     */
+    async sendMsgs(body){
+        console.log('send msg in 5');
+        if(body.type == 'sms'){
+            const {usersList, content} = body;
+
+            // Build phones list
+            const phones = [];
+            for(let user in usersList){
+                phones.push(usersList[user].user_phone);
+            }
+
+            publisher.publish('sendSMS', JSON.stringify({usersList: phones, content: content}), function () {
+                console.log('success');
+            });
+        } else {
+            const {usersList, subject, content} = body;
+
+            // Build mails list
+            const mails = [];
+            for(let user in usersList){
+                mails.push(usersList[user].user_mail);
+            }
+            
+            publisher.publish('sendMails', JSON.stringify({usersList: mails, subject: subject, content: content}), function () {
+                console.log('success');
+            });
+        }
+        
+        return true;
+    }
 
 } 
 

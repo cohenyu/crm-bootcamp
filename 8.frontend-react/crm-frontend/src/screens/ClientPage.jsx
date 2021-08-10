@@ -74,7 +74,7 @@ function ClientPage(props) {
             }
         }]
 
-        if (status != statusMap.open.key){
+        if (status !== statusMap.open.key){
             basicCols.push(...newCols)
         }
 

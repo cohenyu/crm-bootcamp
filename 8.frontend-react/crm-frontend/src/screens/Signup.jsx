@@ -7,6 +7,8 @@ import {
     Link,
     useParams,
   } from "react-router-dom";
+import {useDispatch} from 'react-redux';
+import {changedIsLogged} from '../reduxData/actions'
 const authApi = new AuthApi();
 
 
@@ -14,6 +16,7 @@ const authApi = new AuthApi();
 function Signup(props) {
 
   const {token} = useParams();
+  const dispatch = useDispatch();
 
 /**
  * Sends request to add user or to sign up new one
@@ -21,6 +24,7 @@ function Signup(props) {
  * @returns the response from the server if the values aren't valid
  */
   const submit = async (formData) => {
+    
     let res;
     if(props.type === 'newUser'){
       res =  await authApi.editUser({fields: formData, token: token});
@@ -28,9 +32,14 @@ function Signup(props) {
       res = await authApi.signup(formData);
     }
     
-    // Move to home page
+    // Move to home pages
     if(res.valid){
-      window.location.href = 'http://localhost:3000/home';
+      const UserAuthenticated = await authApi.getAuth();
+          if(UserAuthenticated && typeof setUserDetails === "function"){
+            window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
+          }
+      dispatch(changedIsLogged());
+      // window.location.href = 'http://localhost:3000/home';
     } else {
       return res;
     }

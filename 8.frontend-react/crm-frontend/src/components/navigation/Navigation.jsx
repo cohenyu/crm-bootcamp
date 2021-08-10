@@ -45,7 +45,9 @@ function Navigation(props) {
                             <Link 
                                 className='nav-link' 
                                 key={link.title} 
-                                to={link.url}>{link.title}
+                                to={link.url}
+                            >
+                                {link.title}
                             </Link>
                         </li>);
         } else {
@@ -63,8 +65,7 @@ function Navigation(props) {
             navList.push(<li key={link.title}>
                 <div 
                     onMouseEnter={()=>{handleHoverNav(index, true)}}  
-                    onMouseLeave={()=>handleMouseLeaveNav(index)}
-                    >
+                    onMouseLeave={()=>handleMouseLeaveNav(index)}>
                     <Link 
                         className='nav-link' 
                         key={link.title} 
