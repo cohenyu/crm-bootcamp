@@ -59,6 +59,18 @@ class AuthService {
         }
     }
 
+    async logout(){
+        let user = await AsyncStorage.getItem(USER_KEY);
+        axios.post(`${this.basicUrl}/logout`, {}, 
+        {
+            headers: {
+                'Authorization': user
+            }
+        }).catch(()=>{});
+        await AsyncStorage.removeItem(USER_KEY);
+        console.log('logout done!');
+    }
+
 }
 
 export default AuthService;

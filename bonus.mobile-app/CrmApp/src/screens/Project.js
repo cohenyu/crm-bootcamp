@@ -142,12 +142,21 @@ Project.options = {
           color: '#577399'
         },
         backButton: {
-          color: '#f7f7ff'
+          color: '#f7f7ff',
+          title: ''
         },
         title: {
             text: 'Project',
             color: 'white'
-        }
+        },
+        rightButtons: [
+          {
+            id: 'logout',
+            component: {
+              name: 'logoutButton'
+            }
+          },
+        ],
     }
 }
 

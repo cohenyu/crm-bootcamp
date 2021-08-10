@@ -5,7 +5,8 @@ import {
   Button,
   StyleSheet,
   ScrollView,
-  FlatList
+  FlatList,
+  TouchableOpacity
 } from 'react-native'
 import { goToAuth } from '../navigation'
 import {Navigation} from 'react-native-navigation';
@@ -26,7 +27,7 @@ function Projects(props) {
         (async () => {
          const result = await crmService.postRequest("/projects/getAllProjects/", {user: true, limit: `${page}, ${limit}`});
          if(result){
-            setProjectsData(projectsData.concat(result));
+            setProjectsData(projectsData.concat(result.filter((item)=>{return item.project_status === 'in progress' || item.project_status === 'done'})));
          }
         })();
       }, [page]);
@@ -79,6 +80,17 @@ function Projects(props) {
 
 export default Projects; 
 
+const logout = () => {
+  console.log('logout!');
+}
+
+const getLogoutButton = () => {
+  return (
+      <TouchableOpacity onPress={()=>{logout()}}>
+        <Text>logout</Text>
+      </TouchableOpacity>
+  );
+}
 
 Projects.options = {
     topBar: {
@@ -87,12 +99,19 @@ Projects.options = {
         },
         backButton: {
             color: 'white',
-            title: 'Home'
         },
         title: {
             text: 'My Projects',
             color: 'white'
         },
+        rightButtons: [
+          {
+            id: 'logout',
+            component: {
+              name: 'logoutButton'
+            }
+          },
+        ],
     }
 }
 

@@ -11,9 +11,11 @@ function FormField(props) {
     const [isActive, setIsActive] = useState(false);
     let focusStyle = isActive ? {...styles.input, ...styles.inputFocus} : styles.input;
 
+
     return (
     <View>
          <TextInput
+          secureTextEntry={props.mainType == 'password'}
           value={props.value}
           style={focusStyle}
           onFocus={()=>{setIsActive(true)}}

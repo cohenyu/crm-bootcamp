@@ -54,18 +54,18 @@ function Initialising(props) {
                 toValue: Dimensions.get('window').width/2 - 100,
                 useNativeDriver: true,
                 easing: Easing.exp,
-                duration: 1500
+                duration: 1000
               }),
               Animated.timing(translationPoint, {
                 toValue: Dimensions.get('window').height / 2 + 15,
                 useNativeDriver: true,
                 easing: Easing.bounce,
-                duration: 2000
+                duration: 1500
               }),
               Animated.timing(pointSize, {
                 useNativeDriver: true,
                 toValue: 1000,
-                duration: 1000,
+                duration: 500,
                 easing: Easing.ease
             })
         ]).start();
@@ -80,7 +80,7 @@ function Initialising(props) {
                 } else {
                   goToAuth()
                 }
-            }, 5000);
+            }, 3000);
 
           } catch (err) {
             console.log('error: ', err)

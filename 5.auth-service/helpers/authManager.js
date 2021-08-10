@@ -118,7 +118,7 @@ class AuthManager {
 
         var userData = sessionHelper.verifySession(authorization);
         if(userData){
-            // sessionHelper.deleteSession(userData);
+            sessionHelper.deleteSession(userData);
             data.valid = true;
         }
         return data;
