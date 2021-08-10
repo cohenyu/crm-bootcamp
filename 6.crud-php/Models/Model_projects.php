@@ -85,6 +85,10 @@ class Model_projects extends Model
         if(!empty($data['projectId'])){
             $queryData["where"]["projects.project_id"] = $data['projectId'];
         }
+        if(!empty($data['limit'])){
+            $queryData["limit"] = $data['limit'];
+        }
+
         return $this->getAll($queryData); 
     }
 

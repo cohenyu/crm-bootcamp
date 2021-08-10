@@ -14,19 +14,29 @@ import { USER_KEY } from '../config';
 import ProjectCard from '../components/ProjectCard';
 import CrmService from '../helpers/crmService';
 
+
 function Projects(props) {
 
     const [projectsData, setProjectsData] = useState([]);
+    const [page, setPage] = useState(0);
+    const limit = 7;
     const crmService = new CrmService();
 
     useEffect(()=>{
         (async () => {
-         const result = await crmService.postRequest("/projects/getAllProjects/", {user: true});
+         const result = await crmService.postRequest("/projects/getAllProjects/", {user: true, limit: `${page}, ${limit}`});
          if(result){
-            setProjectsData(result);
+            setProjectsData(projectsData.concat(result));
          }
         })();
-      }, []);
+      }, [page]);
+
+      /**
+       * Updates the offset of the projects list
+       */
+      const fetchMoreProjects = () => {
+          setPage(page + limit);
+      };
 
     /**
      * Navigates to a project screen according to the project details
@@ -55,7 +65,8 @@ function Projects(props) {
     return (
       <View style={styles.container}>
           <FlatList
-            // columnWrapperStyle={{justifyContent: 'space-evenly'}}
+            onEndReached={fetchMoreProjects}
+            onEndReachedThreshold={0.5}
             numColumns={1}
             data={projectsData}
             renderItem={renderProjectCard}

@@ -38,7 +38,7 @@ class AuthService {
      */
     async getUser(){
         let user = await AsyncStorage.getItem(USER_KEY);
-
+       
         // user token doesn't exist
         if(!user){
             return false;

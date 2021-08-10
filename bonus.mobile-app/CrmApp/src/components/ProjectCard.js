@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   Button,
+  TouchableOpacity
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
 
@@ -30,7 +31,8 @@ function ProjectCard(props) {
  }
 
     return (
-    <View style={styles.container} onStartShouldSetResponder={()=>{props.navigate()}}>
+      <TouchableOpacity onPress={()=>{props.navigate()}}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.type}>{capitalizeTheFirstLetterOfEachWord(props.item_type)}</Text>
         <Text style={props.project_status === 'in progress' ? styles.statusOpen : styles.statusClosed}>{props.project_status}</Text>
@@ -43,8 +45,8 @@ function ProjectCard(props) {
         <Text style={styles.detailsTitle}>Deadline: </Text>
         <Text style={styles.details}>{parseDate(props.deadline)}</Text>
         </View>
-        
     </View>
+    </TouchableOpacity>
     )
     
   }

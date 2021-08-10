@@ -76,7 +76,7 @@ class Model
             $order = "ORDER BY " . join(", ", $queryData["orderBy"]);
         }
         return $this->select("SELECT $columns FROM $this->table $join $where $order $limit;"); 
-        // return "SELECT $columns FROM $this->table $join $where $limit;";   
+        // return "SELECT $columns FROM $this->table $join $where $order $limit;";   
     }
 
     protected function updateItem($queryData)

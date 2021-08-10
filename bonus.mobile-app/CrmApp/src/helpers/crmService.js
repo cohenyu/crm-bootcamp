@@ -19,6 +19,12 @@ class CrmService {
 
 
 
+    /**
+     * Sends a post request
+     * @param {string} url - request's url
+     * @param {object} data - request's body
+     * @returns response data if the request succeed, false otherwise
+     */
     async postRequest(url, data={}){
         let token = await AsyncStorage.getItem(USER_KEY);
         const response = await axios.post(`${this.basicUrl}${url}`, {data: data, token: token}).catch(e => { console.log(e);
