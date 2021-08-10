@@ -35,6 +35,8 @@ function Table(props) {
           prepareRow(row);
           return (
             <tr 
+              onMouseEnter={()=>{props.hoverHandler && props.hoverHandler(row)}}
+              onMouseLeave={()=>{props.hoverHandler && props.hoverHandler()}}
               onClick={()=>{props.clickRow && props.clickRow(row)}} 
               className='card' {...row.getRowProps()}>
               {row.cells.map(cell => {

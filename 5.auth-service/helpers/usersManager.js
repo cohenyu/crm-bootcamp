@@ -232,6 +232,7 @@ class UsersManager {
      * @param {msgs data} body 
      */
     async sendMsgs(body){
+        console.log('send msg in 5');
         if(body.type == 'sms'){
             const {usersList, content} = body;
 

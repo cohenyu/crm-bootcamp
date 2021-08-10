@@ -15,6 +15,7 @@ import ActionModal from '../components/actionModal/ActionModal';
 import CrmApi from '../helpers/CrmApi';
 import fileDownload from 'js-file-download';
 import socketIOClient from "socket.io-client";
+import ScrollUp from '../components/scrollUp/ScrollUp';
 
 const ENDPOINT = "http://localhost:2200";
 
@@ -31,6 +32,10 @@ function Team(props){
     const [isMailModalOpen, setIsMailModalOpen] = useState(false);
     const [isSMSModalOpen, setIsSMSModalOpen] = useState(false);
     const [checkedUsers, setCheckedUsers] = useState({});
+    const [hoverId, setHoverId] = useState(0);
+    const hoverIdRef = useRef(hoverId);
+    hoverIdRef.current = hoverId;
+
     const checkedUsersRef = useRef(checkedUsers);
     checkedUsersRef.current = checkedUsers;
     const [data, setData] = useState([]);
@@ -39,6 +44,7 @@ function Team(props){
     const [sentList, setSentList] = useState({});
     const sentListRef = useRef(sentList);
     sentListRef.current = sentList;
+    
 
 
 
@@ -73,9 +79,12 @@ function Team(props){
           const newData = [...data];
           const userDetails = res.user;
           userDetails.status = 'pending';
-          newData.unshift(res.user);
+          // newData.unshift(userDetails);
+          newData.unshift(userDetails);
+          console.log('new data', newData);
           setData(newData);
           setIsModalOpen(false);
+        //  return false;
         } else {
           return res;
         }
@@ -143,9 +152,41 @@ function Team(props){
     }
   }
   
+  const handleHover = (row=null) => {
+    if(row && row.original?.user_id){
+      setHoverId(row.original.user_id);
+    } else {
+      setHoverId(0);
+    }
+  }
+
+  const handleCheckboxClick = (value) => {
+    const tempCheckedUsers = {...checkedUsersRef.current};
+    const userId = `${value.cell.row.original.user_id}`;
+    if(tempCheckedUsers[userId]){
+      delete tempCheckedUsers[userId];
+    } else {
+      tempCheckedUsers[userId] = value.cell.row.original;
+    }
+    setCheckedUsers(tempCheckedUsers);
+  }
 
    const columns = React.useMemo(
     () => [
+      {
+        id: 'checkbox',
+        Cell: (value) => value.cell.row.original.user_phone ? <span 
+                      style={{cursor:'pointer'}}>
+                          <input type='checkbox' id='selectedUser' name='selectedUser' onClick={
+                            ()=>{
+                                handleCheckboxClick(value);
+                            }
+                          }
+                      />
+                  </span> : null
+                  
+        
+      },
       {
         Header: 'Full Name',
         accessor: 'user_name', 
@@ -166,13 +207,11 @@ function Team(props){
       {
         Header: 'Status',
         accessor: 'status',
-        Cell: ({value})  => value === 'active' ? <FontAwesomeIcon className='status-icon' icon={faCheck} size='xs'/> : value
+        Cell: ({value})  => value === 'active' ? <div className='icon-box'><FontAwesomeIcon className='status-icon' icon={faCheck} size='xs'/></div> : value
       },
       {
         Header: 'Action',
-
-        Cell: (value)=> (
-          <div className='action-icons'>
+        Cell: (value)=> <div className='action-container'><div className={value.cell.row.original?.user_id ===  hoverIdRef.current ? 'action-icons' : 'invisible'}>
             {/* Remove action */}
             <span 
               style={{cursor:'pointer'}}
@@ -213,33 +252,14 @@ function Team(props){
                 />
           </span> 
           }
-          {/* Checkbox */}
-          {value.cell.row.original.user_phone && 
-          <span 
-          style={{cursor:'pointer'}}>
-              <input type='checkbox' id='selectedUser' name='selectedUser' onClick={
-                ()=>{
-                    const tempCheckedUsers = {...checkedUsersRef.current};
-                    const userId = `${value.cell.row.original.user_id}`;
-                    if(tempCheckedUsers[userId]){
-                      delete tempCheckedUsers[userId];
-                    } else {
-                      tempCheckedUsers[userId] = value.cell.row.original;
-                    }
-                    setCheckedUsers(tempCheckedUsers);
-                }
-              }
-          />
-      </span>
-      }
-      {/* sent msg signal */}
+          </div>
+          {/* sent msg signal */}
         {
         (sentListRef.current[value.cell.row.original.user_phone] ||  sentListRef.current[value.cell.row.original.user_mail])
         && <span className='sent'>SENT</span>
         }
-          </div>
-          
-        )
+        </div>
+        
       },
     ],
     []
@@ -452,7 +472,7 @@ function Team(props){
                     callback={()=>{setIsSMSModalOpen(true)}}
                 />
               </div>
-              <Table columns={columns} data={data}/>
+              <Table columns={columns} data={data} hoverHandler={handleHover}/>
               <Modal 
                 isOpen={isModalOpen} 
                 ariaHideApp={false} 
@@ -526,6 +546,7 @@ function Team(props){
                         {...sendSMSForm}
                     />
               </Modal>
+              <ScrollUp/>
             </div>
         </div>
     );

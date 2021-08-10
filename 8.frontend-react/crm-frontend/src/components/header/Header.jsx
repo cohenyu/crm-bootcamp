@@ -51,10 +51,6 @@ function Header(props) {
             url: '/team'
         }, 
         {
-            title: "Finance", 
-            url: '/7'
-        }, 
-        {
             title: "Settings", 
             url: '/5'
         }
@@ -72,8 +68,10 @@ function Header(props) {
 
     const logoutFunc = async ()=>{
         await authApi.logout();
-        dispatch(changedIsLogged());  
-        window.setUserDetails();      
+        dispatch(changedIsLogged());
+        if (typeof window.setUserDetails === "function"){
+            window.setUserDetails();      
+        }  
     }
 
     return (

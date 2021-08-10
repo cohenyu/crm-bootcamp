@@ -35,7 +35,7 @@ function Signup(props) {
     // Move to home pages
     if(res.valid){
       const UserAuthenticated = await authApi.getAuth();
-          if(UserAuthenticated){
+          if(UserAuthenticated && typeof setUserDetails === "function"){
             window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
           }
       dispatch(changedIsLogged());

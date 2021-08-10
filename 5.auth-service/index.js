@@ -95,7 +95,7 @@ app.post('/resetPassword', async function(req, res){
 /**
  * Add new user to the account
  */
-app.post('/addUser', authMiddleware,  async function(req, res){
+app.post('/addUser',  async function(req, res){
   const response = await usersManager.addUser(req.body.fields, req.body.token);
   res.send(response);
 });
@@ -103,7 +103,7 @@ app.post('/addUser', authMiddleware,  async function(req, res){
 /**
  * Edit new user details.
  */
-app.post('/editUser', authMiddleware,  async function(req, res){
+app.post('/editUser',  async function(req, res){
   const {fields, token} = req.body;
   const response = await usersManager.editNewUser(fields, token);
   res.send(response);
@@ -145,6 +145,7 @@ app.get('/getUser', authMiddleware, function(req, res){
  * Calls to send msgs
  */
 app.post('/sendMsgs', authMiddleware, async function(req, res){
+  console.log("in sendMsgs after middleware");
   const response = await usersManager.sendMsgs(req.body);
   res.send(response);
 })

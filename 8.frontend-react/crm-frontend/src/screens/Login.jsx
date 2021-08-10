@@ -18,7 +18,7 @@ function Login(props) {
           dispatch(changedIsLogged());
          // window.location.href = 'http://localhost:3000/home';
          const UserAuthenticated = await authApi.getAuth();
-         if(UserAuthenticated){
+         if(UserAuthenticated && typeof window.setUserDetails === "function"){
            window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
          }
         } else {

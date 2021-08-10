@@ -21,7 +21,28 @@ class SessionHelper {
               return false;
             }
             console.log("verified!");
-            return this.sessions.get(user.sessionId) ?  user : false;
+            return user;
+            // TODO get the real session
+              // try{
+              //   const res = this.sessions.get(user.sessionId);
+              //   console.log(res);
+              //   return res ? user : false;
+              // } catch (error) {
+              //   return false;
+              // }
+
+            // return result ? user : false;
+            // try {
+            //   const result =  await this.sessions.get(user.sessionId);
+            //   if(result){
+            //     console.log(result);
+            //     return user;
+            //   } else {
+            //     return false;
+            //   }
+            // } catch (error){
+            //   return false;
+            // }
           });
         } 
         return false;

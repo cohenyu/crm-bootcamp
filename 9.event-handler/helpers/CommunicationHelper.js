@@ -35,12 +35,12 @@ class CommunicationHelper {
           const accountSid = process.env.ACCOUNT_SID;
           const authToken = process.env.ACCOUNT_TOKEN; 
           const client = new twilio(accountSid, authToken);
-          
+          console.log('in send sms');
           return await client.messages
             .create({
               body: content,
               to: to, 
-              from: '1 818 572 9816', 
+              from: '+17402004750', 
             });
           
       }

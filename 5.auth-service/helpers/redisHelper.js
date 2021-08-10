@@ -35,14 +35,25 @@ class RedisHelper {
      * Returns the value stored in this key
      */
     get(key){ 
-        return this.client.get(key, (err, reply) => {
-            if (err){
-                return false;
-            } else {
-                reply = JSON.parse(reply);
-                return reply;
-            }
+        return new Promise((resv, rej) => {
+            this.client.get(key, (err, reply) => {
+                if (err){
+                    rej(err);
+                } else {
+                    reply = JSON.parse(reply);
+                    resv(reply);
+                }
+            });
         });
+
+        // return this.client.get(key, (err, reply) => {
+        //     if (err){
+        //         return false;
+        //     } else {
+        //         reply = JSON.parse(reply);
+        //         return reply;
+        //     }
+        // });
     }
 
     /**
@@ -57,6 +68,7 @@ class RedisHelper {
             }
          })
     }
+
 
 }
 
