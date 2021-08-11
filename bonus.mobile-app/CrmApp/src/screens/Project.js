@@ -186,12 +186,12 @@ function Project(props) {
         </View>
         <View style={styles.OneBox}>
         <Text style={styles.boxTitle}>Tasks</Text>
-            {buildTasks()}
+            {tasks.length > 0 ?  buildTasks() : <Text>You don't have tasks yet</Text>}
         </View>
         <View style={styles.OneBox}>
           <Text style={styles.boxTitle}>Attachments</Text>
           <View style={styles.row}>
-            {imgList.length > 0 && getImgs()}
+            {imgList.length > 0 ?  getImgs() : <Text>You don't have attachments yet</Text>}
           </View>
         </View>
         </ScrollView>
