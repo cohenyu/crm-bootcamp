@@ -21,6 +21,10 @@ function ProjectCard(props) {
     return date.split(' ')[0].split('-').reverse().join('/');
   };
   
+  /**
+   * @param {string} words 
+   * @returns the same string with first capital letter of each word
+   */
   function capitalizeTheFirstLetterOfEachWord(words) {
     var separateWord = words.toLowerCase().split(' ');
     for (var i = 0; i < separateWord.length; i++) {
@@ -30,22 +34,27 @@ function ProjectCard(props) {
     return separateWord.join(' ');
  }
 
+
     return (
       <TouchableOpacity onPress={()=>{props.navigate()}}>
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.type}>{capitalizeTheFirstLetterOfEachWord(props.item_type)}</Text>
-        <Text style={props.project_status === 'in progress' ? styles.statusOpen : styles.statusClosed}>{props.project_status}</Text>
-      </View>
-      <View style={styles.group}>
-      <Text style={styles.detailsTitle}>Client: </Text>
-        <Text style={styles.details}>{capitalizeTheFirstLetterOfEachWord(props.client_name)}</Text>
-      </View>
-        <View style={styles.group}>
-        <Text style={styles.detailsTitle}>Deadline: </Text>
-        <Text style={styles.details}>{parseDate(props.deadline)}</Text>
+        <View style={styles.container}>
+
+          <View style={styles.header}>
+            <Text style={styles.type}>{capitalizeTheFirstLetterOfEachWord(props.item_type)}</Text>
+            <Text style={props.project_status === 'in progress' ? styles.statusOpen : styles.statusClosed}>{props.project_status}</Text>
+          </View>
+
+          <View style={styles.group}>
+          <Text style={styles.detailsTitle}>Client: </Text>
+            <Text style={styles.details}>{capitalizeTheFirstLetterOfEachWord(props.client_name)}</Text>
+          </View>
+
+            <View style={styles.group}>
+            <Text style={styles.detailsTitle}>Deadline: </Text>
+            <Text style={styles.details}>{parseDate(props.deadline)}</Text>
+            </View>
+            
         </View>
-    </View>
     </TouchableOpacity>
     )
     

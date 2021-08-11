@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {
   View,
-  Text,
-  Button,
   StyleSheet,
-  ScrollView,
   FlatList,
-  TouchableOpacity
+  Text
 } from 'react-native'
-import { goToAuth } from '../navigation'
 import {Navigation} from 'react-native-navigation';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { USER_KEY } from '../config';
 import ProjectCard from '../components/ProjectCard';
 import CrmService from '../helpers/crmService';
 
@@ -65,6 +59,13 @@ function Projects(props) {
 
     return (
       <View style={styles.container}>
+          { projectsData.length === 0 ? 
+          <View style={styles.emptyListContainer}>
+            <Text style={styles.emptyList}>
+              There is nothing to show
+            </Text>
+          </View>
+          :
           <FlatList
             onEndReached={fetchMoreProjects}
             onEndReachedThreshold={0.5}
@@ -72,7 +73,7 @@ function Projects(props) {
             data={projectsData}
             renderItem={renderProjectCard}
             keyExtractor={item => item.project_id}
-          />
+          />}
       </View>
     );
   
@@ -80,17 +81,6 @@ function Projects(props) {
 
 export default Projects; 
 
-const logout = () => {
-  console.log('logout!');
-}
-
-const getLogoutButton = () => {
-  return (
-      <TouchableOpacity onPress={()=>{logout()}}>
-        <Text>logout</Text>
-      </TouchableOpacity>
-  );
-}
 
 Projects.options = {
     topBar: {
@@ -120,16 +110,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    // alignItems: 'center',
     justifyContent: 'space-evenly',
     backgroundColor: '#f8f8f8'
   },
   scrollView: {
-    //   flex: 1,
       width: '100%',
       justifyContent: 'space-between',
       flexDirection: 'row',
       flexWrap: 'wrap',
       flexGrow: 0
   } , 
+  emptyList: {
+    color: 'gray',
+    fontSize: 20
+  },
+  emptyListContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 })

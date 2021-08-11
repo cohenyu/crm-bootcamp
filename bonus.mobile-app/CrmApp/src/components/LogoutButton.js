@@ -14,6 +14,9 @@ function LogoutButton(props) {
 
     const authService = new AuthService();
 
+    /**
+     * Sends request to logout and redirects to login page
+     */
     const handleLogout = async () => {
         await authService.logout();
         goToAuth();

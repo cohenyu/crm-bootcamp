@@ -14,16 +14,26 @@ function Task(props) {
     const [check, setCheck] = useState(props.done !== "0");
     const crmService = new CrmService();
 
+    /**
+     * Check / unchecked the task
+     */
     const handleCheckTask =  async ()=> {
         console.log('check!');
-        await crmService.postRequest("/tasks/updateTask/", {taskId: props.task_id, set: {done: !check}});
+        await crmService.postRequest("/tasks/updateTask/", {
+                                                                taskId: props.task_id, 
+                                                                set: {
+                                                                    done: !check
+                                                                }
+                                                            });
         setCheck(!check);
     }
 
     return (
         <View style={styles.task}>
             <TouchableOpacity onPress={()=>{handleCheckTask()}}>
-            <View style={styles.checkBox}>{check && <Image style={styles.check}  source={require('../assets/checkBackground.jpeg')} />}</View>
+            <View style={styles.checkBox}>
+                {check && <Image style={styles.check}  source={require('../assets/checkBackground.jpeg')} />}
+            </View>
             </TouchableOpacity>
             <Text style={styles.title}>
                 {props.description}

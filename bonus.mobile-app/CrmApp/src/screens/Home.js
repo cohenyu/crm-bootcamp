@@ -24,14 +24,6 @@ export default class Home extends React.Component {
     }
   }
 
-  // logout = async () => {
-  //   try {
-  //     await AsyncStorage.removeItem(USER_KEY)
-  //     goToAuth()
-  //   } catch (err) {
-  //     console.log('error signing out...: ', err)
-  //   }
-  // }
 
   render() {
     return (

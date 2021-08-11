@@ -59,6 +59,9 @@ class AuthService {
         }
     }
 
+    /**
+     * Sends request to logout and removes the jwt token
+     */
     async logout(){
         let user = await AsyncStorage.getItem(USER_KEY);
         axios.post(`${this.basicUrl}/logout`, {}, 
@@ -68,7 +71,6 @@ class AuthService {
             }
         }).catch(()=>{});
         await AsyncStorage.removeItem(USER_KEY);
-        console.log('logout done!');
     }
 
 }

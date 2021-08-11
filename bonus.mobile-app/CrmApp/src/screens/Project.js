@@ -2,21 +2,13 @@ import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
-  Button,
   StyleSheet,
-  Linking,
   ScrollView,
-  Image,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated
 } from 'react-native'
-import { goToAuth } from '../navigation'
-import {Navigation} from 'react-native-navigation';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { USER_KEY } from '../config';
 import CrmService from '../helpers/crmService';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import CheckBox from '@react-native-community/checkbox';
 import Task from '../components/Task';
 
 function Project(props) {
@@ -25,16 +17,39 @@ function Project(props) {
     const [isEditDescription, setIsEditDescription] = useState(false);
     const [tempDescription, setTempDescription] = useState(props.description);
     const [description, setDescription] = useState(props.description);
+    const [imgList, setImgList] = useState([]);
     
     useEffect(() => {
+
+      // Fetching the project details
+        (async ()=>{
+          const result = await crmService.postRequest('/projects/getProject/', {projectId: props.project_id});
+          if(result){
+            setDescription(result.description);
+            setTempDescription(result.description);
+          }
+        })();
+
+        // Fetching the project's tasks
         (async () => {
             const result = await crmService.postRequest("/tasks/getAllTasks/", {projectId: props.project_id});
             if(result){
-                console.log(result);
                 setTasks(result);
             }
         })();
+
+        // Fetching the project's images
+        (async () => {
+          console.log('fetch the imgs');
+          const result = await crmService.postRequest("/imgs/getImgs/", {projectId: props.project_id});
+          if(result){
+              setImgList(result);
+          }
+        })();
+
     }, []);
+
+    
 
     /**
      * Convert date - yyyy-mm-dd to dd/mm/yyyy
@@ -45,15 +60,22 @@ function Project(props) {
         return date.split(' ')[0].split('-').reverse().join('/');
     };
 
+    /**
+     * @param {string} deadline - data string
+     * @returns true if the date didn't pass
+     */
     const calculateDays = (deadline) => {
         return new Date() <= new Date(deadline);
     }
 
+    /**
+     * Build the due section according to the date
+     * @returns Due view
+     */
     const buildDue = () => {
         let boxStyle = styles.dueBox;
         let textStyle = styles.dueText;
         let title = 'Due on';
-        console.log('due in: ',calculateDays(props.deadline));
         if(calculateDays(props.deadline) <= 0){
             boxStyle = styles.overdueBox;
             textStyle = styles.overdueText;
@@ -67,6 +89,10 @@ function Project(props) {
         );
     }
 
+    /**
+     * Builds the tasks view
+     * @returns List of Tasks component
+     */
     const buildTasks = () => {
         if(tasks){
             return tasks.map((item)=>{
@@ -79,11 +105,44 @@ function Project(props) {
         return [];
     }
 
-    const updateDescription = () => {
-        // request for update
+
+    /**
+     * Sends request to update project description and sets the new description
+     */
+    const updateDescription = async () => {
+        
+        if(tempDescription != description){
+          await crmService.postRequest("/projects/updateProject/", {
+                                                                      projectId: props.project_id, 
+                                                                      set: {
+                                                                        description: tempDescription
+                                                                      }
+                                                                    });
+        }
         setDescription(tempDescription); 
         setIsEditDescription(false);
     }
+
+    /**
+     * Build the images view
+     * @returns List of Img components
+     */
+    const getImgs = () => {
+      const imgs = [];
+      if(imgList.length > 0){
+          imgList.forEach((imgItem, index)=>{
+              const path = `http://localhost:9991/imgs/${imgItem.img_url}`;
+              imgs.push(
+                  <Animated.Image 
+                      key={index} 
+                      style={styles.img} 
+                      source={{uri: path}} 
+                  />
+                )
+          })
+      }
+      return imgs;
+  }
  
     return (
         <ScrollView style={styles.container}>
@@ -129,6 +188,12 @@ function Project(props) {
         <Text style={styles.boxTitle}>Tasks</Text>
             {buildTasks()}
         </View>
+        <View style={styles.OneBox}>
+          <Text style={styles.boxTitle}>Attachments</Text>
+          <View style={styles.row}>
+            {imgList.length > 0 && getImgs()}
+          </View>
+        </View>
         </ScrollView>
     );
   
@@ -169,8 +234,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     backgroundColor: '#f8f8f8',
-    // justifyContent: 'center',
-    // alignItems: 'center'
   },
   title: {
     fontSize: 35,
@@ -188,9 +251,7 @@ const styles = StyleSheet.create({
       borderStyle: 'solid',
       backgroundColor: 'white',
       borderRadius: 12,
-    //   width: '47%',
       flexBasis: '47%',
-    //   marginVertical: 15,
       marginTop: 15,
       padding: 10,
       alignItems:'center',
@@ -217,7 +278,6 @@ const styles = StyleSheet.create({
       fontWeight: '200',
       marginBottom: 10,
       fontSize: 15,
-    //   color: '#9FA2B4'
   },
   boxMain: {
     fontSize: 20,
@@ -238,7 +298,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 15,
     padding: 20,
-    // alignItems:'center',
   },
   statusClosed: {
     marginTop: 10,
@@ -263,12 +322,21 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     backgroundColor: 'white',
     borderRadius: 12,
-    // flexBasis: '47%',
     padding: 10,
-    // alignItems:'center',
     fontSize: 18
   },
   description: {
       marginBottom: 15
+  },
+  img: {
+    height: 90,
+    width: 90,
+    margin: 5,
+
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap'
   }
 })
