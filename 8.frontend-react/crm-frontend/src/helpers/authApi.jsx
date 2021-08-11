@@ -11,7 +11,7 @@ class AuthApi {
        axios.post('http://rgb.com:8005/logout', {}, 
         {
             headers: {
-                'Authorization': localStorage.getItem('jwtToken')
+                'authorization': localStorage.getItem('jwtToken')
             }
         }).catch(()=>{});
         localStorage.removeItem('jwtToken'); 

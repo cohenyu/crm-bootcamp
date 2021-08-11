@@ -32,6 +32,10 @@ class projects extends controller
         if(!empty($params->client)){
             $data['client'] = $params->client;
         }
+  
+        if(!empty($params->limit)){
+            $data["limit"] = $params->limit;
+        }
 
         $result= $this->model->getAllProjects($data);
         $this->response = $result;
