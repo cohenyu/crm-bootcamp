@@ -59,11 +59,14 @@
   .action-icons {
     span {
       cursor:'pointer'; 
-
       &:not(:last-child){
-        margin-right: 10px;
+        margin-right: 5px;
       }
     }
+  }
+
+  .icon-box {
+    display: flex;
   }
 
  

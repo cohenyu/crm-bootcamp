@@ -86,7 +86,7 @@ function AllProjects(props){
       },
     ];
 
-    if (status != statusMap.open.key){
+    if (status !== statusMap.open.key){
         basicCols.push(...newCols);
     }
 
@@ -163,7 +163,7 @@ function AllProjects(props){
      * @param {project details} row 
      */
     const handleProjectClick = (row) => {
-      if(!mineRef.current && projectStatus == statusMap.open.key){
+      if(!mineRef.current && projectStatus === statusMap.open.key){
         openProjectWindow(row);
       } else {
         history.push(`/project/${row.original.project_id}`);

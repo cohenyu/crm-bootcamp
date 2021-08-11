@@ -1,5 +1,3 @@
-
-import { checkPropTypes } from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import './datePicker.scss';
 
@@ -14,7 +12,7 @@ function DatePicker(props) {
                 <span 
                     key={date} 
                     onClick={()=>{props.handleClick(date)}} 
-                    className={props.current == date ? 'range current': 'range'}>{date}
+                    className={props.current === date ? 'range current': 'range'}>{date}
                 </span>
             )
         }

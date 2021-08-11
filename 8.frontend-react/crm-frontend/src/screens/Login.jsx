@@ -5,24 +5,22 @@ import AuthApi from '../helpers/authApi';
 import '../styles/simpleForm.css';
 import {useDispatch} from 'react-redux';
 import {changedIsLogged} from '../reduxData/actions'
-import {
-    Link
-  } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const authApi = new AuthApi();
 
 function Login(props) {  
     const dispatch = useDispatch();
 
-    /**
-     * Sends request to login
-     * @param {user mail and password} data 
-     * @returns The response from the server if one of the fields in invalid
-     */
       const submit = async (data) => {
         const res = await authApi.signin(data);
         if(res.valid){
           dispatch(changedIsLogged());
+         // window.location.href = 'http://localhost:3000/home';
+         const UserAuthenticated = await authApi.getAuth();
+         if(UserAuthenticated && typeof window.setUserDetails === "function"){
+           window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
+         }
         } else {
           return res;
         }
@@ -76,14 +74,8 @@ function Login(props) {
                     buttonClass={login.buttonClass}
                 />
                 <div className='links'>
-                <Link 
-                    className='linkto' 
-                    to="/signup">I don't have an account
-                </Link>
-                <Link 
-                    className='linkto' 
-                    to="/forgotPassword">Forgot password?
-                </Link>
+                <Link className='linkto' to="/signup">I don't have an account</Link>
+                <Link className='linkto' to="/forgotPassword">Forgot password?</Link>
                 </div>
             </div>
         </div>

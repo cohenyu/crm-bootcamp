@@ -3,8 +3,8 @@
     width: 75%;
     margin: auto;
     margin-top: 30px;
-    margin-bottom: 30px;
-    padding: 10px 30px;
+    margin-bottom: 20px;
+    padding: 0px 30px;
     position: relative;
     left: 70px
 
@@ -19,9 +19,10 @@ div {
     background: #f8f8f8;
     display: flex;
 }
+
 .status-icon {
     color: #63b67f;
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 .trash-icon {
@@ -46,6 +47,11 @@ div {
     align-items: center;
 }
 
+.table-actions-box > *:not(:last-child){
+    margin-right: 10px;
+}
+
+
 .just-one-item {
     justify-content: flex-end;
     margin-bottom: 5px;
@@ -55,6 +61,14 @@ div {
     border: 0.660428px solid #DFE0EB;
     padding: 30px;
     background-color: white;
+}
+
+.sent {
+    text-align: center;
+    color: #63b67f;
+    font-size: 12px;
+    padding-left: 5px;
+    font-weight: bold;
 }
 
 
@@ -86,4 +100,11 @@ div {
     justify-content: center;
 }
 
+.invisible {
+    display: none;
+}
+
+.action-container {
+    display: flex;
+}
 

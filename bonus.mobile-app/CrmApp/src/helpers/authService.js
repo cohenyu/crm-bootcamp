@@ -67,7 +67,7 @@ class AuthService {
         axios.post(`${this.basicUrl}/logout`, {}, 
         {
             headers: {
-                'Authorization': user
+                'authorization': user
             }
         }).catch(()=>{});
         await AsyncStorage.removeItem(USER_KEY);

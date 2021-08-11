@@ -164,7 +164,7 @@ function AddProject(props){
      */
     const setValue = (form, setFunction, field, value) => {
         const tempData = {...form};
-        if(value != ''){
+        if(value !== ''){
           let isValid = validate(form[field].mainType, true, value);
           tempData[field].error = !isValid; 
         } else {
@@ -262,7 +262,7 @@ function AddProject(props){
                     {createField(clientFields, setClientFields)}
                     <div className='cancel-button'>
                         <CrmButton 
-                          isDisabled={clientFields.clientId.value != '' ? false : true} 
+                          isDisabled={clientFields.clientId.value !== '' ? false : true} 
                           content='Cancel' 
                           buttonClass={!clientFields.clientId.value ? 'disabled': 'secondary-button'} 
                           containerClass= {'form-action'} 

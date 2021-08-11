@@ -47,7 +47,7 @@ function Search(props) {
             <div className='result' key={index} onClick={()=>{
                 updateChoice(props.mapFunc(data));
                 }}>
-                {index != 0 && <hr/>}
+                {index !== 0 && <hr/>}
                 <SearchResult {...props.mapFunc(data)}/>
 	        </div>	
     	   )	

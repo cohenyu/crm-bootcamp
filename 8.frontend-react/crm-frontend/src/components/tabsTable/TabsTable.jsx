@@ -6,7 +6,7 @@ const TabsTable = (props) => {
 
   const tabs = [];
   for(let status in statusMap){
-    if(props.mode !== "allProjects" && statusMap[status] == statusMap.open){
+    if(props.mode !== "allProjects" && statusMap[status] === statusMap.open){
       continue;
     }
     tabs.push(<button 

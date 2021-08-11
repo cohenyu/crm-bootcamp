@@ -6,7 +6,7 @@ function FormField(props) {
     var error = `error-${props.id}`;
 
     const getInput = (type) => {
-        if(type == "textarea"){
+        if(type === "textarea"){
             return <textarea 
             disabled={props.isDisabled} 
             className='form-input' 

@@ -14,6 +14,10 @@ import { faCheck, faTrash , faEdit, faDownload} from '@fortawesome/free-solid-sv
 import ActionModal from '../components/actionModal/ActionModal';
 import CrmApi from '../helpers/CrmApi';
 import fileDownload from 'js-file-download';
+import socketIOClient from "socket.io-client";
+import ScrollUp from '../components/scrollUp/ScrollUp';
+
+const ENDPOINT = "http://localhost:2200";
 
 const authApi = new AuthApi();
 const crmApi = new CrmApi();
@@ -25,20 +29,44 @@ function Team(props){
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isMailModalOpen, setIsMailModalOpen] = useState(false);
+    const [isSMSModalOpen, setIsSMSModalOpen] = useState(false);
+    const [checkedUsers, setCheckedUsers] = useState({});
+    const [hoverId, setHoverId] = useState(0);
+    const hoverIdRef = useRef(hoverId);
+    hoverIdRef.current = hoverId;
+
+    const checkedUsersRef = useRef(checkedUsers);
+    checkedUsersRef.current = checkedUsers;
     const [data, setData] = useState([]);
     const dataRef = useRef(data);
     dataRef.current = data;
+    const [sentList, setSentList] = useState({});
+    const sentListRef = useRef(sentList);
+    sentListRef.current = sentList;
+    
+
 
 
     // Fetches the users
     useEffect(()=>{
       (async () => {
        const result = await getUsersList();
+
        if(result){
          setData(result);
        }
       })();
-    }, [])
+
+      const socket = socketIOClient(ENDPOINT);
+      socket.on("sent", data => {
+        const tempSentList = {...sentListRef.current};
+        tempSentList[data] = true;
+        setSentList(tempSentList);
+      });
+    }, []);
+
+
     
     /**
      * Sends request to add new user
@@ -51,9 +79,12 @@ function Team(props){
           const newData = [...data];
           const userDetails = res.user;
           userDetails.status = 'pending';
-          newData.unshift(res.user);
+          // newData.unshift(userDetails);
+          newData.unshift(userDetails);
+          console.log('new data', newData);
           setData(newData);
           setIsModalOpen(false);
+        //  return false;
         } else {
           return res;
         }
@@ -121,9 +152,40 @@ function Team(props){
     }
   }
   
+  const handleHover = (row=null) => {
+    if(row && row.original?.user_id){
+      setHoverId(row.original.user_id);
+    } else {
+      setHoverId(0);
+    }
+  }
+
+  const handleCheckboxClick = (value) => {
+    const tempCheckedUsers = {...checkedUsersRef.current};
+    const userId = `${value.cell.row.original.user_id}`;
+    if(tempCheckedUsers[userId]){
+      delete tempCheckedUsers[userId];
+    } else {
+      tempCheckedUsers[userId] = value.cell.row.original;
+    }
+    setCheckedUsers(tempCheckedUsers);
+  }
 
    const columns = React.useMemo(
     () => [
+      {
+        id: 'checkbox',
+        Cell: (value) => value.cell.row.original.user_phone ? <span 
+                      style={{cursor:'pointer'}}>
+                          <input type='checkbox' id='selectedUser' name='selectedUser' onClick={
+                            ()=>{
+                                handleCheckboxClick(value);
+                            }
+                          }
+                      />
+                  </span> : null          
+        
+      },
       {
         Header: 'Full Name',
         accessor: 'user_name', 
@@ -144,13 +206,11 @@ function Team(props){
       {
         Header: 'Status',
         accessor: 'status',
-        Cell: ({value})  => value === 'active' ? <FontAwesomeIcon className='status-icon' icon={faCheck} size='xs'/> : value
+        Cell: ({value})  => value === 'active' ? <div className='icon-box'><FontAwesomeIcon className='status-icon' icon={faCheck} size='xs'/></div> : value
       },
       {
         Header: 'Action',
-
-        Cell: (value)=> (
-          <div className='action-icons'>
+        Cell: (value)=> <div className='action-container'><div className={value.cell.row.original?.user_id ===  hoverIdRef.current ? 'action-icons' : 'invisible'}>
             {/* Remove action */}
             <span 
               style={{cursor:'pointer'}}
@@ -178,6 +238,7 @@ function Team(props){
             </span> 
           }
           {/* Download csv file action */}
+          {value.cell.row.original.user_name && 
           <span 
               style={{cursor:'pointer'}}
               onClick={ () => {
@@ -189,9 +250,15 @@ function Team(props){
                   size='sm'
                 />
           </span> 
+          }
           </div>
-          
-        )
+          {/* sent msg signal */}
+        {
+        (sentListRef.current[value.cell.row.original.user_phone] ||  sentListRef.current[value.cell.row.original.user_mail])
+        && <span className='sent'>SENT</span>
+        }
+        </div>
+        
       },
     ],
     []
@@ -272,6 +339,67 @@ function Team(props){
       }
     }
 
+    const submitSendMail = async (formFieldsData) => {
+      const result = await authApi.sendMsgs({type: 'mail', usersList: checkedUsers, subject: formFieldsData.subject.value, content: formFieldsData.content.value});
+      if(result){
+        closeSendMailModel();
+      }
+    }
+
+    const sendMailForm = {
+      submitHandle: submitSendMail,
+      type: 'sendMail',
+      title: "Mail Content",
+      errorMap: {
+        'serverError': 'Try again later',
+      },
+      buttonTitle: 'Send',
+      buttonClass: 'main-button',
+      fields: {
+        subject: {
+          text: "Subject",
+          id: "subject",
+          type: 'text',
+          error: false,
+          mainType: 'text',
+        },
+        content: {
+          text: "Enter your mail here",
+          id: "content",
+          type: 'textarea',
+          error: false,
+          mainType: 'text',
+        }
+      }
+    }
+
+    const submitSendSMS = async (formFieldsData) => {
+      const result = await authApi.sendMsgs({type: 'sms', usersList: checkedUsers, content: formFieldsData.content.value});
+      if(result){
+        setIsSMSModalOpen(false)
+      }
+    }
+
+    const sendSMSForm = {
+      submitHandle: submitSendSMS,
+      type: 'sendSMS',
+      title: "SMS Content",
+      errorMap: {
+        'serverError': 'Try again later',
+      },
+      buttonTitle: 'Send',
+      buttonClass: 'main-button',
+      fields: {
+        content: {
+          text: "Enter your sms text here",
+          id: "content",
+          type: 'textarea',
+          error: false,
+          mainType: 'text',
+        }
+      }
+    }
+
     const openAddUserWindow = ()=>{
         setIsModalOpen(true);
     };
@@ -295,6 +423,16 @@ function Team(props){
     const closeEditUserWindow = ()=>{
         setIsEditModalOpen(false);
     };
+
+    const openSendMailModel = ()=>{
+      setIsMailModalOpen(true);
+    };
+
+    const closeSendMailModel = ()=>{
+      setIsMailModalOpen(false);
+    };
+
+  
     
 
     return (
@@ -314,8 +452,26 @@ function Team(props){
                     isLoading={isLoading} 
                     callback={()=> openAddUserWindow()}
                 />
+                <CrmButton 
+                    content='Send Mail' 
+                    buttonClass= {Object.keys(checkedUsers).length !== 0 ? 'secondary-button' : 'disabled'} 
+                    icon='mail'
+                    size = '1x'
+                    isLoading={isLoading} 
+                    isDisabled={Object.keys(checkedUsers).length !== 0 ? false : true}
+                    callback={()=>{openSendMailModel()}}
+                />
+                <CrmButton 
+                    content='Send SMS' 
+                    buttonClass= {Object.keys(checkedUsers).length !== 0 ? 'secondary-button' : 'disabled'} 
+                    icon='sms'
+                    size = '1x'
+                    isLoading={isLoading} 
+                    isDisabled={Object.keys(checkedUsers).length !== 0 ? false : true}
+                    callback={()=>{setIsSMSModalOpen(true)}}
+                />
               </div>
-              <Table columns={columns} data={data}/>
+              <Table columns={columns} data={data} hoverHandler={handleHover}/>
               <Modal 
                 isOpen={isModalOpen} 
                 ariaHideApp={false} 
@@ -359,6 +515,37 @@ function Team(props){
                         {...editUserForm}
                     />
               </Modal>
+              <Modal 
+                  isOpen={isMailModalOpen} 
+                  ariaHideApp={false} 
+                  contentLabel='Send Mail' 
+                  onRequestClose={closeSendMailModel}  
+                  overlayClassName="Overlay" 
+                  className='modal'
+              >
+                <Form 
+                        className='form-body'
+                        button= {sendMailForm.buttonTitle}
+                        submitHandle={sendMailForm.submitHandle} 
+                        {...sendMailForm}
+                    />
+              </Modal>
+              <Modal 
+                  isOpen={isSMSModalOpen} 
+                  ariaHideApp={false} 
+                  contentLabel='Send SMS' 
+                  onRequestClose={()=>{setIsSMSModalOpen(false)}}  
+                  overlayClassName="Overlay" 
+                  className='modal'
+              >
+                <Form 
+                        className='form-body'
+                        button= {sendSMSForm.buttonTitle}
+                        submitHandle={sendSMSForm.submitHandle} 
+                        {...sendSMSForm}
+                    />
+              </Modal>
+              <ScrollUp/>
             </div>
         </div>
     );

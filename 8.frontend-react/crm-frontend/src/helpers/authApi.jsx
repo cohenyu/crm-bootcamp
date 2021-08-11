@@ -11,7 +11,7 @@ class AuthApi {
        axios.post('http://rgb.com:8005/logout', {}, 
         {
             headers: {
-                'Authorization': localStorage.getItem('jwtToken')
+                'authorization': localStorage.getItem('jwtToken')
             }
         }).catch(()=>{});
         localStorage.removeItem('jwtToken'); 
@@ -19,6 +19,21 @@ class AuthApi {
 
     async ping(){
         const response = await axios.get(`${this.basicUrl}/ping`, 
+        {
+            headers: {
+                'authorization': localStorage.getItem('jwtToken')
+            }
+        })
+        if(response){
+            return response.data;
+        }
+        else {
+            return false;
+        }
+    }
+
+    async getAuth(){
+        const response = await axios.get(`${this.basicUrl}/getUser`, 
         {
             headers: {
                 'authorization': localStorage.getItem('jwtToken')
@@ -114,7 +129,11 @@ class AuthApi {
     }
 
     async deleteUser(data){
-        const response = await axios.post(`${this.basicUrl}/removeUser`, data)
+        const response = await axios.post(`${this.basicUrl}/removeUser`, data, {
+            headers: {
+                'authorization': localStorage.getItem('jwtToken')
+            }
+        })
         if(response){
             return response.data;
         }
@@ -124,7 +143,20 @@ class AuthApi {
     }
 
     async editOldUser(data){
-        const response = await axios.post(`${this.basicUrl}/editOldUser`, data);
+        const response = await axios.post(`${this.basicUrl}/editOldUser`, data, {
+            headers: {
+                'authorization': localStorage.getItem('jwtToken')
+            }
+        });
+        return response ? response.data : null;
+    }
+
+    async sendMsgs(data){
+        const response = await axios.post(`${this.basicUrl}/sendMsgs`, data, {
+            headers: {
+                'authorization': localStorage.getItem('jwtToken')
+            }
+        });
         return response ? response.data : null;
     }
 }

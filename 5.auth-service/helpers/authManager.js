@@ -100,11 +100,13 @@ class AuthManager {
             data.serverError = 'IncorrectMailOrPassword';
             return data;
         }
+       
         let userResult = result[0];     
         const user = {userName: userResult.user_name,  userId: userResult.user_id, accountId: userResult.account_id};
         data.valid = true; 
         data.user_name = userResult.user_name;
         data.accessToken = sessionHelper.createSession(user);
+        
         return data;
     }
 
@@ -113,15 +115,9 @@ class AuthManager {
      * @param {string} authorization 
      * @returns valid ot not in case of error.
      */
-    async logout(authorization){
-        let data = { valid: false }
-
-        var userData = sessionHelper.verifySession(authorization);
-        if(userData){
-            sessionHelper.deleteSession(userData);
-            data.valid = true;
-        }
-        return data;
+    async logout(userData){
+        sessionHelper.deleteSession(userData);
+        return true;
     }
 
     /**
