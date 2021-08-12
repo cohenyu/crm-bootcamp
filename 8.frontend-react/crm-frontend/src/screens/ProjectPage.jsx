@@ -283,7 +283,7 @@ function ProjectPage(props) {
                         <div>
                         <span className='sub-title'>Total Cost</span>
                         <div className='count-container'>
-                        <span className='counting'>{currentProject.total_cost}</span>
+                        <span className='counting'>{`${currentProject.total_cost} $`}</span>
                         </div>
                         </div>
                     }
@@ -334,7 +334,7 @@ function ProjectPage(props) {
                         <div className='client-details'> 
                             <h4>Client</h4>
                             <span>{currentProject.client_name}</span>
-                            <span><a href={`mailto:${currentProject.client_mail}`}>{currentProject.client_mail}</a></span>
+                            <span className='client-detail'><a href={`mailto:${currentProject.client_mail}`}>{currentProject.client_mail}</a></span>
                             <span><a href={`tel:${currentProject.client_phone}`}>{currentProject.client_phone}</a></span>
                         </div>
                         <div className='assigned-user'>

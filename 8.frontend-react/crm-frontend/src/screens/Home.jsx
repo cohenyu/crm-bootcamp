@@ -16,7 +16,7 @@ function Home(props) {
     const [minWorkingHours, setMinWorkingHours] = useState({});
     const [leastRecentlyCreatedProjects, setLeastRecentlyCreatedProjects] = useState([]);
     const crmApi = new CrmApi();
-    const [dateStatus, setDateStatus] = useState("week");
+    const [dateStatus, setDateStatus] = useState("day");
     const [dateCost, setDateCost] = useState("week");
     const [dateMinWorking, setMinWorkingDate] = useState("month");
     const [dateMaxWorking, setMaxWorkingDate] = useState("month");
@@ -83,7 +83,7 @@ function Home(props) {
      */
     const FetchMaxWorking = async () => {
 
-        const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMaxWorking, mode: 'max', limit: 4});
+        const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMaxWorking, mode: 'max', limit: 2});
         if(result){
             const preparedData = prepareLineChartData(result);
             setMaxWorkingHours(preparedData);
@@ -105,7 +105,7 @@ function Home(props) {
      */
     const fetchMinWorking = async () => {
       
-        const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMinWorking, mode: 'min', limit: 4});
+        const result = await crmApi.postRequest('/dashboard/workingHours/', {interval: dateMinWorking, mode: 'min', limit: 2});
         if(result){
             const preparedData = prepareLineChartData(result);
             setMinWorkingHours(preparedData);

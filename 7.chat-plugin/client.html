@@ -165,7 +165,8 @@ function createClientMsg(msg, date, messages){
         } else if(fullName == ''){
           fullName = msg.msgValue;
           localStorage.setItem('room', room);
-          socket.emit('join crm to client', {room: room, mail: mail, name: fullName})
+          socket.emit('join crm to client', {room: room, mail: mail, name: fullName});
+          createCrmMsg("How can I help?", new Date(),messages);
         } 
 
       });

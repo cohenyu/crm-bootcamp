@@ -71,6 +71,10 @@ function App() {
               component={Home}
             />,
             <Route 
+              path="/newUser/:token"
+              render={()=><Signup type='newUser'/>}
+            />,
+            <Route 
               exact path="/team"
               component={Team}
             />,

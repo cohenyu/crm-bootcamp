@@ -34,7 +34,7 @@ subscriber.on("message", function (channel, events) {
         events = JSON.parse(events);
         const data = [];
         events.forEach(event => {
-            data.push({index: {_index: 'test', _type: 'external'}});
+            data.push({index: {_index: 'events', _type: 'external'}});
             data.push(event);
         });
         client.bulk({

@@ -39,7 +39,7 @@ function Signup(props) {
             window.setUserDetails(UserAuthenticated.accountId, UserAuthenticated.userId, UserAuthenticated.userName);
           }
       dispatch(changedIsLogged());
-      // window.location.href = 'http://localhost:3000/home';
+      window.location.href = 'http://localhost:3000/home';
     } else {
       return res;
     }
